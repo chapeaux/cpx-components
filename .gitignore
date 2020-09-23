@@ -2,4 +2,3 @@ node_modules
 dist
 *.pem
 components/**/*.js
-package-lock*
