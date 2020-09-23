@@ -1,3 +1,5 @@
 = Chapeaux User Component
 
-TBD
+== User Component Purposes
+* Connection to authentication
+* Centralize user information
