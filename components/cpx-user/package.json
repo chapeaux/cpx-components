@@ -1,0 +1,27 @@
+{
+  "name": "@chapeaux/cpx-user",
+  "version": "0.1.0",
+  "description": "Chapeaux User Component",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chapeaux/cpx-components.git"
+  },
+  "keywords": [
+    "web",
+    "component",
+    "typescript",
+    "deno"
+  ],
+  "author": "Luke Dary <ldary@redhat.com> (https://lukedary.com)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/chapeaux/cpx-components/issues"
+  },
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-user"
+}

@@ -1,0 +1,3 @@
+= Chapeaux User Component
+
+TBD

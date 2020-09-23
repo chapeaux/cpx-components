@@ -1,0 +1,25 @@
+= Chapeaux Components
+
+image::https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg[Lerna, link=https://github.com/lerna/lerna]
+
+== Dependencies
+* https://nodejs.org/[NodeJS] (and `npm`) - https://nodejs.org/
+* https://deno.land/[Deno] - https://deno.land/
+* https://github.com/FiloSottile/mkcert[mkcert] - https://github.com/FiloSottile/mkcert
+
+== Building scripts
+* Edit `./bundle.ts` and add to the `files` array
+* First value is the path to the script, second is the filename
+* Run `deno run --unstable --allow-all bundle.ts`
+
+== Running the local server
+* Make sure you've run `mkcert -install` to install the local CA
+* Run `mkcert localhost` in the root of the repo
+* Check to make sure `localhost-key.pem` and `localhost.pem` exist in the root of the repo
+* Run `deno run --allow-read --allow-net server.ts`
+* Navigate to https://localhost:4430 (or https://localhost:4430/cpx-keycloak/demo at the moment)
+
+=== Random notes
+* Property-centric meaning Properties opt-in to being an attribute
+* Attribute : Property === 0 : 1
+* Error state on invalid property or attribute
