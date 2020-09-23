@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-user",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Chapeaux User Component",
   "main": "index.js",
   "scripts": {
