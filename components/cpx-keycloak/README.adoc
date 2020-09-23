@@ -1,3 +1,5 @@
 = Chapeaux Keycloak Component
 
-TBD
+== Keycloak Component Purpose
+* Interface with Keycloak
+* Provide centralized mechanism for auth

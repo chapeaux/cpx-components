@@ -14,8 +14,6 @@ declare var Keycloak: any;
  * 
  */
 export class CPXKeycloak extends HTMLElement {
-    //{url:'https://sso.stage.redhat.com/auth',realm:'redhat-external', clientId:'rhd-web '}
-
     _keycloak;
     _ready = false;
     _authenticated = false;

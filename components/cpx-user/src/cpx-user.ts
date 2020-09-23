@@ -51,9 +51,8 @@ export class CPXUser extends HTMLElement {
   }
 
   updateUser(data) {
-    console.log(data);
-    this.email = data.email;
-    this.name = data.name;
+    if (typeof data.email !== 'undefined') this.email = data.email;
+    if (typeof data.name !== 'undefined') this.name = data.name;
   }
 }
 

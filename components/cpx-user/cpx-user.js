@@ -234,9 +234,10 @@ System.register("cpx-user", [], function (exports_1, context_1) {
                     this[name] = newVal;
                 }
                 updateUser(data) {
-                    console.log(data);
-                    this.email = data.email;
-                    this.name = data.name;
+                    if (typeof data.email !== 'undefined')
+                        this.email = data.email;
+                    if (typeof data.name !== 'undefined')
+                        this.name = data.name;
                 }
             };
             exports_1("CPXUser", CPXUser);

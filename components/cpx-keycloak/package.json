@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/chapeaux/cpx-components/issues"
   },
-  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-keycloak"
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-keycloak",
+  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
 }
