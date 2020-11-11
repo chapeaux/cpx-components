@@ -13,7 +13,7 @@
       "lib": ["ES2020", "DOM"],
       "module": "ES2020",
       "moduleResolution": "Node",
-      "outDir": "dist",
+      "outDir": ".",
       "noFallthroughCasesInSwitch": false,
       "noImplicitAny": false,
       "noImplicitReturns": false,
@@ -32,7 +32,7 @@
       "strictPropertyInitialization": false,
       "suppressExcessPropertyErrors": false,
       "suppressImplicitAnyIndexErrors": false,
-      "target": "ES2020"
+      "target": "ES2017"
     },
     "include": ["src/**/*.ts"]
   }

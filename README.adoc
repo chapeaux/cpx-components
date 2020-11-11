@@ -7,6 +7,9 @@ image::https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg[Lerna, li
 * https://deno.land/[Deno] - https://deno.land/
 * https://github.com/FiloSottile/mkcert[mkcert] - https://github.com/FiloSottile/mkcert
 
+== Getting Started
+* Run `npm install`
+
 == Building scripts
 * Edit `./bundle.ts` and add to the `files` array
 * First value is the path to the script, second is the filename

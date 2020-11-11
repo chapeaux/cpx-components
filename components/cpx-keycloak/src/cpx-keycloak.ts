@@ -111,7 +111,7 @@ export class CPXKeycloak extends HTMLElement {
                 this.authenticated = authenticated;
                 if (authenticated) {
                     dispatchEvent(new CustomEvent('token-ready', {
-                        detail: this.token(),
+                        detail: this.token,
                         composed: true,
                         bubbles: true
                     }));
@@ -132,7 +132,7 @@ export class CPXKeycloak extends HTMLElement {
     logout() { return this.keycloak.logout(); }
     register() { return this.keycloak.register(); }
     account() { return this.keycloak.accountManagement(); }
-    token() { return this.keycloak.tokenParsed; }
+    get token() { return this.keycloak.tokenParsed; }
   }
   
   window.customElements.define('cpx-keycloak',CPXKeycloak);

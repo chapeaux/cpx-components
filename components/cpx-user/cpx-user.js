@@ -218,7 +218,7 @@ System.register("cpx-user", [], function (exports_1, context_1) {
                 connectedCallback() {
                     let keycloak = top.document.querySelector('cpx-keycloak');
                     if (keycloak && keycloak.ready) {
-                        this.token = keycloak['token']();
+                        this.token = keycloak['token'];
                     }
                     else {
                         top.addEventListener('token-ready', e => {

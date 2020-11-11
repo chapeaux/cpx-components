@@ -286,7 +286,7 @@ System.register("cpx-keycloak", [], function (exports_1, context_1) {
                                 this.authenticated = authenticated;
                                 if (authenticated) {
                                     dispatchEvent(new CustomEvent('token-ready', {
-                                        detail: this.token(),
+                                        detail: this.token,
                                         composed: true,
                                         bubbles: true
                                     }));
@@ -309,7 +309,7 @@ System.register("cpx-keycloak", [], function (exports_1, context_1) {
                 logout() { return this.keycloak.logout(); }
                 register() { return this.keycloak.register(); }
                 account() { return this.keycloak.accountManagement(); }
-                token() { return this.keycloak.tokenParsed; }
+                get token() { return this.keycloak.tokenParsed; }
             };
             exports_1("CPXKeycloak", CPXKeycloak);
             window.customElements.define('cpx-keycloak', CPXKeycloak);
