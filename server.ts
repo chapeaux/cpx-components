@@ -1,4 +1,12 @@
-import { Application, Router, HttpError, Status } from "https://deno.land/x/oak@v6.0.1/mod.ts";
+import { Application, Router, HttpError, Status } from "https://deno.land/x/oak/mod.ts";
+import denjucks from "https://deno.land/x/denjucks/mod.js";
+import { Session } from "https://deno.land/x/session/mod.ts";
+// import {
+//   viewEngine,
+//   engineFactory,
+//   adapterFactory,
+// } from "https://deno.land/x/view_engine/mod.ts";
+
 // import { applyGraphQL, gql} from "https://deno.land/x/oak_graphql/mod.ts";
 // import { GraphQLScalarType, Kind } from "https://deno.land/x/oak_graphql/deps.ts";
 
@@ -12,9 +20,15 @@ import {
 
 const port = Deno.args[0] || "8088";
 */
-
 const app = new Application();
 const router = new Router();
+// const denjuckEngine = engineFactory.getDenjuckEngine();
+// const oakAdapter = adapterFactory.getOakAdapter();
+const session = new Session({ framework: "oak" });
+await session.init();
+
+// app.use(viewEngine(oakAdapter, denjuckEngine));
+app.use(session.use()(session, {sameSite: "Secure" }));
 
 // Error Handling
 app.use(async (context, next) => {
@@ -136,32 +150,30 @@ const blogs = [
 
 // app.use(GraphQLService.routes(), GraphQLService.allowedMethods());
 
-// router.get("/", (ctx) => {
-//   ctx.response.body = "Hello world!";
-// }).get<{component: string}>("/:component", (ctx) => {
-//   //console.log(`${Deno.cwd()}/components/${ctx.params.component}/demo`);
-//   ctx.send({
-//     root: `${Deno.cwd()}/components/${ctx.params.component}/demo`,
+router.get("/", (ctx) => {
+  ctx.send(denjucks.render('index.html'));
+}).get<{component: string}>("/:component", (ctx) => {
+  //console.log(`${Deno.cwd()}/components/${ctx.params.component}/demo`);
+  ctx.send(denjucks.render(`components/${ctx.params.component}/demo/index.html`));
+});
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+//Static serving
+// app.use(async (ctx) => {
+//   await ctx.send({
+//     root: `${Deno.cwd()}/components`,
 //     index: 'index.html',
 //   });
 // });
-// app.use(router.routes());
-// app.use(router.allowedMethods());
-//Static serving
-app.use(async (ctx) => {
-  await ctx.send({
-    root: `${Deno.cwd()}/components`,
-    index: 'index.html',
-  });
-});
 
 app.addEventListener('listen', ({hostname, port}) => {
   console.log(`Serving ${Deno.cwd()}`);
   console.log(`Start listening on ${hostname}:${port}`);
 })
 
-await app.listen({hostname: "0.0.0.0", port: 8000 });
-//await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
+//await app.listen({hostname: "0.0.0.0", port: 8000 });
+await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
 /*
 for await (const req of serve(`:${port}`)) {
   const { conn, r: bufReader, w: bufWriter, headers } = req;

@@ -47,20 +47,20 @@ export class CPXUser extends HTMLElement {
     if (data && data.innerText) {
       this.updateUser(data.innerText);
     }
-    // let keycloak = top.document.querySelector('cpx-keycloak');
-    // if (keycloak && keycloak.ready) {
-    //   this.token = keycloak['token'];
-    // } else {
-    //   top.addEventListener('token-ready', e => {
-    //     this.token = e['detail'];
-    //     this.updateUser(e['detail']);
-    //   });
-    // }
+    let keycloak = top.document.querySelector('cpx-keycloak');
+    if (keycloak && keycloak.ready) {
+      this.token = keycloak['token'];
+    } else {
+      top.addEventListener('token-ready', e => {
+        this.token = e['detail'];
+        this.updateUser(e['detail']);
+      });
+    }
     
   }
 
   static get observedAttributes() {
-      return ['url'];
+      return ['url','token','name','email','username'];
   }
 
   attributeChangedCallback(name, oldVal, newVal) {
