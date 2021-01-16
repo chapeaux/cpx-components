@@ -1,5 +1,5 @@
 const files = [
-    ['./components/cpx-keycloak/src/cpx-keycloak.ts','cpx-keycloak'],
+//    ['./components/cpx-keycloak/src/cpx-keycloak.ts','cpx-keycloak'],
     ['./components/cpx-user/src/cpx-user.ts','cpx-user']
 ];
 

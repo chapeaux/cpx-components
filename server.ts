@@ -1,4 +1,4 @@
-import { Application, Router, HttpError, Status } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import { Application, Router, HttpError, Status, send } from "https://deno.land/x/oak@v6.2.0/mod.ts";
 import { viewEngine, engineFactory, adapterFactory } from "https://deno.land/x/view_engine@v1.4.5/mod.ts";
 //import { Session } from "https://deno.land/x/session/mod.ts";
 // import {
@@ -150,22 +150,27 @@ const blogs = [
 
 // app.use(GraphQLService.routes(), GraphQLService.allowedMethods());
 
-router.get("/", (ctx) => {
-  ctx.render('index.html');
-}).get<{component: string}>("/:component", (ctx) => {
-  //console.log(`${Deno.cwd()}/components/${ctx.params.component}/demo`);
-  ctx.render(`components/${ctx.params.component}/demo/index.html`);
-});
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-//Static serving
-// app.use(async (ctx) => {
-//   await ctx.send({
-//     root: `${Deno.cwd()}/components`,
-//     index: 'index.html',
+// router.get("/", (ctx) => {
+//   ctx.render('index.html');
+// }).get<{component: string, asset: string}>("/:component", ctx => {
+//   ctx.send({
+//     root:`${Deno.cwd()}/components/${ctx.params.component}/demo/`
 //   });
+// }).get<{component: string}>("/:component", (ctx) => {
+//   console.log(ctx.request.url.pathname);
+//   //console.log(`${Deno.cwd()}/components/${ctx.params.component}/demo`);
+//   ctx.render(`components/${ctx.params.component}/demo/index.html`);
 // });
+// app.use(router.routes());
+// app.use(router.allowedMethods());
+
+// Static serving
+app.use(async (ctx) => {
+  await ctx.send({
+    root: `${Deno.cwd()}/components`,
+    index: 'index.html',
+  });
+});
 
 app.addEventListener('listen', ({hostname, port}) => {
   console.log(`Serving ${Deno.cwd()}`);
