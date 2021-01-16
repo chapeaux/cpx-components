@@ -1,6 +1,6 @@
-import { Application, Router, HttpError, Status } from "https://deno.land/x/oak/mod.ts";
-import denjucks from "https://deno.land/x/denjucks/mod.js";
-import { Session } from "https://deno.land/x/session/mod.ts";
+import { Application, Router, HttpError, Status } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import { viewEngine, engineFactory, adapterFactory } from "https://deno.land/x/view_engine@v1.4.5/mod.ts";
+//import { Session } from "https://deno.land/x/session/mod.ts";
 // import {
 //   viewEngine,
 //   engineFactory,
@@ -22,13 +22,13 @@ const port = Deno.args[0] || "8088";
 */
 const app = new Application();
 const router = new Router();
-// const denjuckEngine = engineFactory.getDenjuckEngine();
-// const oakAdapter = adapterFactory.getOakAdapter();
-const session = new Session({ framework: "oak" });
-await session.init();
+const ejsEngine = await engineFactory.getEjsEngine();
+const oakAdapter = await adapterFactory.getOakAdapter();
+//const session = new Session({ framework: "oak" });
+//await session.init();
 
-// app.use(viewEngine(oakAdapter, denjuckEngine));
-app.use(session.use()(session, {sameSite: "Secure" }));
+app.use(viewEngine(oakAdapter, ejsEngine));
+//app.use(session.use()(session, {sameSite: "Secure" }));
 
 // Error Handling
 app.use(async (context, next) => {
@@ -151,10 +151,10 @@ const blogs = [
 // app.use(GraphQLService.routes(), GraphQLService.allowedMethods());
 
 router.get("/", (ctx) => {
-  ctx.send(denjucks.render('index.html'));
+  ctx.render('index.html');
 }).get<{component: string}>("/:component", (ctx) => {
   //console.log(`${Deno.cwd()}/components/${ctx.params.component}/demo`);
-  ctx.send(denjucks.render(`components/${ctx.params.component}/demo/index.html`));
+  ctx.render(`components/${ctx.params.component}/demo/index.html`);
 });
 app.use(router.routes());
 app.use(router.allowedMethods());

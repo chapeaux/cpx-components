@@ -1,4 +1,4 @@
-import {jwt_decode} from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 
 export class CPXUser extends HTMLElement {
   _name = '';
@@ -21,15 +21,17 @@ export class CPXUser extends HTMLElement {
     this.updateUser(jwt_decode(this._token))
   }
 
-  _cookie = '';
-  get cookie() { return this._cookie; }
-  set cookie() { 
-    if (this._cookie == val) return;
-    this._cookie = val;
-    this.setAttribute('cookie', this._cookie);
-    document.cookie.get(this._cookie).then(data => this.updateUser(data));
+  _jwtcookie = '';
+  get jwtcookie() { return this._jwtcookie; }
+  set jwtcookie(val) { 
+    if (this._jwtcookie == val) return;
+    this._jwtcookie = val;
+    this.setAttribute('jwtcookie', this._jwtcookie);
+    this.updateUser(this._cookies[this._cookie]);
   }
 
+  _cookies = {};
+  
   _email = '';
   get email() { return this._email; }
   set email(val) {
@@ -43,6 +45,7 @@ export class CPXUser extends HTMLElement {
   }
 
   connectedCallback() {
+    this._cookies = document.cookie.split(';').reduce((a,c) => { let kv = c.trim().split('='); a[kv[0]]=kv[1]; return a; },{});
     let data = this.querySelector('script');
     if (data && data.innerText) {
       this.updateUser(data.innerText);
