@@ -160,7 +160,7 @@ export class CPXUser extends HTMLElement {
   static get observedAttributes() {
       return [
         'url','token','name','email','username', 
-        'jwt-cookie',
+        'jwt-cookie', 'jwt-token',
         'kc-url', 'kc-realm', 'kc-client-id', 'kc-config', 'kc-auto'
       ];
   }
