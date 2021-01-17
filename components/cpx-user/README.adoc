@@ -3,3 +3,30 @@
 == User Component Purposes
 * Connection to authentication
 * Centralize user information
+
+== Usage
+
+.Server-side Data inclusion
+[source,html]
+----
+<cpx-user>
+<script type="data">
+{
+    "name": "Test User",
+    "email": "test123@test123.com"
+}
+</script>
+</cpx-user>
+----
+
+.JWT Cookie
+[source,html]
+----
+<cpx-user jwt-cookie="SOME_JWT_COOKIE_NAME"></cpx-user>
+----
+
+.Keycloak (requires keycloak.js)
+[source,html]
+----
+<cpx-user kc-url="https://test123.com/auth" kc-realm="your-realm" kc-client-id="your-client-id"></cpx-user>
+----
