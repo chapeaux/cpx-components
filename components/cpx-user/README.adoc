@@ -30,6 +30,7 @@ available.
 Requires that `jwt_decode` library be available globally.
 
 Available component properties:
+
 * `jwt-cookie`: sets the cookie to parse for JWT data
 * `jwt-token`: sets the JWT token to parse for data
 
@@ -49,11 +50,13 @@ Available component properties:
 
 Requires `keycloak.js` to be available, and the following attributes to 
 be set with the appropriate values:
+
 * `kc-url` - the Keycloak server url
 * `kc-realm` - the Keycloak realm
 * `kc-client-id` - the Keycloak client ID
 
 Available component methods:
+
 * `login()`: log in using the Keycloak config
 * `logout()`: log out using the Keycloak config
 * `register()`: send user to registration screen based on Keycloak config
@@ -62,6 +65,7 @@ Available component methods:
 * `token.createLogoutUrl()`: creates URL to log user out
 
 Available component properties:
+
 * `token`: the Keycloak object for authenticated users
 
 .Keycloak
