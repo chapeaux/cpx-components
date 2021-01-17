@@ -6,6 +6,8 @@
 
 == Usage
 
+=== Server-side or on-page
+
 .Server-side Data inclusion
 [source,html]
 ----
@@ -19,14 +21,24 @@
 </cpx-user>
 ----
 
+=== JSON Web Token
+
 .JWT Cookie
 [source,html]
 ----
 <cpx-user jwt-cookie="SOME_JWT_COOKIE_NAME"></cpx-user>
 ----
 
-.Keycloak (requires keycloak.js)
+.JWT Token
+----
+<cpx-user jwt-token="SOMEJWTENCODEDSTRING"></cpx-user>
+----
+
+=== Keycloak
+
+.Keycloak
 [source,html]
 ----
 <cpx-user kc-url="https://test123.com/auth" kc-realm="your-realm" kc-client-id="your-client-id"></cpx-user>
 ----
+
