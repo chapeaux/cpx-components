@@ -1,4 +1,5 @@
-import jwt_decode from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
+declare var jwt_decode: any;
+//import jwt_decode from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
 
 /*
 user-ready

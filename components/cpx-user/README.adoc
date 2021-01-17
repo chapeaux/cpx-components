@@ -12,12 +12,12 @@
 [source,html]
 ----
 <cpx-user>
-<script type="data">
-{
-    "name": "Test User",
-    "email": "test123@test123.com"
-}
-</script>
+    <script type="data">
+    {
+        "name": "Test User",
+        "email": "test123@test123.com"
+    }
+    </script>
 </cpx-user>
 ----
 
@@ -30,6 +30,7 @@
 ----
 
 .JWT Token
+[source,html]
 ----
 <cpx-user jwt-token="SOMEJWTENCODEDSTRING"></cpx-user>
 ----
