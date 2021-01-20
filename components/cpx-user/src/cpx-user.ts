@@ -57,7 +57,7 @@ export class CPXUser extends HTMLElement {
     this._user = val;
     if (typeof this._user.email !== 'undefined') this.email = this._user.email;
     if (typeof this._user.name !== 'undefined') this.name = this._user.name;
-    dispatchEvent(new CustomEvent(this.ready ? 'user-update':'user-ready', {
+    this.dispatchEvent(new CustomEvent(this.ready ? 'user-update':'user-ready', {
       detail: this,
       composed: true,
       bubbles: true
