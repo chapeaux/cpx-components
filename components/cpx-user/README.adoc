@@ -8,7 +8,7 @@
 
 === Server-side or on-page
 
-.Server-side Data inclusion
+.Server-side Data inclusion example
 [source,html]
 ----
 <cpx-user>
