@@ -1,4 +1,5 @@
 declare var jwt_decode: any;
+declare var Keycloak: any;
 //import jwt_decode from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
 
 /*
@@ -14,10 +15,12 @@ keycloak = kc-url, kc-realm, kc-client-id, kc-config ['url', 'realm', 'client-id
 */
 
 export class CPXUser extends HTMLElement {
+  _authenticated = false;
+
   _userId = '';
-  get userId() { return this._id; }
+  get userId() { return this._userId; }
   set userId(val) {
-    if (this._id === val) return;
+    if (this._userId === val) return;
     this._userId = val;
     this.setAttribute('user-id', this._userId)
   }
@@ -67,7 +70,7 @@ export class CPXUser extends HTMLElement {
 7
   // JWT
   _jwtCookie = '';
-  get jwtCookie() { return this._jwtcookie; }
+  get jwtCookie() { return this._jwtCookie; }
   set jwtCookie(val) { 
     if (this._jwtCookie == val) return;
     this._jwtCookie = val;
@@ -97,7 +100,7 @@ export class CPXUser extends HTMLElement {
     if (this._kcAuto === val) return;
     this._kcAuto = val;
   }
-  _keycloak;
+  _keycloak:any;
   get keycloak() {
     return this._keycloak;
   }
@@ -136,7 +139,7 @@ export class CPXUser extends HTMLElement {
       this._kcClientId = val;
   }
 
-  _kcToken;
+  _kcToken:string;
   get kcToken() { return this._kcToken; }
   set kcToken(val) { 
     if (this._kcToken === val) return;
@@ -159,7 +162,7 @@ export class CPXUser extends HTMLElement {
 
   static get observedAttributes() {
       return [
-        'url','token','name','email','username', 
+        'url','token','name','email','username', 'user-id',
         'jwt-cookie', 'jwt-token',
         'kc-url', 'kc-realm', 'kc-client-id', 'kc-config', 'kc-auto'
       ];
@@ -184,7 +187,7 @@ export class CPXUser extends HTMLElement {
       if (typeof Keycloak !== 'undefined') {
           this.keycloak = Keycloak(config ? config : {url: this.kcUrl, realm: this.kcRealm, clientId: this.kcClientId });
           await this.keycloak.init({}).then(authenticated => {
-              this.authenticated = authenticated;
+              this._authenticated = authenticated;
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
                   // dispatchEvent(new CustomEvent('token-ready', {

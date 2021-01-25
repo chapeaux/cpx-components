@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "allowJs": false,
-      "allowUmdGlobalAccess": false,
+      "allowUmdGlobalAccess": true,
       "allowUnreachableCode": false,
       "allowUnusedLabels": false,
       "alwaysStrict": true,
@@ -11,10 +11,11 @@
       "declaration": true,
       "declarationDir": ".",
       "esModuleInterop": true,
-      "lib": ["ES2020", "DOM"],
-      "module": "ES2020",
+      "lib": ["ESNext", "DOM"],
+      "module": "UMD",
       "moduleResolution": "Node",
-      "outDir": ".",
+      "outDir": "./",
+      "rootDir": "./src",
       "noFallthroughCasesInSwitch": false,
       "noImplicitAny": false,
       "noImplicitReturns": false,
@@ -33,7 +34,8 @@
       "strictPropertyInitialization": false,
       "suppressExcessPropertyErrors": false,
       "suppressImplicitAnyIndexErrors": false,
-      "target": "ES2017"
+      "target": "ESNext"
     },
-    "include": ["src/**/*.ts"]
+    "include": ["src/**/*"],
+    "exclude": []
   }
