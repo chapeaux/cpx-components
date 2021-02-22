@@ -34,7 +34,7 @@ export class CPXUser extends HTMLElement {
     this.setAttribute('name',this._name);
   }
 
-  _cookies = {};
+  _cookies = new Map();
   
   _email = '';
   get email() { return this._email; }
@@ -66,7 +66,7 @@ export class CPXUser extends HTMLElement {
     }));
     this.ready = true;
   }
-7
+
   // JWT
   _jwtCookie = '';
   get jwtCookie() { return this._jwtCookie; }
@@ -74,8 +74,8 @@ export class CPXUser extends HTMLElement {
     if (this._jwtCookie == val) return;
     this._jwtCookie = val;
     this.setAttribute('jwt-Cookie', this._jwtCookie);
-    if(this._cookies[this._jwtCookie]) {
-      this.jwtToken = this._cookies[this._jwtCookie];
+    if(this._cookies.has(this._jwtCookie)) {
+      this.jwtToken = this._cookies.get(this._jwtCookie);
     }
   }
 
@@ -108,28 +108,28 @@ export class CPXUser extends HTMLElement {
       this._keycloak = val;
   }
 
-  _kcUrl:string;
+  _kcUrl = '';
   get kcUrl() { return this._kcUrl; }
   set kcUrl(val) {
       if (this._kcUrl === val) return;
       this._kcUrl = val;
   }
 
-  _kcConfig:string;
+  _kcConfig = '';
   get kcConfig() { return this._kcConfig; }
   set kcConfig(val) {
       if (this._kcConfig === val) return;
       this._kcConfig = val;
   }
 
-  _kcRealm:string;
+  _kcRealm = '';
   get kcRealm() { return this._kcRealm; }
   set kcRealm(val) {
       if (this._kcRealm === val) return;
       this._kcRealm = val;
   }
 
-  _kcClientId:string;
+  _kcClientId = '';
   get kcClientId() {
       return this._kcClientId;
   }
@@ -138,7 +138,7 @@ export class CPXUser extends HTMLElement {
       this._kcClientId = val;
   }
 
-  _kcToken:string;
+  _kcToken = '';
   get kcToken() { return this._kcToken; }
   set kcToken(val) { 
     if (this._kcToken === val) return;
@@ -151,11 +151,11 @@ export class CPXUser extends HTMLElement {
   }
 
   connectedCallback() {
-    this._cookies = document.cookie.split(';').reduce((a,c) => { let kv = c.trim().split('='); a[kv[0]]=kv[1]; return a; },{});
+    document.cookie.split(';').reduce((a,c) => { let kv = c.trim().split('='); a.set(kv[0],kv[1]); return a; },this._cookies);
     console.log('Cookies:',this._cookies);
     let data = this.querySelector('script');
     if (data && data.innerText) {
-      this.user = JSON.parse(data.innerText);
+      this.user = JSON.parse(data.innerText); // should dispatch ready event
     }
   }
 
@@ -167,7 +167,7 @@ export class CPXUser extends HTMLElement {
       ];
   }
 
-  attributeChangedCallback(name, oldVal, newVal) {
+  attributeChangedCallback(name:string, oldVal:string, newVal:string) {
     this[this.camelCase(name)] = newVal;
     if (this.kc) {
         this.kcInit(this.kcConfig);
@@ -183,9 +183,9 @@ export class CPXUser extends HTMLElement {
   }
 
   async kcInit(config?: any) {
-      if (typeof Keycloak !== 'undefined') {
+      if (typeof Keycloak !== 'undefined' && this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') {
           this.keycloak = Keycloak(config ? config : {url: this.kcUrl, realm: this.kcRealm, clientId: this.kcClientId });
-          await this.keycloak.init({}).then(authenticated => {
+          await this.keycloak.init({}).then( (authenticated:boolean) => {
               this._authenticated = authenticated;
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
@@ -215,4 +215,4 @@ export class CPXUser extends HTMLElement {
   
 }
 
-window.customElements.define('cpx-user',CPXUser);
+window.customElements.define('cpx-user', CPXUser);

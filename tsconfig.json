@@ -1,38 +1,5 @@
 {
     "compilerOptions": {
-      "allowJs": false,
-      "allowUmdGlobalAccess": false,
-      "allowUnreachableCode": false,
-      "allowUnusedLabels": false,
-      "alwaysStrict": true,
-      "assumeChangesOnlyAffectDirectDependencies": false,
-      "checkJs": false,
-      "disableSizeLimit": false,
-      "declaration": true,
-      "esModuleInterop": true,
-      "lib": ["ES2020", "DOM"],
-      "module": "ES2020",
-      "moduleResolution": "Node",
-      "outDir": ".",
-      "noFallthroughCasesInSwitch": false,
-      "noImplicitAny": false,
-      "noImplicitReturns": false,
-      "noImplicitThis": false,
-      "noImplicitUseStrict": false,
-      "noStrictGenericChecks": false,
-      "noUnusedLocals": false,
-      "noUnusedParameters": false,
-      "preserveConstEnums": false,
-      "removeComments": true,
-      "resolveJsonModule": false,
-      "strict": true,
-      "strictBindCallApply": false,
-      "strictFunctionTypes": false,
-      "strictNullChecks": false,
-      "strictPropertyInitialization": false,
-      "suppressExcessPropertyErrors": false,
-      "suppressImplicitAnyIndexErrors": false,
-      "target": "ES2017"
-    },
-    "include": ["src/**/*.ts"]
+      "lib": ["ESNext", "dom", "deno.ns"]
+    }
   }

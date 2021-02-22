@@ -1,0 +1,34 @@
+{
+  "name": "@chapeaux/cpx-reporter",
+  "version": "0.2.6",
+  "description": "Chapeaux Reporter Component",
+  "type": "module",
+  "main": "cpx-reporter.js",
+  "module": "cpx-reporter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chapeaux/cpx-components.git"
+  },
+  "keywords": [
+    "web",
+    "component",
+    "typescript",
+    "deno"
+  ],
+  "author": "Luke Dary <ldary@redhat.com> (https://lukedary.com)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/chapeaux/cpx-components/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-reporter",
+  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d",
+  "dependencies": {}
+}

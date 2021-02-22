@@ -6,7 +6,7 @@ export declare class CPXUser extends HTMLElement {
     _name: string;
     get name(): string;
     set name(val: string);
-    _cookies: {};
+    _cookies: Map<any, any>;
     _email: string;
     get email(): string;
     set email(val: string);
@@ -16,7 +16,6 @@ export declare class CPXUser extends HTMLElement {
     _user: any;
     get user(): any;
     set user(val: any);
-    7: any;
     _jwtCookie: string;
     get jwtCookie(): string;
     set jwtCookie(val: string);
@@ -48,7 +47,7 @@ export declare class CPXUser extends HTMLElement {
     constructor();
     connectedCallback(): void;
     static get observedAttributes(): string[];
-    attributeChangedCallback(name: any, oldVal: any, newVal: any): void;
+    attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
     validateKCConfig(): string | true;
     camelCase(str: String, to?: boolean): string;
     kcInit(config?: any): Promise<void>;
