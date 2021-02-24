@@ -1,6 +1,6 @@
-declare var jwt_decode: any;
+//declare var jwt_decode: any;
 declare var Keycloak: any;
-//import jwt_decode from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
+import {jwt_decode} from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
 
 /*
 user-ready
