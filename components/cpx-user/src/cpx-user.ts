@@ -204,6 +204,7 @@ export class CPXUser extends HTMLElement {
               this._authenticated = authenticated;
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
+                  document.cookie = `${this.jwtCookie}=${this.keycloak.token}`
                   // dispatchEvent(new CustomEvent('token-ready', {
                   //     detail: this.token,
                   //     composed: true,
