@@ -203,7 +203,7 @@ export class CPXUser extends HTMLElement {
               this._authenticated = authenticated;
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
-                  document.cookie = `${this.jwtCookie}=${this.keycloak.token};path=/;SameSite=None`;
+                  document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
                   //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
                   document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                   // dispatchEvent(new CustomEvent('token-ready', {
