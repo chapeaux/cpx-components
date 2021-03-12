@@ -185,6 +185,14 @@ class CPXUser1 extends HTMLElement {
         if (this._kcConfig === val) return;
         this._kcConfig = val;
     }
+    _kcOptions = '';
+    get kcOptions() {
+        return this._kcOptions;
+    }
+    set kcOptions(val) {
+        if (this._kcOptions === val) return;
+        this._kcOptions = val;
+    }
     _kcRealm = '';
     get kcRealm() {
         return this._kcRealm;
@@ -238,7 +246,8 @@ class CPXUser1 extends HTMLElement {
             'kc-realm',
             'kc-client-id',
             'kc-config',
-            'kc-auto'
+            'kc-auto',
+            'kc-options'
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
@@ -257,13 +266,12 @@ class CPXUser1 extends HTMLElement {
     }
     async kcInit(config) {
         if (typeof Keycloak !== 'undefined' && this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') {
-            this.keycloak = Keycloak(config ? config : {
+            this.keycloak = Keycloak(config ? JSON.parse(config) : {
                 url: this.kcUrl,
                 realm: this.kcRealm,
                 clientId: this.kcClientId
             });
-            await this.keycloak.init({
-            }).then((authenticated)=>{
+            await this.keycloak.init(JSON.parse(this.kcOptions)).then((authenticated)=>{
                 this._authenticated = authenticated;
                 if (authenticated) {
                     this.user = this.keycloak.tokenParsed;
