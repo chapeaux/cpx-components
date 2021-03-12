@@ -199,8 +199,8 @@ export class CPXUser extends HTMLElement {
 
   async kcInit(config?: any) {
       if (typeof Keycloak !== 'undefined' && this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') {
-          this.keycloak = Keycloak(config ? JSON.parse(config.replace("'",'"')) : {url: this.kcUrl, realm: this.kcRealm, clientId: this.kcClientId });
-          await this.keycloak.init(JSON.parse(this.kcOptions.replace("'",'"'))).then( (authenticated:boolean) => {
+          this.keycloak = Keycloak(config ? JSON.parse(config.replaceAll("'",'"')) : {url: this.kcUrl, realm: this.kcRealm, clientId: this.kcClientId });
+          await this.keycloak.init(JSON.parse(this.kcOptions.replaceAll("'",'"'))).then( (authenticated:boolean) => {
               this._authenticated = authenticated;
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
