@@ -75,7 +75,6 @@
         }
     }
 });
-const jwt_decode1 = jwt_decode;
 class CPXUser1 extends HTMLElement {
     _authenticated = false;
     _userId = '';
@@ -149,7 +148,7 @@ class CPXUser1 extends HTMLElement {
     set jwtToken(val) {
         if (this._jwtToken === val) return;
         this._jwtToken = val;
-        this.user = jwt_decode1(this._jwtToken);
+        this.user = jwt_decode(this._jwtToken);
     }
     get kc() {
         return this.validateKCConfig();
@@ -244,7 +243,7 @@ class CPXUser1 extends HTMLElement {
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[this.camelCase(name)] = newVal;
-        if (this.kc) {
+        if (this.kc && !this._authenticated) {
             this.kcInit(this.kcConfig);
         }
     }
@@ -293,5 +292,5 @@ class CPXUser1 extends HTMLElement {
         return this.keycloak.tokenParsed;
     }
 }
-export { CPXUser1 as CPXUser };
 window.customElements.define('cpx-user', CPXUser1);
+export { CPXUser1 as CPXUser };

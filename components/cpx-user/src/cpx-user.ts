@@ -176,7 +176,7 @@ export class CPXUser extends HTMLElement {
 
   attributeChangedCallback(name:string, oldVal:string, newVal:string) {
     this[this.camelCase(name)] = newVal;
-    if (this.kc) {
+    if (this.kc && !this._authenticated) {
         this.kcInit(this.kcConfig);
     }
   }
