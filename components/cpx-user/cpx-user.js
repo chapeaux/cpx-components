@@ -226,7 +226,6 @@ class CPXUser1 extends HTMLElement {
             a.set(kv[0], kv[1]);
             return a;
         }, this._cookies);
-        console.log('Cookies:', this._cookies);
         let data = this.querySelector('script');
         if (data && data.innerText) {
             this.user = JSON.parse(data.innerText);
@@ -275,7 +274,9 @@ class CPXUser1 extends HTMLElement {
                 this._authenticated = authenticated;
                 if (authenticated) {
                     this.user = this.keycloak.tokenParsed;
-                    document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
+                    document.cookie = `${this.jwtCookie}=${this.keycloak.token};path=/;SameSite=None`;
+                    let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat;
+                    document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}; expires=${refreshExpiration.toGMTString()}`;
                 } else {
                     if (this.kcAuto) {
                         this.login();
