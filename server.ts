@@ -173,7 +173,7 @@ app.use(async (ctx) => {
 });
 
 app.addEventListener('listen', ({hostname, port}) => {
-  console.log(`Serving ${Deno.cwd()}`);
+  console.log(`Serving ${Deno.cwd()}/components`);
   console.log(`Start listening on ${hostname}:${port}`);
 })
 

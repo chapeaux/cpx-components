@@ -14,7 +14,7 @@
       "lib": ["ESNext", "DOM"],
       "module": "ES2020",
       "moduleResolution": "Node",
-      "outDir": "./demo",
+      "outDir": ".",
       "rootDir": "./src",
       "noFallthroughCasesInSwitch": false,
       "noImplicitAny": false,

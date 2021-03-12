@@ -12,9 +12,9 @@
       "declarationDir": ".",
       "esModuleInterop": true,
       "lib": ["ESNext", "DOM"],
-      "module": "UMD",
+      "module": "ES2020",
       "moduleResolution": "Node",
-      "outDir": "./demo",
+      "outDir": ".",
       "rootDir": "./src",
       "noFallthroughCasesInSwitch": false,
       "noImplicitAny": false,
@@ -34,7 +34,7 @@
       "strictPropertyInitialization": false,
       "suppressExcessPropertyErrors": false,
       "suppressImplicitAnyIndexErrors": false,
-      "target": "es5"
+      "target": "ESNext"
     },
     "include": ["src/**/*"],
     "exclude": []

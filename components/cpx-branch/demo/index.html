@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapeaux Query Component</title>
+    <title>Chapeaux Branch Component</title>
 </head>
 <body>
-    <cpx-query></cpx-query>
-    <script type="module" src="/cpx-query/cpx-query.js"></script>
-    <script>
-        
-
-
-    </script>
+    <cpx-branch url="demo/registry-dump.json">
+        <template>
+            <section data-group="packageName">
+                <form>
+                    <fieldset>
+                        <label><input name="${packageName}" type="radio" />${version}</label>
+                    </fieldset>
+                </form>
+            </section>
+        </template>
+    </cpx-branch>
+    <script type="module" src="/cpx-branch/cpx-branch.js"></script>
 </body>
 </html>

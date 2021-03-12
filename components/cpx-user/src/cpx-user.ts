@@ -11,6 +11,13 @@ jwt = jwt attribute, parse cookie, populate user object
 script tag = parse text, populate user object
 keycloak = kc-url, kc-realm, kc-client-id, kc-config ['url', 'realm', 'client-id', 'config'], 
   init KC, 
+
+Contract
+Auto-login
+user object
+  username
+  First name
+  surname
 */
 
 export class CPXUser extends HTMLElement {
