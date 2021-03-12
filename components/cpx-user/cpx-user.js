@@ -275,8 +275,7 @@ class CPXUser1 extends HTMLElement {
                 if (authenticated) {
                     this.user = this.keycloak.tokenParsed;
                     document.cookie = `${this.jwtCookie}=${this.keycloak.token};path=/;SameSite=None`;
-                    let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat;
-                    document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}; expires=${refreshExpiration.toGMTString()}`;
+                    document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                 } else {
                     if (this.kcAuto) {
                         this.login();

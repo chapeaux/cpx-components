@@ -204,8 +204,8 @@ export class CPXUser extends HTMLElement {
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
                   document.cookie = `${this.jwtCookie}=${this.keycloak.token};path=/;SameSite=None`;
-                  let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
-                  document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}; expires=${refreshExpiration.toGMTString()}`;
+                  //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
+                  document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                   // dispatchEvent(new CustomEvent('token-ready', {
                   //     detail: this.token,
                   //     composed: true,
