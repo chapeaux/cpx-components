@@ -16,5 +16,13 @@ async function bundleFiles(val:any, key?:any) {
 
 const files = new Map([
     //    ['./components/cpx-keycloak/src/cpx-keycloak.ts','cpx-keycloak'],
+    ['CPXBranch','cpx-branch'],
+    ['CPXKeycloak','cpx-keycloak'],
+    // ['CPXQuery','cpx-query'],
+    // ['CPXReporter','cpx-reporter'],
+    // ['CPXResult','cpx-result'],
+    // ['CPXState','cpx-state'],
+    // ['CPXTarget','cpx-target'],
+    // ['CPXUrl','cpx-url'],
     ['CPXUser','cpx-user']
 ]).forEach(bundleFiles);

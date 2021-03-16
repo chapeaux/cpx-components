@@ -78,7 +78,7 @@ export class CPXBranch extends HTMLElement {
                     a[c[group]].push(c);
                 } 
             },{});
-            el.innerHTML = el.
+            el.innerHTML = el.innerHTML;
         });
 
         // Data Repeat Replacement
