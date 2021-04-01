@@ -6,17 +6,59 @@
     <title>Chapeaux Branch Component</title>
 </head>
 <body>
-    <cpx-branch url="demo/registry-dump.json">
+    <cpx-branch filter="packageName" group="version" query="amq-streams" sort="version" order="desc" url="demo/registry-dump.json">
         <template>
-            <section data-group="packageName">
-                <form>
-                    <fieldset>
-                        <label><input name="${packageName}" type="radio" />${version}</label>
-                    </fieldset>
-                </form>
+            <style>
+                :host {
+                    --fullcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><circle cx='15' cy='15' r='5' stroke='red' fill='transparent' stroke-width='2'/></svg>");
+                    --tophalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M 15 15 h -15 0 c 0 -5 5 -5 5 0 Z' stroke='gray' stroke-width='2' fill='transparent' /></svg>");
+                    --bottomhalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><circle cx='50' cy='15' r='5' stroke='red' fill='transparent' stroke-width='2'/></svg>");
+                }
+
+                section div label {
+                    display: grid;
+                    grid-template-columns: auto auto 1fr auto auto;
+                }
+
+                input+div {
+                    background: var(--tophalfcircle) no-repeat;
+                    height: 30px;
+                    width: 30px;
+                }
+
+                input {   }
+                input:checked {  }
+                input:checked+div { background: var(--fullcircle) no-repeat; }
+                input:checked+ul { display: block; }
+                
+            </style>
+            <section>
+                <div>
+                    <strong>Version</strong>
+                    <strong>Update Paths</strong>
+                    <strong>Other Available Channels</strong>
+                </div>
+                <div data-repeat>
+                    <label>
+                        <input name="${packageName}" type="radio" id="${version}" />${version}
+                        <div class></div>
+                        <ul>
+                            <li>Replaces: ${replaces}</li>
+                            <li>Skips: ${skips}</li>
+                            <li>Channel: ${channelName}</li>
+                        </ul>
+                        <ul class="channels">
+                            <li>${channelName}</li>
+                        </ul>
+                    </label>
+                </div>
             </section>
         </template>
     </cpx-branch>
     <script type="module" src="/cpx-branch/cpx-branch.js"></script>
 </body>
 </html>
+
+<!--
+    {"arches":["amd64","ppc64le","s390x"],"batch":51308,"batch_annotations":null,"binary_image":"registry-proxy.engineering.redhat.com/rh-osbs/openshift-ose-operator-registry:v4.8","binary_image_resolved":"registry-proxy.engineering.redhat.com/rh-osbs/openshift-ose-operator-registry@sha256:dfed4be608cc5eb9e7d9873c81f9cd83d67a5c6a2bce9c647aa1eba13faa3bf5","bundle_mapping":{"kubevirt-hyperconverged":["registry-proxy.engineering.redhat.com/rh-osbs/container-native-virtualization-hco-bundle-registry:v2.6.1-33"]},"bundles":["registry-proxy.engineering.redhat.com/rh-osbs/container-native-virtualization-hco-bundle-registry:v2.6.1-33"],"deprecation_list":[],"distribution_scope":"stage","from_index":"registry-proxy.engineering.redhat.com/rh-osbs/iib-pub-pending:v4.8","from_index_resolved":"registry-proxy.engineering.redhat.com/rh-osbs/iib-pub-pending@sha256:d3e9158cacdf1def78a96406054c0abd5ed6bde21e0361c1dd1dcc1b93060ffb","id":55828,"index_image":"registry-proxy.engineering.redhat.com/rh-osbs/iib:55828","index_image_resolved":"registry-proxy.engineering.redhat.com/rh-osbs/iib@sha256:0cba123ae351a68450444febfe92dd21a5ab6970839e856aaf4b45560d0a8868","logs":{"expiration":"2021-03-20T20:03:47.319413Z","url":"https://iib.engineering.redhat.com/api/v1/builds/55828/logs"},"omps_operator_version":{},"organization":"cvpops","removed_operators":[],"request_type":"add","state":"complete","state_history":[{"state":"complete","state_reason":"The operator bundle(s) were successfully added to the index image","updated":"2021-03-17T20:03:47.319413Z"},{"state":"in_progress","state_reason":"Creating the manifest list","updated":"2021-03-17T20:03:41.377699Z"},{"state":"in_progress","state_reason":"Checking if bundles are already present in index image","updated":"2021-03-17T20:02:06.220211Z"},{"state":"in_progress","state_reason":"Building the index image for the following arches: amd64, ppc64le, s390x","updated":"2021-03-17T20:02:03.861534Z"},{"state":"in_progress","state_reason":"Resolving the container images","updated":"2021-03-17T20:01:58.389597Z"},{"state":"in_progress","state_reason":"Resolving the bundles","updated":"2021-03-17T20:01:56.036299Z"},{"state":"in_progress","state_reason":"The request was initiated","updated":"2021-03-17T20:01:49.238523Z"}],"state_reason":"The operator bundle(s) were successfully added to the index image","updated":"2021-03-17T20:03:47.319413Z","user":"xci-jenkins/sdaadmin@REDHAT.COM"}
+-->

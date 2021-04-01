@@ -1,80 +1,3 @@
-(function(factory) {
-    typeof define === 'function' && define.amd ? define(factory) : factory();
-})(function() {
-    'use strict';
-    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    function InvalidCharacterError(message) {
-        this.message = message;
-    }
-    InvalidCharacterError.prototype = new Error();
-    InvalidCharacterError.prototype.name = "InvalidCharacterError";
-    function polyfill(input) {
-        var str = String(input).replace(/=+$/, "");
-        if (str.length % 4 == 1) {
-            throw new InvalidCharacterError("'atob' failed: The string to be decoded is not correctly encoded.");
-        }
-        for(var bc = 0, bs, buffer, idx = 0, output = ""; buffer = str.charAt(idx++); ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer, (bc++) % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0){
-            buffer = chars.indexOf(buffer);
-        }
-        return output;
-    }
-    var atob = typeof window !== "undefined" && window.atob && window.atob.bind(window) || polyfill;
-    function b64DecodeUnicode(str) {
-        return decodeURIComponent(atob(str).replace(/(.)/g, function(m, p) {
-            var code = p.charCodeAt(0).toString(16).toUpperCase();
-            if (code.length < 2) {
-                code = "0" + code;
-            }
-            return "%" + code;
-        }));
-    }
-    function base64_url_decode(str) {
-        var output = str.replace(/-/g, "+").replace(/_/g, "/");
-        switch(output.length % 4){
-            case 0: break;
-            case 2:
-                output += "==";
-                break;
-            case 3:
-                output += "=";
-                break;
-            default:
-                throw "Illegal base64url string!";
-        }
-        try {
-            return b64DecodeUnicode(output);
-        } catch (err) {
-            return atob(output);
-        }
-    }
-    function InvalidTokenError(message) {
-        this.message = message;
-    }
-    InvalidTokenError.prototype = new Error();
-    InvalidTokenError.prototype.name = "InvalidTokenError";
-    function jwtDecode(token, options) {
-        if (typeof token !== "string") {
-            throw new InvalidTokenError("Invalid token specified");
-        }
-        options = options || {
-        };
-        var pos = options.header === true ? 0 : 1;
-        try {
-            return JSON.parse(base64_url_decode(token.split(".")[pos]));
-        } catch (e) {
-            throw new InvalidTokenError("Invalid token specified: " + e.message);
-        }
-    }
-    if (window) {
-        if (typeof window.define == "function" && window.define.amd) {
-            window.define("jwt_decode", function() {
-                return jwtDecode;
-            });
-        } else if (window) {
-            window.jwt_decode = jwtDecode;
-        }
-    }
-});
 class CPXUser1 extends HTMLElement {
     _authenticated = false;
     _userId = '';
@@ -129,103 +52,10 @@ class CPXUser1 extends HTMLElement {
         }));
         this.ready = true;
     }
-    _jwtCookie = '';
-    get jwtCookie() {
-        return this._jwtCookie;
-    }
-    set jwtCookie(val) {
-        if (this._jwtCookie == val) return;
-        this._jwtCookie = val;
-        this.setAttribute('jwt-Cookie', this._jwtCookie);
-        if (this._cookies.has(this._jwtCookie)) {
-            this.jwtToken = this._cookies.get(this._jwtCookie);
-        }
-    }
-    _jwtToken = '';
-    get jwtToken() {
-        return this._jwtToken;
-    }
-    set jwtToken(val) {
-        if (this._jwtToken === val) return;
-        this._jwtToken = val;
-        this.user = jwt_decode(this._jwtToken);
-    }
-    get kc() {
-        return this.validateKCConfig();
-    }
-    _kcAuto = false;
-    get kcAuto() {
-        return this._kcAuto;
-    }
-    set kcAuto(val) {
-        if (typeof val === 'string') val = true;
-        if (this._kcAuto === val) return;
-        this._kcAuto = val;
-    }
-    get keycloak() {
-        return this._keycloak;
-    }
-    set keycloak(val) {
-        if (this._keycloak === val) return;
-        this._keycloak = val;
-    }
-    _kcUrl = '';
-    get kcUrl() {
-        return this._kcUrl;
-    }
-    set kcUrl(val) {
-        if (this._kcUrl === val) return;
-        this._kcUrl = val;
-    }
-    _kcConfig = '';
-    get kcConfig() {
-        return this._kcConfig;
-    }
-    set kcConfig(val) {
-        if (this._kcConfig === val) return;
-        this._kcConfig = val;
-    }
-    _kcOptions = '';
-    get kcOptions() {
-        return this._kcOptions;
-    }
-    set kcOptions(val) {
-        if (this._kcOptions === val) return;
-        this._kcOptions = val;
-    }
-    _kcRealm = '';
-    get kcRealm() {
-        return this._kcRealm;
-    }
-    set kcRealm(val) {
-        if (this._kcRealm === val) return;
-        this._kcRealm = val;
-    }
-    _kcClientId = '';
-    get kcClientId() {
-        return this._kcClientId;
-    }
-    set kcClientId(val) {
-        if (this._kcClientId === val) return;
-        this._kcClientId = val;
-    }
-    _kcToken = '';
-    get kcToken() {
-        return this._kcToken;
-    }
-    set kcToken(val) {
-        if (this._kcToken === val) return;
-        this._kcToken = val;
-    }
     constructor(){
         super();
     }
     connectedCallback() {
-        document.cookie.split(';').reduce((a, c)=>{
-            let kv = c.trim().split('=');
-            a.set(kv[0], kv[1]);
-            return a;
-        }, this._cookies);
         let data = this.querySelector('script');
         if (data && data.innerText) {
             this.user = JSON.parse(data.innerText);
@@ -233,20 +63,10 @@ class CPXUser1 extends HTMLElement {
     }
     static get observedAttributes() {
         return [
-            'url',
-            'token',
             'name',
             'email',
             'username',
-            'user-id',
-            'jwt-cookie',
-            'jwt-token',
-            'kc-url',
-            'kc-realm',
-            'kc-client-id',
-            'kc-config',
-            'kc-auto',
-            'kc-options'
+            'user-id'
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
@@ -264,20 +84,22 @@ class CPXUser1 extends HTMLElement {
         );
     }
     async kcInit(config) {
-        if (typeof Keycloak !== 'undefined' && this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') {
-            this.keycloak = Keycloak(config ? JSON.parse(config.replaceAll("'", '"')) : {
+        if (typeof Keycloak !== 'undefined' && (this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '' || this.kcConfig)) {
+            console.log('Config:', config);
+            this.keycloak = Keycloak(config && config !== '' ? JSON.parse(config.replaceAll("'", '"')) : {
                 url: this.kcUrl,
                 realm: this.kcRealm,
                 clientId: this.kcClientId
             });
-            await this.keycloak.init(JSON.parse(this.kcOptions.replaceAll("'", '"'))).then((authenticated)=>{
+            await this.keycloak.init(this.kcOptions ? JSON.parse(this.kcOptions.replaceAll("'", '"')) : {
+            }).then((authenticated)=>{
                 this._authenticated = authenticated;
                 if (authenticated) {
                     this.user = this.keycloak.tokenParsed;
                     document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
                     document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                 } else {
-                    if (this.kcAuto) {
+                    if (this.kcAuto && !this.ready) {
                         this.login();
                     }
                 }

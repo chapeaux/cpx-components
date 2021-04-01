@@ -1,3 +1,7 @@
+//declare var jwt_decode: any;
+declare var Keycloak: any;
+import {jwt_decode} from 'https://raw.githubusercontent.com/auth0/jwt-decode/master/build/jwt-decode.js';
+
 /*
 user-ready
 user-update
@@ -17,9 +21,10 @@ user object
 */
 
 /**
- * @element cpx-user
+ * @element cpx-auth
  */
-export class CPXUser extends HTMLElement {
+export class CPXAuth extends HTMLElement {
+    static get tag() { return 'cpx-auth'; }
   _authenticated = false;
 
   _userId = '';
@@ -73,11 +78,98 @@ export class CPXUser extends HTMLElement {
     this.ready = true;
   }
 
+  // JWT
+  _jwtCookie = '';
+  get jwtCookie() { return this._jwtCookie; }
+  set jwtCookie(val) { 
+    if (this._jwtCookie == val) return;
+    this._jwtCookie = val;
+    this.setAttribute('jwt-Cookie', this._jwtCookie);
+    if(this._cookies.has(this._jwtCookie)) {
+      this.jwtToken = this._cookies.get(this._jwtCookie);
+    }
+  }
+
+  _jwtToken = '';
+  get jwtToken() {
+    return this._jwtToken;
+  }
+  set jwtToken(val) {
+    if (this._jwtToken === val) return;
+    this._jwtToken = val;
+    this.user = jwt_decode(this._jwtToken);
+  }
+  // END JWT
+
+  // Keycloak
+  get kc() { return this.validateKCConfig() }
+  _kcAuto = false;
+  get kcAuto() { return this._kcAuto; }
+  set kcAuto(val) { 
+    if (typeof val === 'string') val = true;
+    if (this._kcAuto === val) return;
+    this._kcAuto = val;
+  }
+  _keycloak:any;
+  get keycloak() {
+    return this._keycloak;
+  }
+  set keycloak(val) {
+      if (this._keycloak === val) return;
+      this._keycloak = val;
+  }
+
+  _kcUrl = '';
+  get kcUrl() { return this._kcUrl; }
+  set kcUrl(val) {
+      if (this._kcUrl === val) return;
+      this._kcUrl = val;
+  }
+
+  _kcConfig = '';
+  get kcConfig() { return this._kcConfig; }
+  set kcConfig(val) {
+      if (this._kcConfig === val) return;
+      this._kcConfig = val;
+  }
+
+  _kcOptions = '';
+  get kcOptions() { return this._kcOptions; }
+  set kcOptions(val) {
+    if (this._kcOptions === val) return;
+    this._kcOptions = val;
+  }
+
+  _kcRealm = '';
+  get kcRealm() { return this._kcRealm; }
+  set kcRealm(val) {
+      if (this._kcRealm === val) return;
+      this._kcRealm = val;
+  }
+
+  _kcClientId = '';
+  get kcClientId() {
+      return this._kcClientId;
+  }
+  set kcClientId(val) {
+      if (this._kcClientId === val) return;
+      this._kcClientId = val;
+  }
+
+  _kcToken = '';
+  get kcToken() { return this._kcToken; }
+  set kcToken(val) { 
+    if (this._kcToken === val) return;
+    this._kcToken = val;
+  }
+  // END Keycloak
+
   constructor() {
     super();
   }
 
   connectedCallback() {
+    document.cookie.split(';').reduce((a,c) => { let kv = c.trim().split('='); a.set(kv[0],kv[1]); return a; },this._cookies);
     let data = this.querySelector('script');
     if (data && data.innerText) {
       this.user = JSON.parse(data.innerText); // should dispatch ready event
@@ -86,7 +178,10 @@ export class CPXUser extends HTMLElement {
 
   static get observedAttributes() {
       return [
-        'name','email','username', 'user-id'
+        'url','token','name','email','username', 'user-id',
+        'jwt-cookie', 'jwt-token',
+        'kc-url', 'kc-realm', 'kc-client-id', 'kc-config', 'kc-auto',
+        'kc-options'
       ];
   }
 
@@ -142,4 +237,4 @@ export class CPXUser extends HTMLElement {
   
 }
 
-window.customElements.define('cpx-user', CPXUser);
+window.customElements.define(CPXAuth.tag, CPXAuth);
