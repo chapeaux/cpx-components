@@ -25,7 +25,7 @@ user object
  */
 export class CPXAuth extends HTMLElement {
     static get tag() { return 'cpx-auth'; }
-  _authenticated = false;
+  authenticated = false;
 
   _userId = '';
   get userId() { return this._userId; }
@@ -86,7 +86,10 @@ export class CPXAuth extends HTMLElement {
     this._jwtCookie = val;
     this.setAttribute('jwt-Cookie', this._jwtCookie);
     if(this._cookies.has(this._jwtCookie)) {
-      this.jwtToken = this._cookies.get(this._jwtCookie);
+      let jwtVal = this._cookies.get(this._jwtCookie);
+      if (typeof jwtVal !== 'undefined') {
+          this.jwtToken = this._cookies.get(this._jwtCookie);
+      }
     }
   }
 
@@ -97,12 +100,14 @@ export class CPXAuth extends HTMLElement {
   set jwtToken(val) {
     if (this._jwtToken === val) return;
     this._jwtToken = val;
-    this.user = jwt_decode(this._jwtToken);
+    if (typeof this._jwtToken !== 'undefined') {
+        //this.user = jwt_decode(this._jwtToken);
+    }
   }
   // END JWT
 
   // Keycloak
-  get kc() { return this.validateKCConfig() }
+  get kc() { return (this.kcUrl.length>0&&this.kcRealm.length>0&&this.kcClientId.length>0)||this.kcConfig.length>0; }
   _kcAuto = false;
   get kcAuto() { return this._kcAuto; }
   set kcAuto(val) { 
@@ -133,11 +138,25 @@ export class CPXAuth extends HTMLElement {
       this._kcConfig = val;
   }
 
+  _kcConfigUrl = '';
+  get kcConfigUrl() { return this._kcConfigUrl; }
+  set kcConfigUrl(val) {
+      if (this._kcConfigUrl === val) return;
+      this._kcConfigUrl = val;
+  }
+
   _kcOptions = '';
   get kcOptions() { return this._kcOptions; }
   set kcOptions(val) {
     if (this._kcOptions === val) return;
     this._kcOptions = val;
+  }
+
+  _kcOptionsUrl = '';
+  get kcOptionsUrl() { return this._kcOptionsUrl; }
+  set kcOptionsUrl(val) {
+    if (this._kcOptionsUrl === val) return;
+    this._kcOptionsUrl = val;
   }
 
   _kcRealm = '';
@@ -162,6 +181,8 @@ export class CPXAuth extends HTMLElement {
     if (this._kcToken === val) return;
     this._kcToken = val;
   }
+
+  _kcTokenRefreshInterval
   // END Keycloak
 
   constructor() {
@@ -180,32 +201,35 @@ export class CPXAuth extends HTMLElement {
       return [
         'url','token','name','email','username', 'user-id',
         'jwt-cookie', 'jwt-token',
-        'kc-url', 'kc-realm', 'kc-client-id', 'kc-config', 'kc-auto',
-        'kc-options'
+        'kc-url', 'kc-realm', 'kc-client-id', 'kc-auto',
+        'kc-config', 'kc-config-url',
+        'kc-options','kc-options-url'
       ];
   }
 
   attributeChangedCallback(name:string, oldVal:string, newVal:string) {
     this[this.camelCase(name)] = newVal;
-    if (this.kc && !this._authenticated) {
+    if (this.kc && !this.authenticated) {
         this.kcInit(this.kcConfig);
     }
   }
 
   validateKCConfig() {
-      return (!this.ready && typeof this.kcUrl !== 'undefined' && typeof this.kcRealm !== 'undefined' && typeof this.kcClientId !== 'undefined') || this.kcConfig;
+      return false; //(!this.ready && typeof this.kcUrl !== 'undefined' && typeof this.kcRealm !== 'undefined' && typeof this.kcClientId !== 'undefined') || this.kcConfig;
   }
 
   camelCase(str: String, to:boolean=true) {
-      return to ? str.replace(/-([a-z])/g, (m,g) => g.toUpperCase()) : str.replace(/([a-z][A-Z])/g, (m,g) => `${g[0]}-${g[1].toLowerCase()}`)
+      return to ? str.replaceAll(/-([a-z])/g, (m,g) => g.toUpperCase()) : str.replaceAll(/([a-z][A-Z])/g, (m,g) => `${g[0]}-${g[1].toLowerCase()}`)
   }
 
   async kcInit(config?: any) {
-      if (typeof Keycloak !== 'undefined' && ((this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') || this.kcConfig)) {
+      //console.log(JSON.stringify(this));
+      if (typeof Keycloak !== 'undefined' && ((this.kcUrl !== '' && this.kcRealm !== '' && this.kcClientId !== '') || (this.kcConfig !== ''))) {
         console.log('Config:',config);
           this.keycloak = Keycloak(config && config !=='' ? JSON.parse(config.replaceAll("'",'"')) : {url: this.kcUrl, realm: this.kcRealm, clientId: this.kcClientId });
-          await this.keycloak.init(this.kcOptions ? JSON.parse(this.kcOptions.replaceAll("'",'"')):{}).then( (authenticated:boolean) => {
-              this._authenticated = authenticated;
+          await this.keycloak.init(this.kcOptions != '' ? JSON.parse(this.kcOptions.replaceAll("'",'"')):{}).then( (authenticated:boolean) => {
+              this.authenticated = authenticated;
+              console.log("Authenticated:",this.authenticated)
               if (authenticated) {
                   this.user = this.keycloak.tokenParsed;
                   document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
@@ -220,7 +244,7 @@ export class CPXAuth extends HTMLElement {
                   //document.querySelector('a[cpx-login]').setAttribute('href', this.keycloak.createLogoutUrl());
               } else {
                   if (this.kcAuto && !this.ready) {
-                      this.login();
+                      //this.login();
                   }
                   //document.querySelector('a[cpx-login]').setAttribute('href', this.keycloak.createLoginUrl());
               }
