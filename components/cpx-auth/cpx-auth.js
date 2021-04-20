@@ -40,6 +40,7 @@ class CPXAuth1 extends HTMLElement {
         this._ready = val;
         this.setAttribute('ready', this._ready.toString());
     }
+    _user;
     get user() {
         return this._user;
     }
@@ -48,7 +49,7 @@ class CPXAuth1 extends HTMLElement {
         this._user = val;
         if (typeof this._user.email !== 'undefined') this.email = this._user.email;
         if (typeof this._user.name !== 'undefined') this.name = this._user.name;
-        dispatchEvent(new CustomEvent(this.ready ? 'user-update' : 'user-ready', {
+        dispatchEvent(new CustomEvent(this.ready ? 'auth-update' : 'auth-ready', {
             detail: this,
             composed: true,
             bubbles: true
@@ -92,6 +93,7 @@ class CPXAuth1 extends HTMLElement {
         if (this._kcAuto === val) return;
         this._kcAuto = val;
     }
+    _keycloak;
     get keycloak() {
         return this._keycloak;
     }
@@ -163,6 +165,7 @@ class CPXAuth1 extends HTMLElement {
         if (this._kcToken === val) return;
         this._kcToken = val;
     }
+    _kcTokenRefreshInterval;
     constructor(){
         super();
     }
@@ -229,6 +232,7 @@ class CPXAuth1 extends HTMLElement {
                     document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                 } else {
                     if (this.kcAuto && !this.ready) {
+                        this.login();
                     }
                 }
             });

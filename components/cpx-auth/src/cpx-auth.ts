@@ -70,7 +70,7 @@ export class CPXAuth extends HTMLElement {
     this._user = val;
     if (typeof this._user.email !== 'undefined') this.email = this._user.email;
     if (typeof this._user.name !== 'undefined') this.name = this._user.name;
-    dispatchEvent(new CustomEvent(this.ready ? 'user-update':'user-ready', {
+    dispatchEvent(new CustomEvent(this.ready ? 'auth-update':'auth-ready', {
       detail: this,
       composed: true,
       bubbles: true
@@ -108,6 +108,7 @@ export class CPXAuth extends HTMLElement {
 
   // Keycloak
   get kc() { return (this.kcUrl.length>0&&this.kcRealm.length>0&&this.kcClientId.length>0)||this.kcConfig.length>0; }
+  
   _kcAuto = false;
   get kcAuto() { return this._kcAuto; }
   set kcAuto(val) { 
@@ -244,7 +245,7 @@ export class CPXAuth extends HTMLElement {
                   //document.querySelector('a[cpx-login]').setAttribute('href', this.keycloak.createLogoutUrl());
               } else {
                   if (this.kcAuto && !this.ready) {
-                      //this.login();
+                      this.login();
                   }
                   //document.querySelector('a[cpx-login]').setAttribute('href', this.keycloak.createLoginUrl());
               }
