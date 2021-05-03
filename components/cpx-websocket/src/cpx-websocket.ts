@@ -137,6 +137,11 @@ export class CPXWebSocket extends HTMLElement {
             
         }
     }
+
+    replaceData(el, data, tmpl) {
+
+    }
+
     start() {
         if (this.state !== 'open' && this.state !== 'connecting') {
             this.socket = new WebSocket(this.url);

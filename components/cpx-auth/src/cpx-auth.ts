@@ -101,7 +101,7 @@ export class CPXAuth extends HTMLElement {
     if (this._jwtToken === val) return;
     this._jwtToken = val;
     if (typeof this._jwtToken !== 'undefined') {
-        //this.user = jwt_decode(this._jwtToken);
+        this.user = jwt_decode(this._jwtToken);
     }
   }
   // END JWT
