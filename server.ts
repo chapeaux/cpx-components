@@ -193,7 +193,7 @@ for await (const entry of walk('./components')) {
 async function bundleFiles(path:string) {
   const { files, diagnostics } = await Deno.emit(path,{
       check: false,
-      bundle: "esm",
+      //bundle: "esm",
       compilerOptions: {
           lib: ["es6", "dom"],
           module: 'es6',
