@@ -6,19 +6,27 @@
     <title>Chapeaux Query Component</title>
 </head>
 <body>
+    <cpx-query auto url="data.json">
+        <template>
+            <h1>${Title} - ${Year}</h1>
+            <ul>
+                <li></li>
+            </ul>
+        </template>
+    </cpx-query>
     <cpx-query auto url="https://blog.kie.org/wp-json/wp/v2/posts">
         <template>
-            <h1>Records: ${length}</h1>
+            <link rel="stylesheet" href="/cpx-query/demo/result.css">
             <article data-repeat>
                 <section>
-                    <ul>
-                        <li>${id}</li>
-                        <li><a href="${_links.author.0.href}">Author</a></li>
-                        <li>${date}</li>
-                        <li>${excerpt.rendered}</li>
-                    </ul>
+                    <header>
+                        <h2><a href="${link}">${title.rendered}</a></h2>
+                        <h3>${date} - <a href="${_links.author.0.href}">Author</a></h3>
+                    </header>
+                    ${excerpt.rendered}
                 </section>
             </article>
+            <p>Total: ${length}</p>
         </template>
     </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>

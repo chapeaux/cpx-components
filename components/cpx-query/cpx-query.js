@@ -339,8 +339,8 @@ class CPXQuery1 extends HTMLElement {
                 if (!Number.isInteger(k)) {
                     let html = matches.reduce((a, c)=>{
                         let dataVal = c[1].split('.');
-                        return a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr)=>acc[curr]
-                        , v));
+                        return c[1] == k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr)=>acc[curr]
+                        , v)) : a;
                     }, ele.innerHTML);
                     ele.innerHTML = html;
                 }

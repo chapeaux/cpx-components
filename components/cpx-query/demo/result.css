@@ -1,0 +1,10 @@
+article {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 15px;
+}
+a { 
+    text-decoration: none;
+    color: #369;
+}
+h1, h2, h3 { margin: 0; padding: 0; }
