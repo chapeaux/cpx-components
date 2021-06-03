@@ -10,6 +10,7 @@
       "disableSizeLimit": false,
       "declaration": true,
       "declarationDir": ".",
+      "downlevelIteration": true,
       "esModuleInterop": true,
       "lib": ["ESNext", "DOM"],
       "module": "UMD",
@@ -34,7 +35,7 @@
       "strictPropertyInitialization": false,
       "suppressExcessPropertyErrors": false,
       "suppressImplicitAnyIndexErrors": false,
-      "target": "es5"
+      "target": "es6"
     },
     "include": ["src/**/*"],
     "exclude": []

@@ -10,8 +10,12 @@ interface QueryFilter {
 
 export class CPXQuery extends HTMLElement {
     static get tag() { return 'cpx-query'; }
-    template;
-
+    _template;
+    get template() { return this._template; }
+    set template(val) {
+        if (this._template === val) return;
+        this._template = val;
+    }
     _auto = false;
     _ready:boolean;
     get ready() { return this._ready; }
@@ -181,6 +185,10 @@ export class CPXQuery extends HTMLElement {
             this.attachShadow({ mode: "open" });
             this.template = tmpl.cloneNode(true);
             this.prepTemplate();
+        } else if (this.getAttribute('template')) {
+            this.attachShadow({ mode: "open" });
+            this.template = top.document.querySelector(this.getAttribute('template')).cloneNode(true);
+            this.prepTemplate();
         }
         
         this._changeAttr = this._changeAttr.bind(this);
@@ -295,7 +303,7 @@ export class CPXQuery extends HTMLElement {
         this.dispatchEvent(new CustomEvent('query-start', evt));
         if (this.url && ((this.activeFilters && this.activeFilters.size > 0) || (this.term !== null && this.term !== '' && typeof this.term !== 'undefined')) || this.auto) {
 
-            let qURL = new URL(this.url) || new URL(this.url, window.location.href+'/');
+            let qURL = new URL(this.url.href) || new URL(this.url.href, window.location.href+'/');
             // qURL.searchParams.set('tags_or_logic', 'true');
             // qURL.searchParams.set('filter_out_excluded', 'true');
             // qURL.searchParams.set('start', this.from.toString());
