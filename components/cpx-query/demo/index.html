@@ -21,7 +21,7 @@
                 <section>
                     <header>
                         <h2><a href="${link}">${title.rendered}</a></h2>
-                        <h3>${date} - <cpx-query auto url="${_links.author.0.href}" template="#authorTmpl"></cpx-query></h3>
+                        <h3><pfe-datetime datetime="${date}">${date}</pfe-datetime> - <cpx-query auto url="${_links.author.0.href}" template="#authorTmpl"></cpx-query></h3>
                     </header>
                     ${excerpt.rendered}
                 </section>
@@ -30,6 +30,7 @@
         </template>
     </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>
+    <script type="module" src="https://unpkg.com/@patternfly/pfe-datetime@1.9.2/dist/pfe-datetime.js"></script>
     <template id="authorTmpl">${name}</template>
 </body>
 </html>
