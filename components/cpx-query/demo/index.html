@@ -6,7 +6,19 @@
     <title>Chapeaux Query Component</title>
 </head>
 <body>
-    <cpx-query url="data.json"></cpx-query>
+    <cpx-query auto url="https://blog.kie.org/wp-json/wp/v2/posts">
+        <template>
+            <article data-repeat>
+                <section>
+                    <ul>
+                        <li>${id}</li>
+                        <li>${date}</li>
+                        <li>${excerpt['rendered']}</li>
+                    </ul>
+                </section>
+            </article>
+        </template>
+    </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>
     <script>
         

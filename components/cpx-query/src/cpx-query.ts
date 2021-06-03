@@ -10,8 +10,16 @@ interface QueryFilter {
 
 export class CPXQuery extends HTMLElement {
     static get tag() { return 'cpx-query'; }
+    template;
 
     _auto = false;
+    _ready:boolean;
+    get ready() { return this._ready; }
+    set ready(val) {
+        if (this._ready === val) return;
+        this._ready = val;
+        this.setAttribute('ready',this._ready.toString());
+	}
     _filters = { term:'', facets: {} };
     _activeFilters: Map<string, Set<string>> = new Map();
     _limit = 10;
@@ -33,7 +41,7 @@ export class CPXQuery extends HTMLElement {
         if (this._auto === val) {
             return;
         } else {
-            this.auto = val;
+            this._auto = val;
             if(this._auto) { 
                 this.setAttribute('auto','');
             } else { 
@@ -95,21 +103,24 @@ export class CPXQuery extends HTMLElement {
     set results(val) {
         if (this._results === val) return;
         this._results = val;
-        this.from = this.results && this.results.response && typeof this.results.response.docs !== 'undefined' ? this.from + this.results.response.docs.length : 0;
+        this.from = this._results ? this.from + this.results.length : 0;
         let evt = {
             detail: {
                 term: this.term,
                 filters: this.activeFilters,
-                facets: this.results.facet_counts || {},
+                facets: this._results.facet_counts || {},
                 sort: this.sort,
                 limit: this.limit,
                 from: this.from,
-                results: this.results.response,
+                results: this._results,
             },
             bubbles: true,
             composed: true
         };
-        this.dispatchEvent(new CustomEvent('search-complete', evt));
+        this.dispatchEvent(new CustomEvent('query-complete', evt));
+        if (this.template) {
+            this.render();
+        }
     }
 
     get term() {
@@ -124,7 +135,11 @@ export class CPXQuery extends HTMLElement {
     }
 
     get url() {
-        return this._url;
+        try {
+            return new URL(this._url);
+        } catch {
+            return new URL(this._url, window.location.href+'/');
+        }
     }
 
     set url(val) {
@@ -168,6 +183,13 @@ export class CPXQuery extends HTMLElement {
 
     constructor() {
         super();
+        let tmpl = this.querySelector('template');
+        if (tmpl) {
+            this.attachShadow({ mode: "open" });
+            this.template = tmpl.cloneNode(true);
+            this.prepTemplate();
+        }
+        
         this._changeAttr = this._changeAttr.bind(this);
     }
 
@@ -178,6 +200,7 @@ export class CPXQuery extends HTMLElement {
         top.addEventListener('sort-change', this._changeAttr);
         top.addEventListener('clear-filters', this._changeAttr);
         top.addEventListener('load-more', this._changeAttr);
+        if(this.auto) this.search();
     }
 
     static get observedAttributes() {
@@ -276,21 +299,21 @@ export class CPXQuery extends HTMLElement {
 
     search() {
         let evt = { bubbles: true, composed: true };
-        this.dispatchEvent(new CustomEvent('search-start', evt));
-        if (this.url && ((this.activeFilters && this.activeFilters.size > 0) || (this.term !== null && this.term !== '' && typeof this.term !== 'undefined'))) {
+        this.dispatchEvent(new CustomEvent('query-start', evt));
+        if (this.url && ((this.activeFilters && this.activeFilters.size > 0) || (this.term !== null && this.term !== '' && typeof this.term !== 'undefined')) || this.auto) {
 
-            let qURL = new URL(this.url);
+            let qURL = new URL(this.url) || new URL(this.url, window.location.href+'/');
             // qURL.searchParams.set('tags_or_logic', 'true');
             // qURL.searchParams.set('filter_out_excluded', 'true');
-            qURL.searchParams.set('start', this.from.toString());
+            // qURL.searchParams.set('start', this.from.toString());
             // TODO: figure out the sorting
             // if (this.sort === 'most-recent') {
             //     qURL.searchParams.set('newFirst', 'true');
             // }
-            qURL.searchParams.set('q', this.term || '');
-            qURL.searchParams.set('hl', 'true');
-            qURL.searchParams.set('hl.fl', 'description');
-            qURL.searchParams.set('rows', this.limit.toString());
+            // qURL.searchParams.set('q', this.term || '');
+            // qURL.searchParams.set('hl', 'true');
+            // qURL.searchParams.set('hl.fl', 'description');
+            // qURL.searchParams.set('rows', this.limit.toString());
             // qURL.searchParams.set('start', (this.from + this.limit).toString());
 
             this.activeFilters.forEach((filters, group) => {
@@ -311,7 +334,81 @@ export class CPXQuery extends HTMLElement {
             });
         } else {
             let evt = { detail: { invalid: true }, bubbles: true, composed: true };
-            this.dispatchEvent(new CustomEvent('search-complete', evt));
+            this.dispatchEvent(new CustomEvent('query-complete', evt));
+        }
+    }
+
+    prepTemplate() {
+        let repeatEls = this.template.content.querySelectorAll('[data-repeat]');
+        if (repeatEls.length > 0) {
+            repeatEls.forEach(el=> {
+                let dr = el.getAttribute('data-repeat');
+                if (dr.length === 0) {
+                    let drtxt = btoa(el.innerHTML.trim());
+                    el.setAttribute('data-repeat',drtxt);
+                    while (el.firstChild) { el.removeChild(el.firstChild); }
+                } 
+            });
+        }
+        this.template.innerHTML = this.template.innerHTML.replaceAll(/\${([^{]+[^}])}/g,'<var data-val="$1"></var>');
+	}
+
+    renderTemplate(data, ele?) {
+        let eltmpl;
+        if (ele.getAttribute) {
+            eltmpl = ele.getAttribute('data-repeat');
+        }
+        data.forEach((v,k)=> {
+            let els = isNaN(k) ? ele.querySelectorAll(`var[data-val=${k}]`) : [];
+            let attrNodes = isNaN(k) ? ele.querySelectorAll(`[data-attr=${k}]`):[];
+            switch (typeof v) {
+                case 'object':
+                    if (eltmpl) {
+                        let tmpl = atob(eltmpl)
+                        for (const [key,val] of Object.entries(v)) {
+                            tmpl = tmpl.replaceAll('${'+key+'}',val);
+                        };
+                        ele.innerHTML += tmpl;
+                    }
+                    break;
+                default:
+                    // See if any instances of the string exist
+                    if (els.length !== 0) {
+                        els.forEach(el=> {
+                            el.innerHTML = v;
+                        });
+                    } 
+                    if (attrNodes.length !== 0) {
+                        attrNodes.forEach(n=> {
+                            if (n.getAttribute(`data-${k}`) !== v.toString()) {
+                                n.setAttribute(`data-${k}`,v.toString());
+                            }
+                        });
+                    }
+                    //this.template.innerHTML = this.template.innerHTML.replaceAll('${'+k+'}',v);
+                    break;
+            }
+            //this.template.innerHTML = this.template.innerHTML.replaceAll('${'+k+'}',v);
+        })
+    }
+
+    render() {
+        if(this.results) {
+            let repeatEls = this.shadowRoot.querySelectorAll('[data-repeat]');
+            if (repeatEls.length >0) {
+                repeatEls.forEach(el=>{
+                    while (el.firstChild) { el.removeChild(el.firstChild); }
+                    this.renderTemplate(this.results, el);
+                });                
+            } 
+            this.renderTemplate(this.results, this.shadowRoot);
+            
+            if (!this.shadowRoot.firstChild) {
+                //while (this.shadowRoot.firstChild) { this.shadowRoot.removeChild(this.shadowRoot.firstChild); }
+		this.shadowRoot.appendChild(this.template.content.cloneNode(true));
+		this.ready = true;
+            }
+            
         }
     }
 }
