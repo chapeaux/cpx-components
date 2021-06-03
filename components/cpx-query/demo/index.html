@@ -8,12 +8,14 @@
 <body>
     <cpx-query auto url="https://blog.kie.org/wp-json/wp/v2/posts">
         <template>
+            <h1>Records: ${length}</h1>
             <article data-repeat>
                 <section>
                     <ul>
                         <li>${id}</li>
+                        <li><a href="${_links.author.0.href}">Author</a></li>
                         <li>${date}</li>
-                        <li>${excerpt['rendered']}</li>
+                        <li>${excerpt.rendered}</li>
                     </ul>
                 </section>
             </article>

@@ -26,6 +26,7 @@ class CPXQuery1 extends HTMLElement {
     _term;
     _url;
     _valid = true;
+    _mapper;
     get auto() {
         return this._auto;
     }
@@ -155,13 +156,6 @@ class CPXQuery1 extends HTMLElement {
         }
         return filterArr.join(', ');
     }
-    urlTemplate = (strings, url, term, from, limit, sort, types, tags, sys_types)=>{
-        var order = '';
-        if (sort === 'most-recent') {
-            order = '&newFirst=true';
-        }
-        return `${url}?start=${from}&q=${term}&hl=true&hl.fl=description&rows=${limit}&${types}&${tags}&${sys_types}`;
-    };
     constructor(){
         super();
         let tmpl = this.querySelector('template');
@@ -277,7 +271,14 @@ class CPXQuery1 extends HTMLElement {
             });
             fetch(qURL.toString()).then((resp)=>resp.json()
             ).then((data)=>{
-                this.results = data;
+                let msgData;
+                if (typeof data.length === 'number') {
+                    msgData = new Map(data.entries());
+                    msgData.set('length', data.length);
+                } else {
+                    msgData = new Map(Object.entries(data));
+                }
+                this.results = msgData;
             });
         } else {
             let evt1 = {
@@ -292,6 +293,7 @@ class CPXQuery1 extends HTMLElement {
     }
     prepTemplate() {
         let repeatEls = this.template.content.querySelectorAll('[data-repeat]');
+        let varMatch = /\${([^{]+[^}])}/g;
         if (repeatEls.length > 0) {
             repeatEls.forEach((el)=>{
                 let dr = el.getAttribute('data-repeat');
@@ -304,42 +306,46 @@ class CPXQuery1 extends HTMLElement {
                 }
             });
         }
-        this.template.innerHTML = this.template.innerHTML.replaceAll(/\${([^{]+[^}])}/g, '<var data-val="$1"></var>');
+        if (!this.shadowRoot.firstChild) {
+            this.shadowRoot.appendChild(this.template.content.cloneNode(true));
+            this.ready = true;
+        }
     }
     renderTemplate(data, ele) {
         let eltmpl;
+        let matches;
         if (ele.getAttribute) {
             eltmpl = ele.getAttribute('data-repeat');
         }
-        data.forEach((v, k)=>{
-            let els = isNaN(k) ? ele.querySelectorAll(`var[data-val=${k}]`) : [];
-            let attrNodes = isNaN(k) ? ele.querySelectorAll(`[data-attr=${k}]`) : [];
-            switch(typeof v){
-                case 'object':
-                    if (eltmpl) {
-                        let tmpl1 = atob(eltmpl);
-                        for (const [key, val] of Object.entries(v)){
-                            tmpl1 = tmpl1.replaceAll('${' + key + '}', val);
-                        }
-                        ele.innerHTML += tmpl1;
-                    }
-                    break;
-                default:
-                    if (els.length !== 0) {
-                        els.forEach((el)=>{
-                            el.innerHTML = v;
-                        });
-                    }
-                    if (attrNodes.length !== 0) {
-                        attrNodes.forEach((n)=>{
-                            if (n.getAttribute(`data-${k}`) !== v.toString()) {
-                                n.setAttribute(`data-${k}`, v.toString());
-                            }
-                        });
-                    }
-                    break;
-            }
-        });
+        if (eltmpl) {
+            matches = [
+                ...atob(eltmpl).matchAll(/\${([^{]+[^}])}/g)
+            ];
+            data.forEach((v, k)=>{
+                if (Number.isInteger(k)) {
+                    let html = matches.reduce((a, c)=>{
+                        let dataVal = c[1].split('.');
+                        return a.replaceAll(c[0], dataVal.length <= 1 ? v[c[1]] : dataVal.reduce((acc, curr)=>acc[curr]
+                        , v));
+                    }, atob(eltmpl));
+                    ele.innerHTML += html;
+                }
+            });
+        } else {
+            matches = [
+                ...ele.innerHTML.matchAll(/\${([^{]+[^}])}/g)
+            ];
+            data.forEach((v, k)=>{
+                if (!Number.isInteger(k)) {
+                    let html = matches.reduce((a, c)=>{
+                        let dataVal = c[1].split('.');
+                        return a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr)=>acc[curr]
+                        , v));
+                    }, ele.innerHTML);
+                    ele.innerHTML = html;
+                }
+            });
+        }
     }
     render() {
         if (this.results) {
@@ -353,10 +359,6 @@ class CPXQuery1 extends HTMLElement {
                 });
             }
             this.renderTemplate(this.results, this.shadowRoot);
-            if (!this.shadowRoot.firstChild) {
-                this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-                this.ready = true;
-            }
         }
     }
 }
