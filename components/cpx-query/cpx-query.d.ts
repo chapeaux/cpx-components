@@ -16,6 +16,7 @@ export declare class CPXQuery extends HTMLElement {
     _ready: boolean;
     get ready(): boolean;
     set ready(val: boolean);
+    _cache: RequestCache;
     _filters: {
         term: string;
         facets: {};
@@ -31,6 +32,8 @@ export declare class CPXQuery extends HTMLElement {
     _mapper: any;
     get auto(): boolean;
     set auto(val: boolean);
+    get cache(): RequestCache;
+    set cache(val: RequestCache);
     get filters(): {
         term: string;
         facets: {};

@@ -20,6 +20,7 @@ class CPXQuery1 extends HTMLElement {
         this._ready = val;
         this.setAttribute('ready', this._ready.toString());
     }
+    _cache = 'default';
     _filters = {
         term: '',
         facets: {
@@ -54,6 +55,14 @@ class CPXQuery1 extends HTMLElement {
                 this.removeAttribute('auto');
             }
         }
+    }
+    get cache() {
+        return this._cache;
+    }
+    set cache(val) {
+        if (this._cache === val) return;
+        this._cache = val;
+        this.setAttribute('cache', this._cache);
     }
     get filters() {
         return this._filters;
@@ -197,7 +206,8 @@ class CPXQuery1 extends HTMLElement {
             'limit',
             'results',
             'url',
-            'auto'
+            'auto',
+            'cache'
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
@@ -282,7 +292,10 @@ class CPXQuery1 extends HTMLElement {
             this.activeFilters.forEach((filters, group)=>{
                 qURL.searchParams.set(group, Array.from(filters).join(','));
             });
-            fetch(qURL.toString()).then((resp)=>resp.json()
+            let headers = new Headers({
+                cache: this.cache
+            });
+            fetch(qURL.toString(), headers).then((resp)=>resp.json()
             ).then((data)=>{
                 let msgData;
                 if (typeof data.length === 'number') {
@@ -352,7 +365,7 @@ class CPXQuery1 extends HTMLElement {
                 if (!Number.isInteger(k)) {
                     let html = matches.reduce((a, c)=>{
                         let dataVal = c[1].split('.');
-                        return c[1] == k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr)=>acc[curr]
+                        return dataVal[0] == k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr)=>acc[curr] || acc
                         , v)) : a;
                     }, ele.innerHTML);
                     ele.innerHTML = html;

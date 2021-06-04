@@ -24,6 +24,7 @@ export class CPXQuery extends HTMLElement {
         this._ready = val;
         this.setAttribute('ready',this._ready.toString());
 	}
+    _cache:RequestCache = 'default';
     _filters = { term:'', facets: {} };
     _activeFilters: Map<string, Set<string>> = new Map();
     _limit = 10;
@@ -54,7 +55,12 @@ export class CPXQuery extends HTMLElement {
             }
         }
     }
-
+    get cache() { return this._cache; }
+    set cache(val) {
+        if (this._cache === val) return;
+        this._cache = val;
+        this.setAttribute('cache',this._cache);
+    }
     get filters() {
         return this._filters;
     }
@@ -205,7 +211,7 @@ export class CPXQuery extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['term', 'sort', 'limit', 'results', 'url', 'auto'];
+        return ['term', 'sort', 'limit', 'results', 'url', 'auto', 'cache'];
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -328,7 +334,10 @@ export class CPXQuery extends HTMLElement {
             // console.log(this.activeFilters);
             // qURL.searchParams.set('fq', facetQuery.);
             //facetQuery // map reduce??
-            fetch(qURL.toString()) //this.urlTemplate`${this.url}${this.term}${this.from}${this.limit}${this.sort}${this.filters}`)
+            const queryInit : RequestInit = {
+                cache: this.cache
+            }
+            fetch(qURL.toString(),  queryInit) //this.urlTemplate`${this.url}${this.term}${this.from}${this.limit}${this.sort}${this.filters}`)
             .then((resp) => resp.json())
             .then((data) => {
                 let msgData;
@@ -390,7 +399,7 @@ export class CPXQuery extends HTMLElement {
                 if (!Number.isInteger(k)) {
                     let html = matches.reduce((a,c)=> {
                         let dataVal = c[1].split('.');
-                        return c[1]==k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc,curr)=>acc[curr],v)) : a;
+                        return dataVal[0]==k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc,curr)=>acc[curr]||acc,v)) : a;
                     }, ele.innerHTML);
                     ele.innerHTML = html;
                 }

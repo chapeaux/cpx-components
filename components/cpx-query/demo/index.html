@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapeaux Query Component</title>
+    <style>:root { --linkBlue: #369; }</style>
+    <link rel="stylesheet" href="https://unpkg.com/@patternfly/pfe-avatar@1.9.2/dist/pfe-avatar.min.css">
 </head>
 <body>
     <cpx-query auto url="data.json">
@@ -31,6 +33,18 @@
     </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>
     <script type="module" src="https://unpkg.com/@patternfly/pfe-datetime@1.9.2/dist/pfe-datetime.js"></script>
-    <template id="authorTmpl">${name}</template>
+    <script type="module" src="https://unpkg.com/@patternfly/pfe-avatar@1.9.2/dist/pfe-avatar.js"></script>
+    <template id="authorTmpl">
+        <style>
+            :host { display: grid; grid-template-columns: 50px 1fr; align-items:center;grid-gap: 10px; } 
+            pfe-avatar { height: 48px; width: 48px; }
+            a {
+                text-decoration: none;
+                color: var(--linkBlue);
+            }
+        </style>
+        <pfe-avatar name="${name}" src="${avatar_urls.48}" shape="circle"></pfe-avatar>
+        <a href="${link}">${name}</a>
+    </template>
 </body>
 </html>

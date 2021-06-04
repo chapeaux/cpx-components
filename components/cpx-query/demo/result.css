@@ -1,3 +1,4 @@
+
 article {
     display: grid;
     grid-template-columns: repeat(4,1fr);
@@ -5,7 +6,7 @@ article {
 }
 a { 
     text-decoration: none;
-    color: #369;
+    color: var(--linkBlue);
 }
 h1, h2, h3 { margin: 0; padding: 0; }
 .kie-read-more-anchor {

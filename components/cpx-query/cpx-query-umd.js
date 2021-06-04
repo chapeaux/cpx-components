@@ -14,6 +14,7 @@
         constructor() {
             super();
             this._auto = false;
+            this._cache = 'default';
             this._filters = { term: '', facets: {} };
             this._activeFilters = new Map();
             this._limit = 10;
@@ -67,6 +68,13 @@
                     this.removeAttribute('auto');
                 }
             }
+        }
+        get cache() { return this._cache; }
+        set cache(val) {
+            if (this._cache === val)
+                return;
+            this._cache = val;
+            this.setAttribute('cache', this._cache);
         }
         get filters() {
             return this._filters;
@@ -196,7 +204,7 @@
                 this.search();
         }
         static get observedAttributes() {
-            return ['term', 'sort', 'limit', 'results', 'url', 'auto'];
+            return ['term', 'sort', 'limit', 'results', 'url', 'auto', 'cache'];
         }
         attributeChangedCallback(name, oldVal, newVal) {
             this[name] = newVal;
@@ -278,7 +286,10 @@
                 this.activeFilters.forEach((filters, group) => {
                     qURL.searchParams.set(group, Array.from(filters).join(','));
                 });
-                fetch(qURL.toString())
+                const queryInit = {
+                    cache: this.cache
+                };
+                fetch(qURL.toString(), queryInit)
                     .then((resp) => resp.json())
                     .then((data) => {
                     let msgData;
@@ -341,7 +352,7 @@
                     if (!Number.isInteger(k)) {
                         let html = matches.reduce((a, c) => {
                             let dataVal = c[1].split('.');
-                            return c[1] == k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr) => acc[curr], v)) : a;
+                            return dataVal[0] == k ? a.replaceAll(c[0], dataVal.length <= 1 ? v : dataVal.reduce((acc, curr) => acc[curr] || acc, v)) : a;
                         }, ele.innerHTML);
                         ele.innerHTML = html;
                     }
