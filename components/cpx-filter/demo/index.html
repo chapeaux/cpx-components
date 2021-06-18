@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapeaux Filter Component</title>
+</head>
+<body>
+    <section class="examples">
+    <ul id="exampleA">
+        <li>D3.js - Javascript</li>
+        <li>Material Design - CSS</li>
+        <li>Vue.js - JavaScript</li>
+        <li>Bootstrap - CSS/JavaScript</li>
+        <li>Tailwind - CSS</li>
+        <li>React - JavaScript</li>
+    </ul>
+    <ul id="exampleB">
+        <li>Dog</li>
+        <li>Cat</li>
+        <li>Turtle</li>
+        <li>Coke</li>
+        <li>Anvil</li>
+    </ul>
+    </section>
+    <cpx-filter container="#exampleA" item="li" condition="contains" criteria="javascript"></cpx-filter>
+    <cpx-filter container="#exampleB" item="li" condition="contains">
+        <script type="data">
+            [
+            ["hat","chapeaux","cap"],
+            ["dog","puppy","pup"],
+            ["soda","coke","pop","soft drink"]
+            ]
+        </script>
+    </cpx-filter>
+    <script type="module" src="/cpx-filter/cpx-filter.js"></script>
+</body>
+</html>
