@@ -9,7 +9,7 @@ projects:
 components:
   - id: vscode/typescript-language-features/latest
     type: chePlugin
-  - id: denoland/vscode_deno/latest
+  - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
     type: chePlugin
   - mountSources: true
     endpoints:
