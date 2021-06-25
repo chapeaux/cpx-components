@@ -20,17 +20,17 @@ components:
     alias: deno
     image: 'quay.io/ldary/deno-crw'
 commands:
-  - name: RUN the component app
+  - name: RUN the component server
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
         type: exec
         command: deno run --unstable --allow-net --allow-read server.ts
         component: deno
-  - name: DEBUG the component app
+  - name: DEBUG the component server
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
         type: exec
-        command: deno run --inspect --allow-net --allow-read server.ts
+        command: deno run --inspect --unstable --allow-net --allow-read server.ts
         component: deno
   - name: BUILD the components
     actions:
@@ -38,7 +38,7 @@ commands:
         type: exec
         command: deno run --unstable --allow-net --allow-read --allow-write bundle.ts
         component: deno
-  - name: STOP the component app
+  - name: STOP the component server
     actions:
       - type: exec
         command: 'deno_server_pids=$(pgrep -fx ''.*deno (--inspect ) --allow-net --allow-read ?server.ts'' | tr "\\n" " ") && echo "Stopping deno server with PIDs: ${deno_server_pids}" &&  kill -15 ${deno_server_pids} &>/dev/null && echo ''Done.'''
