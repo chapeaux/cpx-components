@@ -1,13 +1,13 @@
 apiVersion: v2
 publisher: deno_land
-name: deno_che_plugin
+name: deno-che
 version: 3.6.1
 type: VS Code extension
 displayName: Deno Support in Che
 title: Deno for Eclipse Che
 description: Deno for Che
 icon: "https://deno.land/images/deno_matrix.png"
-repository: https://github.com/denoland/vscode_deno
+repository: "https://github.com/denoland/vscode_deno"
 category: Language
 firstPublicationDate: '2020-06-10'
 spec:                                                             
