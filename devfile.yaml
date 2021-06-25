@@ -24,7 +24,7 @@ commands:
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
         type: exec
-        command: deno run --allow-net --allow-read server.ts
+        command: deno run --unstable --allow-net --allow-read server.ts
         component: deno
   - name: DEBUG the component app
     actions:
