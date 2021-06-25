@@ -14,6 +14,12 @@
                     --tophalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M 15 15 h -15 0 c 0 -5 5 -5 5 0 Z' stroke='gray' stroke-width='2' fill='transparent' /></svg>");
                     --bottomhalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><circle cx='50' cy='15' r='5' stroke='red' fill='transparent' stroke-width='2'/></svg>");
                 }
+                #cy {
+                    width: 300px;
+                    height: 300px;
+                    border: 2px solid #ee0000;
+                    display: block;
+                }
 
                 section div label {
                     display: grid;
@@ -33,7 +39,8 @@
                 
             </style>
             <section>
-                <div>
+                <div id="cy"></div>
+                <!-- <div>
                     <strong>Version</strong>
                     <strong>Update Paths</strong>
                     <strong>Other Available Channels</strong>
@@ -51,7 +58,7 @@
                             <li>${channelName}</li>
                         </ul>
                     </label>
-                </div>
+                </div> -->
             </section>
         </template>
     </cpx-branch>

@@ -1,3 +1,5 @@
+import cytoscape from 'https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.0/cytoscape.esm.min.js';
+
 let renderDataKey = (data, context) => {
     return context.replace(/\${([^{]+[^}])}/g, (m,a) => {
         return data[a]||'';
@@ -93,16 +95,58 @@ export class CPXBranch extends HTMLElement {
         if (this._group === val) return;
         this._group = val;
     }
+
+    cy;
  
     constructor(url:string) {
         super();
         this.attachShadow({ mode: "open" });
         this.template = this.querySelector('template').cloneNode(true);
-
     }
 
     connectedCallback() {
+        this.shadowRoot.appendChild(this.template.content.cloneNode(true));
 
+        this.cy = cytoscape({
+            container: this.shadowRoot.querySelector('#cy'),
+            elements: [ // list of graph elements to start with
+                { // node a
+                    data: { id: 'a' }
+                },
+                { // node b
+                    data: { id: 'b' }
+                },
+                { // edge ab
+                    data: { id: 'ab', source: 'a', target: 'b' }
+                }
+                ],
+            
+                style: [ // the stylesheet for the graph
+                {
+                    selector: 'node',
+                    style: {
+                    'background-color': '#666',
+                    'label': 'data(id)'
+                    }
+                },
+            
+                {
+                    selector: 'edge',
+                    style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'bezier'
+                    }
+                }
+                ],
+            
+                layout: {
+                name: 'grid',
+                rows: 1
+                }
+        });
     }
 
     static get observedAttributes() {
@@ -148,6 +192,47 @@ export class CPXBranch extends HTMLElement {
 
             while (this.shadowRoot.firstChild) { this.shadowRoot.removeChild(this.shadowRoot.firstChild); }
             this.shadowRoot.appendChild(this.template.content.cloneNode(true));
+
+            this.cy = cytoscape({
+                container: this.shadowRoot.querySelector('#cy'),
+                elements: [ // list of graph elements to start with
+                    { // node a
+                      data: { id: 'a' }
+                    },
+                    { // node b
+                      data: { id: 'b' }
+                    },
+                    { // edge ab
+                      data: { id: 'ab', source: 'a', target: 'b' }
+                    }
+                  ],
+                
+                  style: [ // the stylesheet for the graph
+                    {
+                      selector: 'node',
+                      style: {
+                        'background-color': '#666',
+                        'label': 'data(id)'
+                      }
+                    },
+                
+                    {
+                      selector: 'edge',
+                      style: {
+                        'width': 3,
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier'
+                      }
+                    }
+                  ],
+                
+                  layout: {
+                    name: 'grid',
+                    rows: 1
+                  }
+            });
         }
     }
 }

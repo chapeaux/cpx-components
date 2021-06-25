@@ -7,19 +7,18 @@ projects:
       location: 'https://github.com/chapeaux/cpx-components.git'
       type: github
 components:
-  - id: che-incubator/typescript/latest
-    memoryLimit: 512Mi
+  - id: vscode/typescript-language-features/latest
     type: chePlugin
-  - id: ms-vscode/node-debug2/latest
+  - id: denoland/vscode_deno/latest
     type: chePlugin
   - mountSources: true
     endpoints:
-      - name: deno-svcex
+      - name: deno-svc
         port: 8000
     memoryLimit: 512Mi
     type: dockerimage
     alias: deno
-    image: 'quay.io/ldary/deno'
+    image: 'quay.io/ldary/deno-crw'
 commands:
   - name: RUN the component app
     actions:
@@ -44,4 +43,3 @@ commands:
       - type: exec
         command: 'deno_server_pids=$(pgrep -fx ''.*deno (--inspect ) --allow-net --allow-read ?server.ts'' | tr "\\n" " ") && echo "Stopping deno server with PIDs: ${deno_server_pids}" &&  kill -15 ${deno_server_pids} &>/dev/null && echo ''Done.'''
         component: deno
-

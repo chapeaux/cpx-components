@@ -1,16 +1,18 @@
 export class CPXFilter extends HTMLElement {
     static get tag() { return 'cpx-filter'; }
     _map = [];
-    _container = '';
+    _container: Node;
+    _containerQuery = '';
     _item = '';
     _condition = 'contains';
     _criteria = '';
 
     get container() { return this._container; }
-    set container(val) {
-        if (this._container === val) return;
-        this._container = val;
-        this.setAttribute('container',this._container);
+    set container(val:string) {
+        if (this._container === document.querySelector(val)) return;
+        this._container = document.querySelector(val);
+        this.setAttribute('container', val);
+        this.filter();
     }
 
     get item() { return this._item; }
@@ -18,6 +20,7 @@ export class CPXFilter extends HTMLElement {
         if (this._item === val) return;
         this._item = val;
         this.setAttribute('item',this._item);
+        this.filter();
     }
 
     get condition() { return this._condition; }
@@ -25,6 +28,7 @@ export class CPXFilter extends HTMLElement {
         if (this._condition === val) return;
         this._condition = val;
         this.setAttribute('condition',this._condition);
+        this.filter();
     }
 
     get criteria() { return this._criteria; }
@@ -32,6 +36,7 @@ export class CPXFilter extends HTMLElement {
         if (this._criteria === val) return;
         this._criteria = val;
         this.setAttribute('criteria',this._criteria);
+        this.filter();
     }
 
     constructor() {
@@ -43,7 +48,7 @@ export class CPXFilter extends HTMLElement {
     }
 
     connectedCallback() {
-
+        this.filter();
     }
 
     static get observedAttributes() {
@@ -54,6 +59,17 @@ export class CPXFilter extends HTMLElement {
         this[attr] = newVal;
     }
 
+    filter() {
+        if(this.criteria.length > 0 && this.container.length) {
+            document.querySelectorAll(`${this.container} ${this.item}`).forEach(n=> {
+                if (n.innerHTML.indexOf(this.criteria)) {
+                    n.setAttribute('style', 'display:auto');
+                } else {
+                    n.setAttribute('style', 'display:none');
+                }
+            });
+        }
+    }
 
 }
 
