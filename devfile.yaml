@@ -11,8 +11,10 @@ components:
     type: chePlugin
   - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/openshift-connector.yaml"
     type: chePlugin
+    alias: openshift-connector
   - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
     type: chePlugin
+    alias: deno-che
   - mountSources: true
     endpoints:
       - name: deno-svc
