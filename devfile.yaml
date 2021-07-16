@@ -9,12 +9,12 @@ projects:
 components:
   - id: vscode/typescript-language-features/latest
     type: chePlugin
-  - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/openshift-connector.yaml"
+  - alias: openshift-connector
     type: chePlugin
-    alias: openshift-connector
-  - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
+    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/openshift-connector.yaml"
+  - alias: deno-che
     type: chePlugin
-    alias: deno-che
+    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
   - mountSources: true
     endpoints:
       - name: deno-svc
