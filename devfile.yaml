@@ -7,7 +7,8 @@ projects:
       location: 'https://github.com/chapeaux/cpx-components.git'
       type: github
 components:
-  - id: vscode/typescript-language-features/latest
+  - alias: vscode-typescript
+    id: vscode/typescript-language-features/latest
     type: chePlugin
   - alias: openshift-connector
     type: chePlugin
