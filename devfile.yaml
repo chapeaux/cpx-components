@@ -10,9 +10,9 @@ components:
   - alias: vscode-typescript
     id: vscode/typescript-language-features/latest
     type: chePlugin
-  - alias: openshift-connector
+  - id: redhat/vscode-openshift-connector/latest
     type: chePlugin
-    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/openshift-connector.yaml"
+    alias: openshift-connector
   - alias: deno-che
     type: chePlugin
     reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
@@ -20,7 +20,7 @@ components:
     endpoints:
       - name: deno-svc
         port: 8000
-    memoryLimit: 512Mi
+    memoryLimit: 1Gi
     type: dockerimage
     alias: deno
     image: 'quay.io/ldary/deno-crw'
