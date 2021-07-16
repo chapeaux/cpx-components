@@ -1,9 +1,20 @@
 //import { serveTLS } from "https://deno.land/std/http/server.ts";
-import { Application, Router, HttpError, Status, send } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import {
+  Application,
+  HttpError,
+  Router,
+  send,
+  Status,
+} from "https://deno.land/x/oak@v6.2.0/mod.ts";
 //import { viewEngine, engineFactory, adapterFactory } from "https://deno.land/x/view_engine@v1.4.5/mod.ts";
-import { acceptWebSocket, acceptable, isWebSocketCloseEvent, WebSocket } from "https://deno.land/std/ws/mod.ts";
+import {
+  acceptable,
+  acceptWebSocket,
+  isWebSocketCloseEvent,
+  WebSocket,
+} from "https://deno.land/std/ws/mod.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
-import { walk, walkSync, WalkEntry } from "https://deno.land/std/fs/mod.ts";
+import { walk, WalkEntry, walkSync } from "https://deno.land/std/fs/mod.ts";
 
 //import { Session } from "https://deno.land/x/session/mod.ts";
 // import {
@@ -70,15 +81,15 @@ const app = new Application();
 
 // const users = [
 //   {id: 0, username: 'User One', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 0}
 //   ]},
 //   {id: 1, username: 'User Two', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 30}
 //   ]},
 //   {id: 2, username: 'User Three', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 0}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 0},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 0}
 //   ]}
 // ];
@@ -181,29 +192,31 @@ const app = new Application();
 // app.use(router.routes());
 // app.use(router.allowedMethods());
 
-
 // File Watcher
 let watchPaths = new Set<WalkEntry>();
-for await (const entry of walk('./components')) {
-  watchPaths.add(entry)
+for await (const entry of walk("./components")) {
+  watchPaths.add(entry);
 }
-    // .filter(path=>path.isDirectory&&(/components\/.+\/(?:src|demo)/).test(path.path))
-    // .map(path=>path.path);
+// .filter(path=>path.isDirectory&&(/components\/.+\/(?:src|demo)/).test(path.path))
+// .map(path=>path.path);
 
-async function bundleFiles(path:string) {
-  const { files, diagnostics } = await Deno.emit(path,{
-      check: false,
-      //bundle: "esm",
-      compilerOptions: {
-          lib: ["es6", "dom"],
-          module: 'es6',
-          target: 'es6'
-      }
+async function bundleFiles(path: string) {
+  const { files, diagnostics } = await Deno.emit(path, {
+    check: false,
+    //bundle: "esm",
+    compilerOptions: {
+      lib: ["es6", "dom"],
+      module: "es6",
+      target: "es6",
+    },
   });
   if (diagnostics.length) {
-      console.warn(Deno.formatDiagnostics(diagnostics));
+    console.warn(Deno.formatDiagnostics(diagnostics));
   }
-  Deno.writeTextFile(path.replace('/src','').replace('.ts','.js'), files['deno:///bundle.js']);
+  Deno.writeTextFile(
+    path.replace("/src", "").replace(".ts", ".js"),
+    files["deno:///bundle.js"],
+  );
 }
 
 // const watcher = Deno.watchFs(watchPaths, {recursive: true});
@@ -222,10 +235,9 @@ async function bundleFiles(path:string) {
 // }
 // END File Watcher
 
-
 // const server = serveTLS({hostname: '0.0.0.0', port:4430, certFile: 'localhost.pem', keyFile: 'localhost-key.pem'})
 
-let wsClients = new Map<string,WebSocket>()
+let wsClients = new Map<string, WebSocket>();
 
 // for await (const req of server) {
 //   if (req.url === '/ws') {
@@ -258,7 +270,7 @@ let wsClients = new Map<string,WebSocket>()
 //     if (exists(`./components/${req.url}`)) {
 //       const file = `./components/${req.url}`
 //       const path = await Deno.stat(file);
-      
+
 //       req.respond({
 //         status: 200,
 //         body: await Deno.open(path.isFile ? file : file+'/index.html')
@@ -269,7 +281,7 @@ let wsClients = new Map<string,WebSocket>()
 //         body: 'Page not found'
 //       })
 //     }
-    
+
 //   }
 // }
 
@@ -277,16 +289,16 @@ let wsClients = new Map<string,WebSocket>()
 app.use(async (ctx) => {
   await ctx.send({
     root: `${Deno.cwd()}/components`,
-    index: 'index.html',
+    index: "index.html",
   });
 });
 
-app.addEventListener('listen', ({hostname, port}) => {
+app.addEventListener("listen", ({ hostname, port }) => {
   console.log(`Serving ${Deno.cwd()}/components`);
   console.log(`Start listening on ${hostname}:${port}`);
-})
+});
 
-await app.listen({hostname: "0.0.0.0", port: 8000 });
+await app.listen({ hostname: "0.0.0.0", port: 8000 });
 // await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
 /*
 for await (const req of serve(`:${port}`)) {
@@ -320,4 +332,3 @@ for await (const req of serve(`:${port}`)) {
     }
  }
  */
-
