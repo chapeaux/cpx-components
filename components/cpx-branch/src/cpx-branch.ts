@@ -119,8 +119,6 @@ export class CPXBranch extends HTMLElement {
     this._group = val;
   }
 
-  cy;
-
   constructor(url: string) {
     super();
     this.attachShadow({ mode: "open" });
