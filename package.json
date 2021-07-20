@@ -6,7 +6,8 @@
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@chapeaux/cpx-keycloak": "file:components/cpx-keycloak",
+    "@chapeaux/cpx-auth": "file:components/cpx-auth",
+    "@chapeaux/cpx-query": "file:components/cpx-query",
     "@chapeaux/cpx-user": "file:components/cpx-user"
   }
 }

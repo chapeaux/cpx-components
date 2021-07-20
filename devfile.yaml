@@ -7,15 +7,20 @@ projects:
       location: 'https://github.com/chapeaux/cpx-components.git'
       type: github
 components:
-  - id: vscode/typescript-language-features/latest
+  - alias: vscode-typescript
+    id: vscode/typescript-language-features/latest
     type: chePlugin
-  - reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
+  - id: redhat/vscode-openshift-connector/latest
     type: chePlugin
+    alias: openshift-connector
+  - alias: deno-che
+    type: chePlugin
+    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
   - mountSources: true
     endpoints:
       - name: deno-svc
         port: 8000
-    memoryLimit: 512Mi
+    memoryLimit: 1Gi
     type: dockerimage
     alias: deno
     image: 'quay.io/ldary/deno-crw'
@@ -25,6 +30,30 @@ commands:
       - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
         type: exec
         command: deno run --unstable --allow-net --allow-read server.ts
+        component: deno
+  - name: TEST the components
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
+        type: exec
+        command: deno test --allow-net --allow-read
+        component: deno
+  - name: LINT the components
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
+        type: exec
+        command: deno lint --json > data/lint.json
+        component: deno
+  - name: FORMAT scripts
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
+        type: exec
+        command: deno fmt
+        component: deno
+  - name: DOCUMENT components
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
+        type: exec
+        command: deno doc --json > data/docs.json
         component: deno
   - name: DEBUG the component server
     actions:

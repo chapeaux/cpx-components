@@ -1,0 +1,16 @@
+apiVersion: v2
+publisher: redhat-developer
+name: deno-che
+version: 0.2.8-307
+type: VS Code extension
+displayName: OpenShift Connector
+title: OpenShift Connector
+description: Simplified app dev for Kubernetes or Red Hat OpenShift
+icon: "https://redhat.gallerycdn.vsassets.io/extensions/redhat/vscode-openshift-connector/0.2.8/1626194531954/Microsoft.VisualStudio.Services.Icons.Default"
+repository: "https://github.com/redhat-developer/vscode-openshift-tools"
+category: Language
+firstPublicationDate: '2019-01-22'
+spec:                                                             
+  extensions:
+  - "https://download.jboss.org/jbosstools/adapters/stable/vscode-openshift-tools/openshift-connector-0.2.8-307.vsix" 
+latestUpdateDate: "2021-07-13"

@@ -2,79 +2,76 @@
 
 ## Keycloak Component Purpose
 
-* Interface with Keycloak
-* Provide centralized mechanism for auth
+- Interface with Keycloak
+- Provide centralized mechanism for auth
 
 ## Events
 
-* `token-ready` - fires when the `.user` object data is populated
-* `user-update` - fires when the `.user` object is updated
+- `token-ready` - fires when the `.user` object data is populated
+- `user-update` - fires when the `.user` object is updated
 
 ## Usage
 
-User data is always stored on the `.user` property once it is
-available. 
+User data is always stored on the `.user` property once it is available.
 
-* ### Server-side or on-page
+- ### Server-side or on-page
 
-    #### Server-side Data inclusion example
-    ```html
-    <cpx-user>
-        <script type="data">
-        {
-            "name": "Test User",
-            "email": "test123@test123.com"
-        }
-        </script>
-    </cpx-user>
-    ```
+  #### Server-side Data inclusion example
+      ```html
+      <cpx-user>
+          <script type="data">
+          {
+              "name": "Test User",
+              "email": "test123@test123.com"
+          }
+          </script>
+      </cpx-user>
+      ```
 
-* ### JSON Web Token
+- ### JSON Web Token
 
-    Requires that `jwt_decode` library be available globally.
+  Requires that `jwt_decode` library be available globally.
 
-    Available component properties:
+  Available component properties:
 
-    * `jwt-cookie`: sets the cookie to parse for JWT data
-    * `jwt-token`: sets the JWT token to parse for data
-    
-    #### JWT Cookie Example
-    ```html
-    <cpx-user jwt-cookie="SOME_JWT_COOKIE_NAME"></cpx-user>
-    ```
+  - `jwt-cookie`: sets the cookie to parse for JWT data
+  - `jwt-token`: sets the JWT token to parse for data
 
-    #### JWT Token
-    ```html
-    <cpx-user jwt-token="SOMEJWTENCODEDSTRING"></cpx-user>
-    ```
+  #### JWT Cookie Example
+      ```html
+      <cpx-user jwt-cookie="SOME_JWT_COOKIE_NAME"></cpx-user>
+      ```
 
-* ### Keycloak
+  #### JWT Token
+      ```html
+      <cpx-user jwt-token="SOMEJWTENCODEDSTRING"></cpx-user>
+      ```
 
-    Requires `keycloak.js` to be available, and the following attributes to be set with the appropriate values:
+- ### Keycloak
 
-    * `kc-url` - the Keycloak server url
-    * `kc-realm` - the Keycloak realm
-    * `kc-client-id` - the Keycloak client ID
+  Requires `keycloak.js` to be available, and the following attributes to be set
+  with the appropriate values:
 
-    #### Available component methods:
+  - `kc-url` - the Keycloak server url
+  - `kc-realm` - the Keycloak realm
+  - `kc-client-id` - the Keycloak client ID
 
-    * `login()`: log in using the Keycloak config
-    * `logout()`: log out using the Keycloak config
-    * `register()`: send user to registration screen based on Keycloak config
-    * `account()`: send user to account management screen based on Keycloak config
-    * `token.createLoginUrl()`: creates URL to direct user to login screen
-    * `token.createLogoutUrl()`: creates URL to log user out
+  #### Available component methods:
 
-    #### Available component properties:
+  - `login()`: log in using the Keycloak config
+  - `logout()`: log out using the Keycloak config
+  - `register()`: send user to registration screen based on Keycloak config
+  - `account()`: send user to account management screen based on Keycloak config
+  - `token.createLoginUrl()`: creates URL to direct user to login screen
+  - `token.createLogoutUrl()`: creates URL to log user out
 
-    * `token`: the Keycloak object for authenticated users
+  #### Available component properties:
 
-    #### Example:
-    ```html
-    <cpx-user kc-url="https://test123.com/auth" kc-realm="your-realm" kc-client-id="your-client-id"></cpx-user>
-    ```
+  - `token`: the Keycloak object for authenticated users
+
+  #### Example:
+      ```html
+      <cpx-user kc-url="https://test123.com/auth" kc-realm="your-realm" kc-client-id="your-client-id"></cpx-user>
+      ```
 
 ## Scripts
-
-
-
