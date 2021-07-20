@@ -143,8 +143,8 @@ export class CPXBranch extends HTMLElement {
                 ],
             
                 layout: {
-                name: 'grid',
-                rows: 1
+                    name: 'grid',
+                    rows: 1
                 }
         });
     }
