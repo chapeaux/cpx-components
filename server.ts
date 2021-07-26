@@ -174,8 +174,8 @@ router.get("/", async (ctx) => {
     root: `${Deno.cwd()}/data/`,
     index: 'index.html'
   });
-}).get("/c/", async (ctx) => {
-  console.log(ctx.request.url.pathname);
+}).get("/(.*)", async (ctx) => {
+  //console.log(ctx.request.url.pathname);
     await send(ctx, ctx.request.url.pathname, {
       root: `${Deno.cwd()}/components/`,
       index: 'index.html'
