@@ -169,10 +169,19 @@ app.use(async (context, next) => {
 
 router.get("/", async (ctx) => {
   ctx.response.body = await Deno.readTextFile(`${Deno.cwd()}/components/index.html`);
+}).get("/assets/:path+", async (ctx) => {
+  // console.log(`${Deno.cwd()}/data/${ctx.params.path}`);
+  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
+    root: `${Deno.cwd()}/assets/`
+  });
 }).get("/data/:path+", async (ctx) => {
   // console.log(`${Deno.cwd()}/data/${ctx.params.path}`);
   await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
     root: `${Deno.cwd()}/data/`
+  });
+}).get("/node/:path+", async (ctx) => {
+  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
+    root: `${Deno.cwd()}/node_modules/`
   });
 }).get("/(.*)", async (ctx) => {
   // console.log(ctx.request.url.pathname);
@@ -289,8 +298,8 @@ app.addEventListener('listen', ({hostname, port}) => {
   console.log(`Start listening on ${hostname}:${port}`);
 })
 
-await app.listen({hostname: "0.0.0.0", port: 8000 });
-// await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
+//await app.listen({hostname: "0.0.0.0", port: 8000 });
+await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
 /*
 for await (const req of serve(`:${port}`)) {
   const { conn, r: bufReader, w: bufWriter, headers } = req;

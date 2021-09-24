@@ -5,6 +5,9 @@ supply chain that provides web assets and tools.
 ### Backlog
 - [ ] `cpx-keycloak`
   - [ ] Add login/logout targets and attribute attributes
+  - [ ] Differentiate logged in v. logged out
+- [ ] `cpx-user`
+  - [ ] Respond to `token-ready`
 - [ ] `cpx-operator-graph`
   - [ ] Refactor data into classes
   - [ ] 

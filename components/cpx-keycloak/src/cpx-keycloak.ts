@@ -68,6 +68,39 @@ export class CPXKeycloak extends HTMLElement {
     this._ready = val;
   }
 
+  _loginElement;
+  get loginElement() {
+    return this._loginElement;
+  }
+  set loginElement(val) {
+    if (this._loginElement === val) return;
+    this._loginElement = val;
+  }
+  _loginAttr;
+  get loginAttr() {
+    return this._loginAttr;
+  }
+  set loginAttr(val) {
+    if (this._loginAttr === val) return;
+    this._loginAttr = val;
+  }
+  
+  _logoutElement;
+  get logoutElement() {
+    return this._logoutElement;
+  }
+  set logoutElement(val) {
+    if (this._logoutElement === val) return;
+    this._logoutElement = val;
+  }
+  _logoutAttr;
+  get logoutAttr() {
+    return this._logoutAttr;
+  }
+  set logoutAttr(val) {
+    if (this._logoutAttr === val) return;
+    this._logoutAttr = val;
+  }
   get authenticated() {
     return this._authenticated;
   }
@@ -85,7 +118,11 @@ export class CPXKeycloak extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["url", "realm", "client-id", "config"];
+    return [
+      "url", "realm", "client-id", "config",
+      "login-element","login-attr",
+      "logout-element","logout-attr"
+    ];
   }
 
   attributeChangedCallback(name: string, oldVal: string, newVal: string) {
@@ -117,27 +154,32 @@ export class CPXKeycloak extends HTMLElement {
       await this.keycloak.init({}).then((authenticated) => {
         this.authenticated = authenticated;
         if (authenticated) {
-          dispatchEvent(
+          // document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
+          //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
+          // document.cookie =
+          //   `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
+          this.dispatchEvent(
             new CustomEvent("token-ready", {
-              detail: { token: this.token,
-                logoutLink: this.keycloak.
+              detail: { 
+                token: this.keycloak.tokenParsed
+              },
               composed: true,
-              bubbles: true,
-            }),
+              bubbles: true
+            })
           );
+          if (this.logoutElement && this.logoutAttr) {
+            const logoutElement = top.document.querySelector(this.logoutElement);
+            logoutElement.setAttribute(this.logoutAttr, this.keycloak.createLogoutUrl());
+            logoutElement.userData = Object.assign({username:'',firstName:' ',lastName:' ',REDHAT_LOGIN:'ldary24'},this.keycloak.tokenParsed);
+          }
           this.ready = true;
-          // document.querySelector("a[cpx-login]").setAttribute(
-          //   "href",
-          //   this.keycloak.createLogoutUrl(),
-          // );
         } else {
           if (this.getAttribute("auto") !== null) {
             this.login();
           }
-          // document.querySelector("a[cpx-login]").setAttribute(
-          //   "href",
-          //   this.keycloak.createLoginUrl(),
-          // );
+          if (this.loginElement && this.loginAttr) {
+            top.document.querySelector(this.loginElement).setAttribute(this.loginAttr, this.keycloak.createLoginUrl());
+          }
         }
       });
     } else {

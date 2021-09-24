@@ -58,6 +58,30 @@ export class CPXKeycloak extends HTMLElement {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "_loginElement", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_loginAttr", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_logoutElement", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_logoutAttr", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
     }
     get keycloak() {
         return this._keycloak;
@@ -110,6 +134,38 @@ export class CPXKeycloak extends HTMLElement {
             return;
         this._ready = val;
     }
+    get loginElement() {
+        return this._loginElement;
+    }
+    set loginElement(val) {
+        if (this._loginElement === val)
+            return;
+        this._loginElement = val;
+    }
+    get loginAttr() {
+        return this._loginAttr;
+    }
+    set loginAttr(val) {
+        if (this._loginAttr === val)
+            return;
+        this._loginAttr = val;
+    }
+    get logoutElement() {
+        return this._logoutElement;
+    }
+    set logoutElement(val) {
+        if (this._logoutElement === val)
+            return;
+        this._logoutElement = val;
+    }
+    get logoutAttr() {
+        return this._logoutAttr;
+    }
+    set logoutAttr(val) {
+        if (this._logoutAttr === val)
+            return;
+        this._logoutAttr = val;
+    }
     get authenticated() {
         return this._authenticated;
     }
@@ -122,7 +178,11 @@ export class CPXKeycloak extends HTMLElement {
     connectedCallback() {
     }
     static get observedAttributes() {
-        return ["url", "realm", "client-id", "config"];
+        return [
+            "url", "realm", "client-id", "config",
+            "login-element", "login-attr",
+            "logout-element", "logout-attr"
+        ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[this.camelCase(name)] = newVal;
@@ -149,16 +209,26 @@ export class CPXKeycloak extends HTMLElement {
                 yield this.keycloak.init({}).then((authenticated) => {
                     this.authenticated = authenticated;
                     if (authenticated) {
-                        dispatchEvent(new CustomEvent("token-ready", {
-                            detail: this.token,
+                        this.dispatchEvent(new CustomEvent("token-ready", {
+                            detail: {
+                                token: this.keycloak.tokenParsed
+                            },
                             composed: true,
-                            bubbles: true,
+                            bubbles: true
                         }));
+                        if (this.logoutElement && this.logoutAttr) {
+                            const logoutElement = top.document.querySelector(this.logoutElement);
+                            logoutElement.setAttribute(this.logoutAttr, this.keycloak.createLogoutUrl());
+                            logoutElement.userData = Object.assign({ username: '', firstName: ' ', lastName: ' ', REDHAT_LOGIN: 'ldary24' }, this.keycloak.tokenParsed);
+                        }
                         this.ready = true;
                     }
                     else {
                         if (this.getAttribute("auto") !== null) {
                             this.login();
+                        }
+                        if (this.loginElement && this.loginAttr) {
+                            top.document.querySelector(this.loginElement).setAttribute(this.loginAttr, this.keycloak.createLoginUrl());
                         }
                     }
                 });
@@ -181,6 +251,12 @@ export class CPXKeycloak extends HTMLElement {
     }
     get token() {
         return this.keycloak.tokenParsed;
+    }
+    get loginUrl() {
+        return this.keycloak.createLoginUrl();
+    }
+    get logoutUrl() {
+        return this.keycloak.createLogoutUrl();
     }
 }
 window.customElements.define("cpx-keycloak", CPXKeycloak);

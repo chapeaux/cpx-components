@@ -24,6 +24,18 @@ export declare class CPXKeycloak extends HTMLElement {
     set clientId(val: string);
     get ready(): boolean;
     set ready(val: boolean);
+    _loginElement: any;
+    get loginElement(): any;
+    set loginElement(val: any);
+    _loginAttr: any;
+    get loginAttr(): any;
+    set loginAttr(val: any);
+    _logoutElement: any;
+    get logoutElement(): any;
+    set logoutElement(val: any);
+    _logoutAttr: any;
+    get logoutAttr(): any;
+    set logoutAttr(val: any);
     get authenticated(): boolean;
     set authenticated(val: boolean);
     constructor();
@@ -38,4 +50,6 @@ export declare class CPXKeycloak extends HTMLElement {
     register(): any;
     account(): any;
     get token(): any;
+    get loginUrl(): any;
+    get logoutUrl(): any;
 }
