@@ -3,33 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapeaux Branch Component</title>
+    <title>Chapeaux Operator Graph Component</title>
 </head>
 <body>
-    <cpx-branch filter="packageName" group="version" query="amq-streams" sort="version" order="desc" url="demo/registry-dump.json">
+    <cpx-operator-graph filter="packageName" channel="stable" query="amq-streams" sort="version" order="desc" url="/data/registry-dump.json">
         <template>
             <style>
                 :host {
-                    --fullcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><circle cx='15' cy='15' r='5' stroke='red' fill='transparent' stroke-width='2'/></svg>");
-                    --tophalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M 15 15 h -15 0 c 0 -5 5 -5 5 0 Z' stroke='gray' stroke-width='2' fill='transparent' /></svg>");
-                    --bottomhalfcircle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><circle cx='50' cy='15' r='5' stroke='red' fill='transparent' stroke-width='2'/></svg>");
-                }
-                #cy {
-                    width: 300px;
-                    height: 300px;
-                    border: 2px solid #ee0000;
-                    display: block;
+
                 }
 
-                section div label {
-                    display: grid;
-                    grid-template-columns: auto auto 1fr auto auto;
+                pfe-select {
+                    max-width: 200px;
+                    margin-bottom:1em;
+                }
+
+                #graph {
+                    vertical-align: top;
+                }
+
+                #cy {
+                    width: 300px;
+                    height: 1000px;
+                    display: block;
                 }
 
                 input+div {
                     background: var(--tophalfcircle) no-repeat;
                     height: 30px;
                     width: 30px;
+                }
+                table {
+                    border-collapse: collapse;
+                }
+                tbody tr {
+                    border-top: 1px solid #333;
+                    border-bottom: 1px solid #333;
+
                 }
 
                 input {   }
@@ -39,30 +49,27 @@
                 
             </style>
             <section>
-                <div id="cy"></div>
-                <!-- <div>
-                    <strong>Version</strong>
-                    <strong>Update Paths</strong>
-                    <strong>Other Available Channels</strong>
-                </div>
-                <div data-repeat>
-                    <label>
-                        <input name="${packageName}" type="radio" id="${version}" />${version}
-                        <div class></div>
-                        <ul>
-                            <li>Replaces: ${replaces}</li>
-                            <li>Skips: ${skips}</li>
-                            <li>Channel: ${channelName}</li>
-                        </ul>
-                        <ul class="channels">
-                            <li>${channelName}</li>
-                        </ul>
-                    </label>
-                </div> -->
+                <h3>Channel</h3>
+                <pfe-select><select id="channels"></select></pfe-select>
+                <input type="checkbox" name="all-channels" value="all" id="all-channels">
+                <label for="all-channels">All operator versions</label>
+                <table>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <th>Version</th>
+                            <th>Update paths</th>
+                            <th data-channel="all">Available channels</th>
+                        </tr>
+                    </thead>
+                    <tbody data-repeat="versions"></tbody>
+                </table>
             </section>
         </template>
-    </cpx-branch>
-    <script type="module" src="/cpx-branch/cpx-branch.js"></script>
+    </cpx-operator-graph>
+    <script type="module" src="/cpx-operator-graph/demo/pfelement.js"></script>
+    <script type="module" src="/cpx-operator-graph/demo/pfe-select.js"></script>
+    <script type="module" src="/cpx-operator-graph/cpx-operator-graph.js"></script>
 </body>
 </html>
 

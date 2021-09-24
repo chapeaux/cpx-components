@@ -2,7 +2,9 @@
   "name": "@chapeaux/cpx-keycloak",
   "version": "0.2.5",
   "description": "Chapeaux Keycloak Component",
-  "main": "index.js",
+  "type": "module",
+  "main": "cpx-keycloak.js",
+  "module": "cpx-keycloak.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "",

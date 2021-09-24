@@ -1,10 +1,10 @@
 {
-  "name": "@chapeaux/cpx-branch",
+  "name": "@chapeaux/cpx-operator-graph",
   "version": "0.2.6",
-  "description": "Chapeaux Branch Component",
+  "description": "Chapeaux Operator Graph Component",
   "type": "module",
-  "main": "cpx-branch.js",
-  "module": "cpx-branch.js",
+  "main": "cpx-operator-graph.js",
+  "module": "cpx-operator-graph.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "",
@@ -28,7 +28,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-branch",
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-operator-graph",
   "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d",
   "dependencies": {}
 }

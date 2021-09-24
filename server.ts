@@ -169,13 +169,13 @@ app.use(async (context, next) => {
 
 router.get("/", async (ctx) => {
   ctx.response.body = await Deno.readTextFile(`${Deno.cwd()}/components/index.html`);
-}).get("/data", async (ctx) => {
-  await send(ctx, ctx.request.url.pathname, {
-    root: `${Deno.cwd()}/data/`,
-    index: 'index.html'
+}).get("/data/:path+", async (ctx) => {
+  // console.log(`${Deno.cwd()}/data/${ctx.params.path}`);
+  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
+    root: `${Deno.cwd()}/data/`
   });
 }).get("/(.*)", async (ctx) => {
-  //console.log(ctx.request.url.pathname);
+  // console.log(ctx.request.url.pathname);
     await send(ctx, ctx.request.url.pathname, {
       root: `${Deno.cwd()}/components/`,
       index: 'index.html'

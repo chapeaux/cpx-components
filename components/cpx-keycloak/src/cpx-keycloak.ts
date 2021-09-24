@@ -119,24 +119,25 @@ export class CPXKeycloak extends HTMLElement {
         if (authenticated) {
           dispatchEvent(
             new CustomEvent("token-ready", {
-              detail: this.token,
+              detail: { token: this.token,
+                logoutLink: this.keycloak.
               composed: true,
               bubbles: true,
             }),
           );
           this.ready = true;
-          document.querySelector("a[cpx-login]").setAttribute(
-            "href",
-            this.keycloak.createLogoutUrl(),
-          );
+          // document.querySelector("a[cpx-login]").setAttribute(
+          //   "href",
+          //   this.keycloak.createLogoutUrl(),
+          // );
         } else {
           if (this.getAttribute("auto") !== null) {
             this.login();
           }
-          document.querySelector("a[cpx-login]").setAttribute(
-            "href",
-            this.keycloak.createLoginUrl(),
-          );
+          // document.querySelector("a[cpx-login]").setAttribute(
+          //   "href",
+          //   this.keycloak.createLoginUrl(),
+          // );
         }
       });
     } else {
@@ -157,6 +158,12 @@ export class CPXKeycloak extends HTMLElement {
   }
   get token() {
     return this.keycloak.tokenParsed;
+  }
+  get loginUrl() {
+    return this.keycloak.createLoginUrl();
+  }
+  get logoutUrl() {
+    return this.keycloak.createLogoutUrl();
   }
 }
 
