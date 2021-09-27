@@ -170,7 +170,26 @@ export class CPXKeycloak extends HTMLElement {
           if (this.logoutElement && this.logoutAttr) {
             const logoutElement = top.document.querySelector(this.logoutElement);
             logoutElement.setAttribute(this.logoutAttr, this.keycloak.createLogoutUrl());
-            logoutElement.userData = Object.assign({username:'',firstName:' ',lastName:' ',REDHAT_LOGIN:'ldary24'},this.keycloak.tokenParsed);
+            logoutElement.userData = Object.assign(
+              // { 
+              //   username: ' ',
+              //   firstName: ' ',
+              //   lastName: ' ',
+              //   REDHAT_LOGIN: ' '
+              // }
+              {
+                realm_access: {
+                  roles: this.keycloak.tokenParsed[""] || ' '
+                },
+                REDHAT_LOGIN: this.keycloak.tokenParsed["preferred_username"] || ' ',
+                lastName: this.keycloak.tokenParsed["family_name"] || ' ',
+                account_number: this.keycloak.tokenParsed["iat"].toString() || '', //Pretty sure this isn't right...
+                preferred_username: this.keycloak.tokenParsed["preferred_username"] || ' ',
+                firstName: this.keycloak.tokenParsed["given_name"] || ' ',
+                email: this.keycloak.tokenParsed["email"] || ' ',
+                username: this.keycloak.tokenParsed["preferred_username"] || ' '
+              }
+              , this.keycloak.tokenParsed);
           }
           this.ready = true;
         } else {

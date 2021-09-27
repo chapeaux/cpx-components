@@ -6,6 +6,7 @@ supply chain that provides web assets and tools.
 - [ ] `cpx-keycloak`
   - [ ] Add login/logout targets and attribute attributes
   - [ ] Differentiate logged in v. logged out
+  - [ ] Silently check auth
 - [ ] `cpx-user`
   - [ ] Respond to `token-ready`
 - [ ] `cpx-operator-graph`

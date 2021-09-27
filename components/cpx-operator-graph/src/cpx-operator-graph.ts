@@ -197,16 +197,16 @@ export class CPXOperatorGraph extends HTMLElement {
     if (this.data && this.filter !== "" && this.query !== "") {
       const filteredData = this._data.filter((d) => d[this.filter] === this.query);
       filteredData.map(csv=> {
-        // 
-        if (!this.versions.has(csv.version)) {
-          let csvVersion = this.versions.get(csv.version);
-          if (!csvVersion.has(csv.channelName)) {
-            this.versions.set(csv.version)
-          }
-          this.versions.set(csv.version, csvVersion );
-        } else {
-          this.versions.set(csv.version, [csv.channelName])
-        }
+      //   // 
+      //   if (!this.versions.has(csv.version)) {
+      //     let csvVersion = this.versions.get(csv.version);
+      //     if (!csvVersion.has(csv.channelName)) {
+      //       this.versions.set(csv.version)
+      //     }
+      //     this.versions.set(csv.version, csvVersion );
+      //   } else {
+      //     this.versions.set(csv.version, [csv.channelName])
+      //   }
         if (this.channels.has(csv.channelName)) {
           let channelInfo = this.channels.get(csv.channelName);
           channelInfo.push(csv);

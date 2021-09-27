@@ -31,26 +31,11 @@
                 Menu Link 2
               </a>
             </li>
-      
-            <li class="pfe-navigation__menu-item">
-              <a href="#LINK-TO-CONTENT" class="pfe-navigation__menu-link">
-                Menu Link 3
-              </a>
-            </li>
-      
-            <li class="pfe-navigation__menu-item">
-              <a href="#LINK-TO-CONTENT" class="pfe-navigation__menu-link">
-                Menu Link 4
-              </a>
-            </li>
           </ul>
       
         </nav>
         <rh-account-dropdown slot="account"></rh-account-dropdown>
       </pfe-navigation>
-    <cpx-user>
-    </cpx-user>
-    <!-- <a cpx-login href="dashboard.html">Log in</a></cpx-login> -->
     <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak>
     <script type="module" src="/node/@cpelements/pfe-navigation/dist/pfe-navigation.min.js"></script>
     <script type="module" src="/node/@cpelements/rh-account-dropdown/dist/rh-account-dropdown.min.js"></script>
