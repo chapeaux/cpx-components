@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-query",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Chapeaux Query Component",
   "type": "module",
   "main": "cpx-query.js",
@@ -29,6 +29,5 @@
     "access": "public"
   },
   "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-query",
-  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d",
-  "dependencies": {}
+  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
 }
