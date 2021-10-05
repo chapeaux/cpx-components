@@ -1,6 +1,8 @@
 async function bundleFiles(path: string) {
   const mapFilter = /\.map$/;
   const fileFilter = /^http/;
+  const jsFilter = /\.js$/;
+  const declarationFilter = /\.d.ts$/;
   const { files, diagnostics } = await Deno.emit(path, {
     check: true,
     compilerOptions: {
@@ -15,10 +17,9 @@ async function bundleFiles(path: string) {
   if (diagnostics.length) {
     console.warn(Deno.formatDiagnostics(diagnostics));
   }
-  
+  console.log(Object.keys(files));  
   Object.keys(files).map(file => {
-    if (!mapFilter.test(file) && !fileFilter.test(file)) {
-      console.log(file);
+    if (!mapFilter.test(file) && !fileFilter.test(file) && !jsFilter.test(file)) {
       Deno.writeTextFile(
         file.replace("file://","").replace("/src", "").replace(".ts", ""),
         files[file],

@@ -133,9 +133,9 @@ export class CPXOperatorGraph extends HTMLElement {
         this._url = val;
         this.setAttribute("url", this._url);
         fetch(val).then((resp) => {
-            return resp.text();
+            return resp.json();
         }).then((data) => {
-            this.data = data.replaceAll("}\n{", "}|||{").split("|||").map((c) => JSON.parse(c));
+            this.data = data['data'];
         });
     }
     get data() {
