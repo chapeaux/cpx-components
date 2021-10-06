@@ -32,7 +32,7 @@ class CPXTabStream extends HTMLElement {
             this.video.play();
         }, error => {
             console.warn('Error! Error! Error!', error)
-        })
+        });
     }
 
     video;

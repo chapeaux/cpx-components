@@ -109,20 +109,20 @@ export class CPXOperatorGraph extends HTMLElement {
       //   } else {
       //     this.versions.set(csv.version, [csv.channelName])
       //   }
-        if (this.channels.has(csv.channelName)) {
-          let channelInfo = this.channels.get(csv.channelName);
-          channelInfo.push(csv);
-          this.channels.set(csv.channelName, channelInfo);
-        } else {
-          this.channels.set(csv.channelName, [csv]);
-        }
+      //   if (this.channels.has(csv.channelName)) {
+      //     let channelInfo = this.channels.get(csv.channelName);
+      //     channelInfo.push(csv);
+      //     this.channels.set(csv.channelName, channelInfo);
+      //   } else {
+      //     this.channels.set(csv.channelName, [csv]);
+      //   }
 
-      this.channels.forEach((versions,channel,d)=> {
-        d.set(channel,versions.sort((a, b) => {
-          const ord = { desc: 1, asc: -1 };
-          return compareSemVer(b['version'], a['version']) * ord[this.order];
-        }));
-      });
+      // this.channels.forEach((versions,channel,d)=> {
+      //   d.set(channel,versions.sort((a, b) => {
+      //     const ord = { desc: 1, asc: -1 };
+      //     return compareSemVer(b['version'], a['version']) * ord[this.order];
+      //   }));
+      // });
     }
     this.render();
   }
