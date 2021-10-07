@@ -97,8 +97,15 @@ export class CPXOperatorGraph extends HTMLElement {
   static get tag() {
     return "cpx-operator-graph";
   }
-  template;
-  cy;
+
+  _template = new HTMLTemplateElement();
+  get template() {
+    return this._template;
+  }
+  set template(val) {
+    this._template = val;
+  }
+
   _url = "";
   get url() {
     return this._url;
@@ -219,10 +226,10 @@ export class CPXOperatorGraph extends HTMLElement {
   constructor(url: string) {
     super();
     this.attachShadow({ mode: "open" });
-    this.template = this.querySelector("template").cloneNode(true);
   }
 
   connectedCallback() {
+    this.template = this.querySelector('template') as HTMLTemplateElement;
     this.shadowRoot.appendChild(this.template.content.cloneNode(true));
     this.addEventListener('pfe-select:change', evt=>this.channel=evt['detail'].value);
   }
@@ -244,7 +251,6 @@ export class CPXOperatorGraph extends HTMLElement {
     */
     
     if (this.channels.size > 0) {
-      this.template = this.querySelector("template").cloneNode(true);
       const channelSelect = this.template.content.querySelector('#channels');
       [...this.channels.keys()].forEach(channel => {
         const opt = document.createElement('option');

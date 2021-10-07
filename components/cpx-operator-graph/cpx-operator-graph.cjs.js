@@ -82,17 +82,11 @@ class OperatorBundle {
 class CPXOperatorGraph extends HTMLElement {
     constructor(url) {
         super();
-        Object.defineProperty(this, "template", {
+        Object.defineProperty(this, "_template", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "cy", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
+            value: new HTMLTemplateElement()
         });
         Object.defineProperty(this, "_url", {
             enumerable: true,
@@ -149,10 +143,15 @@ class CPXOperatorGraph extends HTMLElement {
             value: new Map()
         });
         this.attachShadow({ mode: "open" });
-        this.template = this.querySelector("template").cloneNode(true);
     }
     static get tag() {
         return "cpx-operator-graph";
+    }
+    get template() {
+        return this._template;
+    }
+    set template(val) {
+        this._template = val;
     }
     get url() {
         return this._url;
@@ -245,6 +244,7 @@ class CPXOperatorGraph extends HTMLElement {
         this._versions = val;
     }
     connectedCallback() {
+        this.template = this.querySelector('template');
         this.shadowRoot.appendChild(this.template.content.cloneNode(true));
         this.addEventListener('pfe-select:change', evt => this.channel = evt['detail'].value);
     }
@@ -256,7 +256,6 @@ class CPXOperatorGraph extends HTMLElement {
     }
     render(all) {
         if (this.channels.size > 0) {
-            this.template = this.querySelector("template").cloneNode(true);
             const channelSelect = this.template.content.querySelector('#channels');
             [...this.channels.keys()].forEach(channel => {
                 const opt = document.createElement('option');

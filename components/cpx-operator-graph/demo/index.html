@@ -28,12 +28,22 @@
         [connect] .node {
             stroke: #369;
         }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+            display: grid;
+            grid-template-rows: auto;
+        }
     </style>
 </head>
 <body>
-    <div style="display:grid; grid-template-columns: 500px;">
+    <ul style="display:grid; grid-template-columns: 100px;">
     <!-- INACTIVE ONLY IN -->
-    <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <li><svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <g class="node">
             <circle cx="20" cy="50" r="10"/>
             <circle class="active" cx="20" cy="50" r="3"/>
@@ -46,8 +56,9 @@
             <path d="M 31 53 C 50 58, 90 60, 90 100" />
         </g>
     </svg>
+    </li>
     <!-- INACTIVE IN/OUT -->
-    <svg connect viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <li><svg connect viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <g class="node">
             <circle cx="20" cy="50" r="10"/>
             <circle class="active" cx="20" cy="50" r="3"/>
@@ -61,8 +72,9 @@
             <line x1="90" y1="100" x2="90" y2="0"/>
         </g>
     </svg>
+    </li>
     <!-- ACTIVE ONLY OUT -->
-    <svg outbound active viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <li><svg outbound active viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <g class="node">
             <circle cx="20" cy="50" r="10"/>
             <circle class="active" cx="20" cy="50" r="3"/>
@@ -76,8 +88,9 @@
             <path d="M 31 47 C 50 42, 90 40, 90 0"/>
         </g>
     </svg>
+    </li>
     <!-- ACTIVE BOTH IN/OUT -->
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <li><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <g class="node">
             <circle cx="20" cy="50" r="10"/>
             <circle class="active" cx="20" cy="50" r="3"/>
@@ -86,8 +99,9 @@
             <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
     </svg>
+</li>
     <!-- INACTIVE NO IN/OUT -->
-    <svg outbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <li><svg outbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <g class="node">
             <circle cx="20" cy="50" r="10"/>
             <circle class="active" cx="20" cy="50" r="3"/>
@@ -96,7 +110,8 @@
             <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
     </svg>
-</div>
+</li>
+    </ul>
     <cpx-operator-graph channel="stable" sort="version" order="desc" url="https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==redhat-marketplace;package==instana-agent-rhmp">
         <template>
             <style>
