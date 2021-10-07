@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CPXOperatorGraph = void 0;
+const semver_parser_1 = require("https://cdn.skypack.dev/semver-parser");
 function versionSelector(strings, csv, versions, all) {
     return `<tr>
     <td><input name="${csv.packageName}" type="radio" id="${csv.version}" /></td>
@@ -33,6 +34,26 @@ class OperatorPackage {
 class OperatorChannel {
 }
 class OperatorGraph {
+    constructor() {
+        Object.defineProperty(this, "active", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "inbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "outbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+    }
 }
 class OperatorBundle {
     constructor() {
@@ -155,6 +176,12 @@ class CPXOperatorGraph extends HTMLElement {
             return;
         this._data = val;
         if (this._data) {
+            this.channels.forEach((versions, channel, d) => {
+                d.set(channel, versions.sort((a, b) => {
+                    const ord = { desc: 1, asc: -1 };
+                    return (0, semver_parser_1.compareSemVer)(b['version'], a['version']) * ord[this.order];
+                }));
+            });
         }
         this.render();
     }

@@ -22,9 +22,9 @@ async function browserEmit(path: string) {
   //console.log(Object.keys(files));  
   Object.keys(files).map(file => {
     //console.info('Browser Emit:',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
-    if (!mapFilter.test(file) && !fileFilter.test(file) && !jsFilter.test(file)) {
+    if (!fileFilter.test(file) && mapFilter.test(file) && !jsFilter.test(file)) {
       const newFileName = file.replace("file://","").replace("/src", "").replace(".ts", "");
-      console.log('Browser',newFileName);
+      //console.log('Browser',newFileName);
       Deno.writeTextFile(
         newFileName,
         files[file],
@@ -38,7 +38,8 @@ async function browserEmit(path: string) {
       lib: ["es6","es2021","dom"],
       strict: false,
       module: "commonjs",
-      target: "es6"
+      target: "es6",
+      
     }
   }));
 
@@ -47,10 +48,10 @@ async function browserEmit(path: string) {
   }
   
   Object.keys(files).map(file => {
-    console.info('CJS file',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
+    //console.info('CJS file',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
     if (!mapFilter.test(file) && !fileFilter.test(file) && jsFilter.test(file)) {
       const newFileName = file.replace("file://","").replace("/src", "").replace(".ts", ".cjs");
-      console.log('CJS',newFileName);
+      //console.log('CJS',newFileName);
       Deno.writeTextFile(
         newFileName,
         files[file],

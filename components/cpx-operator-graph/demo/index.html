@@ -4,56 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapeaux Operator Graph Component</title>
+    <style>
+        .node {
+            fill: transparent;
+            stroke-width: 3;
+            stroke: #ccc;
+        }
+        .edges {
+            fill: transparent;
+            stroke-width: 3;
+            stroke: #369;
+        }
+        .inbound, .outbound, .active {
+            display: none;
+        }
+        [active] .node { stroke: #090;}
+        [active] .active {
+            display: block;
+        }
+        [inbound] .inbound, [outbound] .outbound {
+            display: block;
+        }
+        [connect] .node {
+            stroke: #369;
+        }
+    </style>
 </head>
 <body>
-    <div style="display:grid; grid-template-columns: 100px;">
+    <div style="display:grid; grid-template-columns: 500px;">
     <!-- INACTIVE ONLY IN -->
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <g class="node" stroke="blue" fill="transparent" stroke-width="3">
+    <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="node">
             <circle cx="20" cy="50" r="10"/>
-            <line x1="10" y1="50" x2="30" y2="50"/>
-            <line x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
-        <g id="edges">
-            <path d="M 29 53 C 50 60, 80 53, 80 100" stroke="blue" fill="transparent" stroke-width="3" />
-            <path d="M 29 53 C 50 60, 90 53, 90 100" stroke="blue" fill="transparent" stroke-width="3" />
+        <g class="edges">
+            <path d="M 31 53 C 50 58, 80 60, 80 100" />
+            <path d="M 31 53 C 50 58, 90 60, 90 100" />
         </g>
     </svg>
     <!-- INACTIVE IN/OUT -->
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <g class="node" stroke="blue" stroke-width="3" fill="transparent">
+    <svg connect viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="node">
             <circle cx="20" cy="50" r="10"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="outbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="inbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
-        <g id="edges">
-            <path d="M 28 53 C 50 60, 70 53, 70 100" stroke="blue" fill="transparent" stroke-width="3" />
-            <line x1="80" y1="100" x2="80" y2="0" stroke="blue" fill="transparent" stroke-width="3" />
-            <line x1="90" y1="100" x2="90" y2="0" stroke="blue" fill="transparent" stroke-width="3" />
+        <g class="edges">
+            <path d="M 31 53 C 50 58, 70 60, 70 100"/>
+            <line x1="80" y1="100" x2="80" y2="0"/>
+            <line x1="90" y1="100" x2="90" y2="0"/>
         </g>
     </svg>
     <!-- ACTIVE ONLY OUT -->
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <g class="node" stroke="green" fill="transparent" stroke-width="3">
+    <svg outbound active viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="node">
             <circle cx="20" cy="50" r="10"/>
-            <circle cx="20" cy="50" r="3" fill="green" />
-            <line x1="10" y1="50" x2="30" y2="50"/>
-            <line x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
-        <g id="edges">
-            <path d="M 30 47 C 50 40, 70 47, 70 0" stroke="blue" fill="transparent" stroke-width="3" />
-            <path d="M 30 47 C 50 40, 80 47, 80 0" stroke="blue" fill="transparent" stroke-width="3" />
-            <path d="M 30 47 C 50 40, 90 47, 90 0" stroke="blue" fill="transparent" stroke-width="3" />
+        <g class="edges">
+            <path d="M 31 47 C 50 42, 70 40, 70 0"/>
+            <path d="M 31 47 C 50 42, 80 40, 80 0"/>
+            <path d="M 31 47 C 50 42, 90 40, 90 0"/>
         </g>
     </svg>
     <!-- ACTIVE BOTH IN/OUT -->
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <g class="node" stroke="green" fill="transparent" stroke-width="3">
-        <circle cx="20" cy="50" r="10"></circle>
-        <circle cx="20" cy="50" r="3" fill="green"></circle>
+        <g class="node">
+            <circle cx="20" cy="50" r="10"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
         </g>
     </svg>
     <!-- INACTIVE NO IN/OUT -->
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="50" r="10" stroke="grey" fill="transparent" stroke-width="3"></circle>
+    <svg outbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="node">
+            <circle cx="20" cy="50" r="10"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+        </g>
     </svg>
 </div>
     <cpx-operator-graph channel="stable" sort="version" order="desc" url="https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==redhat-marketplace;package==instana-agent-rhmp">

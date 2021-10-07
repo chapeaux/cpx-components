@@ -58,7 +58,30 @@ function setCurve(edge) {
 class OperatorVersion {}
 class OperatorPackage {}
 class OperatorChannel {}
-class OperatorGraph {}
+class OperatorGraph  {
+  active = false;
+  inbound = false;
+  outbound = false;
+  /*
+  Base SVG
+
+  
+  Base Node Group
+  <g id="node" stroke="grey" fill="transparent" stroke-width="3">
+    <circle cx="20" cy="50" r="10"/>
+    <circle cx="20" cy="50" r="3" fill="green" />
+
+    <line x1="10" y1="50" x2="30" y2="50"/>
+    <line x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+    
+    <line x1="10" y1="50" x2="30" y2="50"/>
+    <line x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+  </g>
+
+  Base Edge Group
+  <g id="edges" stroke="blue" fill="transparent" stroke-width="3">
+  */
+}
 
 
 class OperatorBundle {
@@ -117,12 +140,12 @@ export class CPXOperatorGraph extends HTMLElement {
       //     this.channels.set(csv.channelName, [csv]);
       //   }
 
-      // this.channels.forEach((versions,channel,d)=> {
-      //   d.set(channel,versions.sort((a, b) => {
-      //     const ord = { desc: 1, asc: -1 };
-      //     return compareSemVer(b['version'], a['version']) * ord[this.order];
-      //   }));
-      // });
+      this.channels.forEach((versions,channel,d)=> {
+        d.set(channel,versions.sort((a, b) => {
+          const ord = { desc: 1, asc: -1 };
+          return compareSemVer(b['version'], a['version']) * ord[this.order];
+        }));
+      });
     }
     this.render();
   }
