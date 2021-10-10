@@ -1,7 +1,35 @@
 import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
 
 function versionSelector(strings, csv, versions, all) {
-  return `<tr>
+  return ` <tr>
+  <td>Head</td>
+  <th scope="row">
+    <input name="${csv.packageName}" type="radio" id="${csv.version}" />
+    <label for="${csv.version}">${csv.version}</label>
+  </th>
+  <td>
+  ${csv.replaces ? `Replaces: ${csv.replaces}`:''}
+  ${csv.skips ? `Skips: ${csv.skips}`:''}
+  </td>
+  <td><!-- INACTIVE ONLY IN -->
+      <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g class="node">
+              <circle cx="20" cy="50" r="10"/>
+              <circle class="active" cx="20" cy="50" r="3"/>
+              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+          </g>
+          <g class="edges">
+              <path d="M 31 53 C 50 58, 80 60, 80 100" />
+              <path d="M 31 53 C 50 58, 90 60, 90 100" />
+          </g>
+      </svg>
+  </td>
+  <td>beta</td>
+</tr>`;
+  /*
+  <tr>
     <td><input name="${csv.packageName}" type="radio" id="${csv.version}" /></td>
     <td><label for="${csv.version}">${csv.version}</label>
       <!--<ul>
@@ -17,6 +45,7 @@ function versionSelector(strings, csv, versions, all) {
       </ul>
     </td>`:''}
   </tr>`;
+  */
 }
 
 /*
@@ -32,7 +61,7 @@ Operator Graph
         "group": "operator.open-cluster-management.io",
         "version": "v1",
         "kind": "ClusterManager",
-        "plural": "clustermanagers"
+        "plural": "cluste'rmanagers"
       }
     ],
     "version": "2.1.0",
@@ -62,24 +91,37 @@ class OperatorGraph  {
   active = false;
   inbound = false;
   outbound = false;
+  connected = false;
+  graph = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   /*
-  Base SVG
-
+  Base Style
+  .node {
+      fill: transparent;
+      stroke-width: 3;
+      stroke: #ccc;
+  }
+  .edges {
+      fill: transparent;
+      stroke-width: 3;
+      stroke: #369;
+  }
+  .inbound, .outbound, .active { display: none; }
+  [active] .node { stroke: #090;}
+  [active] .active { display: block; }
+  [inbound] .inbound, [outbound] .outbound { display: block; }
+  [connect] .node { stroke: #369; }
   
   Base Node Group
-  <g id="node" stroke="grey" fill="transparent" stroke-width="3">
+  <g id="node">
     <circle cx="20" cy="50" r="10"/>
-    <circle cx="20" cy="50" r="3" fill="green" />
-
-    <line x1="10" y1="50" x2="30" y2="50"/>
-    <line x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-    
-    <line x1="10" y1="50" x2="30" y2="50"/>
-    <line x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+    <circle class="active" cx="20" cy="50" r="3"/>
+    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
   </g>
 
   Base Edge Group
-  <g id="edges" stroke="blue" fill="transparent" stroke-width="3">
+  <g id="edges">
   */
 }
 

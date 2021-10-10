@@ -3,22 +3,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CPXOperatorGraph = void 0;
 const semver_parser_1 = require("https://cdn.skypack.dev/semver-parser");
 function versionSelector(strings, csv, versions, all) {
-    return `<tr>
-    <td><input name="${csv.packageName}" type="radio" id="${csv.version}" /></td>
-    <td><label for="${csv.version}">${csv.version}</label>
-      <!--<ul>
-        ${csv.replaces ? `<li>Replaces: ${csv.replaces}</li>` : ''}
-        ${csv.skips ? `<li>Skips: ${csv.skips}</li>` : ''}
-        <li>Channel: ${csv.channelName}</li>
-      </ul>-->
-    </td>
-    <td></td>
-    ${all || true ? `<td>
-      <ul>
-        <li>${[...versions]}</li>
-      </ul>
-    </td>` : ''}
-  </tr>`;
+    return ` <tr>
+  <td>Head</td>
+  <th scope="row">
+    <input name="${csv.packageName}" type="radio" id="${csv.version}" />
+    <label for="${csv.version}">${csv.version}</label>
+  </th>
+  <td>
+  ${csv.replaces ? `Replaces: ${csv.replaces}` : ''}
+  ${csv.skips ? `Skips: ${csv.skips}` : ''}
+  </td>
+  <td><!-- INACTIVE ONLY IN -->
+      <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g class="node">
+              <circle cx="20" cy="50" r="10"/>
+              <circle class="active" cx="20" cy="50" r="3"/>
+              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+          </g>
+          <g class="edges">
+              <path d="M 31 53 C 50 58, 80 60, 80 100" />
+              <path d="M 31 53 C 50 58, 90 60, 90 100" />
+          </g>
+      </svg>
+  </td>
+  <td>beta</td>
+</tr>`;
 }
 function setCurve(edge) {
     const edgeVerticalLength = edge.source().renderedPosition('x') - edge.target().renderedPosition('x');
@@ -52,6 +63,18 @@ class OperatorGraph {
             configurable: true,
             writable: true,
             value: false
+        });
+        Object.defineProperty(this, "connected", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "graph", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         });
     }
 }
