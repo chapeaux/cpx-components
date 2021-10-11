@@ -1,22 +1,71 @@
-import cytoscape from "https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.esm.min.js";
 import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
+const tmpl = `<style>
+.node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #ccc); }
+.edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#369); }
+.inbound, .outbound, .active { display: none; }
+[active] .node { stroke: var(--cpxOGActiveColor,#090); }
+[active] .active, [inbound] .inbound, [outbound] .outbound { display: block; }
+[connect] .node { stroke: var(--cpxOGConnectedColor,#00F); }
+
+table { table-layout: fixed; max-width: 100%; width: 100%; border-collapse: collapse; border-spacing: 0; }
+thead th:nth-child(1) { width: 5%; }
+thead th:nth-child(2) { width: 25%; text-align:left; }
+thead th:nth-child(3) { width: 25%; }
+thead th:nth-child(4) { width: 25%; text-align: left; }
+thead th:nth-child(5) { width: 20%; text-align: left; }
+tr { border-bottom: 1px solid #999; }
+td { padding: 0; }
+tbody td:nth-child(1) {}
+tbody th:nth-child(2) { color: #369; text-align: left; }
+tbody td:nth-child(3) { text-align: right; }
+tbody td:nth-child(4) {}
+tbody td:nth-child(5) {}
+svg { display: block; max-width: 100px; }
+</style>
+<section>
+<h3>Channel</h3>
+<pfe-select><select id="channels"></select></pfe-select>
+<input type="checkbox" name="all-channels" value="all" id="all-channels">
+<label for="all-channels">All operator versions</label>
+<table>
+    <caption></caption>
+    <thead><tr>
+    <th scope="col"></th>
+    <th scope="col">Version</th>
+    <th scope="col"></th>
+    <th scope="col">Update Paths</th>
+    <th scope="col">Other Available Channels</th>
+    </tr></thead>
+    <tbody></tbody>
+</table>`;
 function versionSelector(strings, csv, versions, all) {
     return `<tr>
-    <td><input name="${csv.packageName}" type="radio" id="${csv.version}" /></td>
-    <td><label for="${csv.version}">${csv.version}</label>
-      <!--<ul>
-        ${csv.replaces ? `<li>Replaces: ${csv.replaces}</li>` : ''}
-        ${csv.skips ? `<li>Skips: ${csv.skips}</li>` : ''}
-        <li>Channel: ${csv.channelName}</li>
-      </ul>-->
-    </td>
-    <td></td>
-    ${all || true ? `<td>
-      <ul>
-        <li>${[...versions]}</li>
-      </ul>
-    </td>` : ''}
-  </tr>`;
+  <td>Head</td>
+  <th scope="row">
+    <input name="${csv.packageName}" type="radio" id="${csv.version}" />
+    <label for="${csv.version}">${csv.version}</label>
+  </th>
+  <td>
+  ${csv.replaces ? `Replaces: ${csv.replaces}` : ''}
+  ${csv.skips ? `Skips: ${csv.skips}` : ''}
+  </td>
+  <td><!-- INACTIVE ONLY IN -->
+      <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g class="node">
+              <circle cx="20" cy="50" r="10"/>
+              <circle class="active" cx="20" cy="50" r="3"/>
+              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+          </g>
+          <g class="edges">
+              <path d="M 31 53 C 50 58, 80 60, 80 100" />
+              <path d="M 31 53 C 50 58, 90 60, 90 100" />
+          </g>
+      </svg>
+  </td>
+  <td>beta</td>
+</tr>`;
 }
 function setCurve(edge) {
     const edgeVerticalLength = edge.source().renderedPosition('x') - edge.target().renderedPosition('x');
@@ -30,6 +79,40 @@ class OperatorVersion {
 class OperatorPackage {
 }
 class OperatorChannel {
+}
+class OperatorGraph {
+    constructor() {
+        Object.defineProperty(this, "active", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "inbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "outbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "connected", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "graph", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        });
+    }
 }
 class OperatorBundle {
     constructor() {
@@ -45,6 +128,12 @@ class OperatorBundle {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "index", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
     }
     getVersions() { }
     getChannels() { }
@@ -52,18 +141,6 @@ class OperatorBundle {
 export class CPXOperatorGraph extends HTMLElement {
     constructor(url) {
         super();
-        Object.defineProperty(this, "template", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "cy", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
         Object.defineProperty(this, "_url", {
             enumerable: true,
             configurable: true,
@@ -118,8 +195,13 @@ export class CPXOperatorGraph extends HTMLElement {
             writable: true,
             value: new Map()
         });
+        Object.defineProperty(this, "_body", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this.attachShadow({ mode: "open" });
-        this.template = this.querySelector("template").cloneNode(true);
     }
     static get tag() {
         return "cpx-operator-graph";
@@ -145,6 +227,32 @@ export class CPXOperatorGraph extends HTMLElement {
         if (this._data === val)
             return;
         this._data = val;
+        if (this._data) {
+            this._data.map(csv => {
+                if (!this.versions.has(csv.version)) {
+                    this.versions.set(csv.version, new Set(csv.version));
+                }
+                else {
+                    if (!this.versions.get(csv.version).has(csv.version)) {
+                        this.versions.get(csv.version).add(csv.version);
+                    }
+                }
+                if (this.channels.has(csv.channelName)) {
+                    let channelInfo = this.channels.get(csv.channelName);
+                    channelInfo.push(csv);
+                    this.channels.set(csv.channelName, channelInfo);
+                }
+                else {
+                    this.channels.set(csv.channelName, [csv]);
+                }
+            });
+            this.channels.forEach((versions, channel, d) => {
+                d.set(channel, versions.sort((a, b) => {
+                    const ord = { desc: 1, asc: -1 };
+                    return compareSemVer(b['version'], a['version']) * ord[this.order];
+                }));
+            });
+        }
         this.render();
     }
     get filter() {
@@ -206,8 +314,13 @@ export class CPXOperatorGraph extends HTMLElement {
             return;
         this._versions = val;
     }
+    get body() {
+        if (!this._body) {
+            this._body = this.shadowRoot.querySelector('tbody');
+        }
+        return this._body;
+    }
     connectedCallback() {
-        this.shadowRoot.appendChild(this.template.content.cloneNode(true));
         this.addEventListener('pfe-select:change', evt => this.channel = evt['detail'].value);
     }
     static get observedAttributes() {
@@ -217,96 +330,25 @@ export class CPXOperatorGraph extends HTMLElement {
         this[name] = newVal;
     }
     render(all) {
-        if (this.data && this.filter !== "" && this.query !== "") {
-            const filteredData = this._data.filter((d) => d[this.filter] === this.query);
-            filteredData.map(csv => {
-                if (this.channels.has(csv.channelName)) {
-                    let channelInfo = this.channels.get(csv.channelName);
-                    channelInfo.push(csv);
-                    this.channels.set(csv.channelName, channelInfo);
-                }
-                else {
-                    this.channels.set(csv.channelName, [csv]);
-                }
-            });
-            this.channels.forEach((versions, channel, d) => {
-                d.set(channel, versions.sort((a, b) => {
-                    const ord = { desc: 1, asc: -1 };
-                    return compareSemVer(b['version'], a['version']) * ord[this.order];
-                }));
-            });
-        }
-        if (this.channels.size > 0) {
-            this.template = this.querySelector("template").cloneNode(true);
-            const channelSelect = this.template.content.querySelector('#channels');
-            [...this.channels.keys()].forEach(channel => {
-                const opt = document.createElement('option');
-                opt.innerHTML = channel;
-                opt.setAttribute('value', channel);
-                if (this.channel === channel) {
-                    opt.setAttribute('selected', 'selected');
-                }
-                channelSelect.appendChild(opt);
-            });
-            const versionsNode = this.template.content.querySelector('[data-repeat="versions"]');
-            this.channels.get(this.channel).forEach(csv => {
-                versionsNode.innerHTML += versionSelector `${csv}${this.versions}${all}`;
-            });
-            const graphImg = versionsNode.querySelector('tr td:nth-child(3)');
-            graphImg.id = 'graph';
-            graphImg.setAttribute('rowspan', [...this.channels.get(this.channel)].length.toString());
-            graphImg.innerHTML = '<div id="cy"></div>';
-            while (this.shadowRoot.firstChild) {
-                this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-            }
-            this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-            this.cy = cytoscape({
-                container: this.shadowRoot.querySelector("#cy"),
-                elements: [...this.channels.get(this.channel)].reduce((a, csv) => {
-                    a = a.concat([{ data: { id: csv.csvName } }]);
-                    if (csv.replaces) {
-                        a = a.concat([{ data: {
-                                    id: csv.csvName + 'replace',
-                                    source: csv.replaces,
-                                    target: csv.csvName,
-                                    controlPointDistances: '0  0'
-                                }
-                            }]);
-                    }
-                    return a;
-                }, []),
-                zoomingEnabled: false,
-                panningEnabled: false,
-                boxSelectionEnabled: false,
-                autoungrabify: true,
-                style: [
-                    {
-                        selector: "node",
-                        style: {
-                            "width": 25,
-                            "height": 25,
-                            "background-color": "#fff",
-                            "border-width": 3,
-                            "border-color": "#00F",
-                        },
-                    },
-                    {
-                        selector: "edge",
-                        style: {
-                            "width": 3,
-                            "line-color": "#00F",
-                            "curve-style": "unbundled-bezier",
-                            'control-point-weights': '0.1 0.2 0.5 0.8 0.9',
-                            'control-point-distances': '30 40 40 40 30'
-                        }
-                    },
-                ],
-                layout: {
-                    name: "grid",
-                    columns: 1,
-                },
-            });
-        }
+        this.shadowRoot.innerHTML = tmpl;
+        this.channels.get(this.channel).map(d => {
+            let row = document.createElement('tr');
+            row.innerHTML = `<td></td>
+      <th scope="row">${d['version']}</th>
+      <td>${d['replaces'] || ''}</td>
+      <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g class="node">
+            <circle cx="20" cy="50" r="10"/>
+            <circle class="active" cx="20" cy="50" r="3"/>
+            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+        </g>
+        <g class="edges"></g>
+      </svg></td>
+      <td>${d['channels'] || ''}</td>`;
+            this.body.appendChild(row);
+        });
     }
 }
 window.customElements.define(CPXOperatorGraph.tag, CPXOperatorGraph);

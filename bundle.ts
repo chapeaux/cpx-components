@@ -22,7 +22,7 @@ async function browserEmit(path: string) {
   //console.log(Object.keys(files));  
   Object.keys(files).map(file => {
     //console.info('Browser Emit:',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
-    if (!fileFilter.test(file) && mapFilter.test(file) && !jsFilter.test(file)) {
+    if (!fileFilter.test(file) && (mapFilter.test(file) || jsFilter.test(file))) {
       const newFileName = file.replace("file://","").replace("/src", "").replace(".ts", "");
       //console.log('Browser',newFileName);
       Deno.writeTextFile(

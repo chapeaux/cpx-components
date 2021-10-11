@@ -6,226 +6,178 @@
     <title>Chapeaux Operator Graph Component</title>
     <style>
         :root {
-            --connectionColor: #36F;
-            --activeColor: #090;
-            --disconnectedColor: #ccc;
-            --strokeWidth: 3;
+            --cpxOGConnectedColor: #36F;
+            --cpxOGActiveColor: #090;
+            --cpxOGDisconnectedColor: #ccc;
+            --cpxOGStrokeWidth: 3;
         }
-        .node {
-            fill: transparent;
-            stroke-width:  var(--strokeWidth,3);
-            stroke: var(--disconnectedColor, #ccc);
-        }
-        .edges {
-            fill: transparent;
-            stroke-width: var(--strokeWidth,3);
-            stroke: var(--connectionColor,#369);
-        }
-        .inbound, .outbound, .active { display: none; }
-        [active] .node { stroke: var(--activeColor,#090); }
-        [active] .active { display: block; }
-        [inbound] .inbound, [outbound] .outbound { display: block; }
-        [connect] .node { stroke: var(--connectionColor,#00F); }
-        
-        table {
-            table-layout: fixed;
-            max-width: 100%;
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        thead th:nth-child(1) { width: 5%; }
-        thead th:nth-child(2) { width: 25%; text-align:left; }
-        thead th:nth-child(3) { width: 25%; }
-        thead th:nth-child(4) { width: 25%; text-align: left; }
-        thead th:nth-child(5) { width: 20%; text-align: left; }
-        tr { border-bottom: 1px solid #999; }
-        td { padding: 0; }
-        tbody td:nth-child(1) {}
-        tbody th:nth-child(2) { color: #369; text-align: left; }
-        tbody td:nth-child(3) { text-align: right; }
-        tbody td:nth-child(4) {}
-        tbody td:nth-child(5) {}
-        svg { display: block; max-width: 100px; }
     </style>
 </head>
 <body>
-    <cpx-operator-graph channel="stable" sort="version" order="desc" url="https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==redhat-marketplace;package==instana-agent-rhmp">
-        <template>
-            <style>
-                .node {
-                    fill: transparent;
-                    stroke-width:  var(--strokeWidth,3);
-                    stroke: var(--disconnectedColor, #ccc);
-                }
-                .edges {
-                    fill: transparent;
-                    stroke-width: var(--strokeWidth,3);
-                    stroke: var(--connectionColor,#369);
-                }
-                .inbound, .outbound, .active { display: none; }
-                [active] .node { stroke: var(--activeColor,#090); }
-                [active] .active { display: block; }
-                [inbound] .inbound, [outbound] .outbound { display: block; }
-                [connect] .node { stroke: var(--connectionColor,#00F); }
-                
-                table {
-                    table-layout: fixed;
-                    max-width: 100%;
-                    width: 100%;
-                    border-collapse: collapse;
-                    border-spacing: 0;
-                }
-                thead th:nth-child(1) { width: 5%; }
-                thead th:nth-child(2) { width: 25%; text-align:left; }
-                thead th:nth-child(3) { width: 25%; }
-                thead th:nth-child(4) { width: 25%; text-align: left; }
-                thead th:nth-child(5) { width: 20%; text-align: left; }
-                tr { border-bottom: 1px solid #999; }
-                td { padding: 0; }
-                tbody td:nth-child(1) {}
-                tbody th:nth-child(2) { color: #369; text-align: left; }
-                tbody td:nth-child(3) { text-align: right; }
-                tbody td:nth-child(4) {}
-                tbody td:nth-child(5) {}
-                svg { display: block; max-width: 100px; }
-            </style>
-            <section>
-                <h3>Channel</h3>
-                <pfe-select><select id="channels"></select></pfe-select>
-                <input type="checkbox" name="all-channels" value="all" id="all-channels">
-                <label for="all-channels">All operator versions</label>
-                <table>
-                    <caption></caption>
-                    <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Version</th>
-                        <th scope="col"></th>
-                        <th scope="col">Update Paths</th>
-                        <th scope="col">Other Available Channels</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Head</td>
-                            <th scope="row">1.6.0</th>
-                            <td>Replaces 1.4.4</td>
-                            <td><!-- INACTIVE ONLY IN -->
-                                <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <g class="node">
-                                        <circle cx="20" cy="50" r="10"/>
-                                        <circle class="active" cx="20" cy="50" r="3"/>
-                                        <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                                        <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                                        <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-                                    </g>
-                                    <g class="edges">
-                                        <path d="M 31 53 C 50 58, 80 60, 80 100" />
-                                        <path d="M 31 53 C 50 58, 90 60, 90 100" />
-                                    </g>
-                                </svg>
-                            </td>
-                            <td>beta</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <th scope="row">1.6.0</th>
-                            <td></td>
-                            <td><!-- INACTIVE IN/OUT -->
-                                <svg connect viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <g class="node">
-                                        <circle cx="20" cy="50" r="10"/>
-                                        <circle class="active" cx="20" cy="50" r="3"/>
-                                        <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                                        <line class="outbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                                        <line class="inbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-                                    </g>
-                                    <g class="edges">
-                                        <path d="M 31 53 C 50 58, 70 60, 70 100"/>
-                                        <line x1="80" y1="100" x2="80" y2="0"/>
-                                        <line x1="90" y1="100" x2="90" y2="0"/>
-                                    </g>
-                                </svg>
-                            </td>
-                            <td>beta</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <th scope="row">1.6.0</th>
-                            <td></td>
-                            <td><!-- ACTIVE ONLY OUT -->
-                                <svg outbound active viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <g class="node">
-                                        <circle cx="20" cy="50" r="10"/>
-                                        <circle class="active" cx="20" cy="50" r="3"/>
-                                        <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                                        <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                                        <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-                                    </g>
-                                    <g class="edges">
-                                        <path d="M 31 47 C 50 42, 70 40, 70 0"/>
-                                        <path d="M 31 47 C 50 42, 80 40, 80 0"/>
-                                        <path d="M 31 47 C 50 42, 90 40, 90 0"/>
-                                    </g>
-                                </svg>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <th scope="row">1.6.0</th>
-                            <td></td>
-                            <td><!-- ACTIVE BOTH IN/OUT -->
-                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <g class="node">
-                                        <circle cx="20" cy="50" r="10"/>
-                                        <circle class="active" cx="20" cy="50" r="3"/>
-                                        <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                                        <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                                        <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-                                    </g>
-                                </svg>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <th scope="row">1.6.0</th>
-                            <td></td>
-                            <td><!-- INACTIVE ONLY OUT -->
-                                <svg outbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <g class="node">
-                                        <circle cx="20" cy="50" r="10"/>
-                                        <circle class="active" cx="20" cy="50" r="3"/>
-                                        <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                                        <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                                        <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-                                    </g>
-                                </svg>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                    <tfoot data-repeat="versions"></tfoot>
-                </table>
-                <table>
-                    <thead>
-                        <tr>
-                            <td></td>
-                            <th>Version</th>
-                            <th>Update paths</th>
-                            <th data-channel="all">Available channels</th>
-                        </tr>
-                    </thead>
-                    <tbody data-repeat="versions"></tbody>
-                </table>
-            </section>
-        </template>
-    </cpx-operator-graph>
+    <cpx-operator-graph channel="stable" sort="version" order="desc" url="https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==redhat-marketplace;package==instana-agent-rhmp"></cpx-operator-graph>
     <script type="module" src="/cpx-operator-graph/demo/pfelement.js"></script>
     <script type="module" src="/cpx-operator-graph/demo/pfe-select.js"></script>
     <script type="module" src="/cpx-operator-graph/cpx-operator-graph.js"></script>
+    <template>
+        <style>
+            .node {
+                fill: transparent;
+                stroke-width:  var(--strokeWidth,3);
+                stroke: var(--disconnectedColor, #ccc);
+            }
+            .edges {
+                fill: transparent;
+                stroke-width: var(--strokeWidth,3);
+                stroke: var(--connectionColor,#369);
+            }
+            .inbound, .outbound, .active { display: none; }
+            [active] .node { stroke: var(--activeColor,#090); }
+            [active] .active { display: block; }
+            [inbound] .inbound, [outbound] .outbound { display: block; }
+            [connect] .node { stroke: var(--connectionColor,#00F); }
+            
+            table {
+                table-layout: fixed;
+                max-width: 100%;
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+            thead th:nth-child(1) { width: 5%; }
+            thead th:nth-child(2) { width: 25%; text-align:left; }
+            thead th:nth-child(3) { width: 25%; }
+            thead th:nth-child(4) { width: 25%; text-align: left; }
+            thead th:nth-child(5) { width: 20%; text-align: left; }
+            tr { border-bottom: 1px solid #999; }
+            td { padding: 0; }
+            tbody td:nth-child(1) {}
+            tbody th:nth-child(2) { color: #369; text-align: left; }
+            tbody td:nth-child(3) { text-align: right; }
+            tbody td:nth-child(4) {}
+            tbody td:nth-child(5) {}
+            svg { display: block; max-width: 100px; }
+        </style>
+        <section>
+            <h3>Channel</h3>
+            <pfe-select><select id="channels"></select></pfe-select>
+            <input type="checkbox" name="all-channels" value="all" id="all-channels">
+            <label for="all-channels">All operator versions</label>
+            <table>
+                <caption></caption>
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Version</th>
+                    <th scope="col"></th>
+                    <th scope="col">Update Paths</th>
+                    <th scope="col">Other Available Channels</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Head</td>
+                        <th scope="row">1.6.0</th>
+                        <td>Replaces 1.4.4</td>
+                        <td><!-- INACTIVE ONLY IN -->
+                            <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="node">
+                                    <circle cx="20" cy="50" r="10"/>
+                                    <circle class="active" cx="20" cy="50" r="3"/>
+                                    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                                    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                                    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+                                </g>
+                                <g class="edges">
+                                    <path d="M 31 53 C 50 58, 80 60, 80 100" />
+                                    <path d="M 31 53 C 50 58, 90 60, 90 100" />
+                                </g>
+                            </svg>
+                        </td>
+                        <td>beta</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">1.6.0</th>
+                        <td></td>
+                        <td><!-- INACTIVE IN/OUT -->
+                            <svg connect viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="node">
+                                    <circle cx="20" cy="50" r="10"/>
+                                    <circle class="active" cx="20" cy="50" r="3"/>
+                                    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                                    <line class="outbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                                    <line class="inbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+                                </g>
+                                <g class="edges">
+                                    <path d="M 31 53 C 50 58, 70 60, 70 100"/>
+                                    <line x1="80" y1="100" x2="80" y2="0"/>
+                                    <line x1="90" y1="100" x2="90" y2="0"/>
+                                </g>
+                            </svg>
+                        </td>
+                        <td>beta</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">1.6.0</th>
+                        <td></td>
+                        <td><!-- ACTIVE ONLY OUT -->
+                            <svg outbound active viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="node">
+                                    <circle cx="20" cy="50" r="10"/>
+                                    <circle class="active" cx="20" cy="50" r="3"/>
+                                    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                                    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                                    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+                                </g>
+                                <g class="edges">
+                                    <path d="M 31 47 C 50 42, 70 40, 70 0"/>
+                                    <path d="M 31 47 C 50 42, 80 40, 80 0"/>
+                                    <path d="M 31 47 C 50 42, 90 40, 90 0"/>
+                                </g>
+                            </svg>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">1.6.0</th>
+                        <td></td>
+                        <td><!-- ACTIVE BOTH IN/OUT -->
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="node">
+                                    <circle cx="20" cy="50" r="10"/>
+                                    <circle class="active" cx="20" cy="50" r="3"/>
+                                    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                                    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                                    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+                                </g>
+                            </svg>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">1.6.0</th>
+                        <td></td>
+                        <td><!-- INACTIVE ONLY OUT -->
+                            <svg outbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="node">
+                                    <circle cx="20" cy="50" r="10"/>
+                                    <circle class="active" cx="20" cy="50" r="3"/>
+                                    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                                    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                                    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+                                </g>
+                            </svg>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                <tfoot data-repeat="versions"></tfoot>
+            </table>
+        </section>
+    </template>
 </body>
 </html>
 
