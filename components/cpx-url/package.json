@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-url",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Chapeaux URL Component",
   "type": "module",
   "main": "cpx-url.js",

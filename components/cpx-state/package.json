@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-state",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Chapeaux State Management Component",
   "type": "module",
   "main": "cpx-state.js",
