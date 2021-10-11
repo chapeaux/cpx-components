@@ -2,17 +2,20 @@ const mapFilter = /\.map$/;
 const fileFilter = /^http/;
 const jsFilter = /\.js$/;
 const declarationFilter = /\.d.ts$/;
+const importMapPath = './import_map.json';
 
 async function browserEmit(path: string) {
   //console.info('Browser Path',path);
   let { files, diagnostics } = await Deno.emit(path, {
     check: true,
+    importMapPath: importMapPath,
     compilerOptions: {
       lib: ["es6", "es2021", "dom"],
       strict: false,
       module: "es6",
       target: "es6",
-      declaration: true
+      declaration: true,
+      sourceMap: false
     },
   });
   
@@ -34,6 +37,7 @@ async function browserEmit(path: string) {
 
   ({ files, diagnostics } = await Deno.emit(path, {
     check: true,
+    importMapPath: importMapPath,
     compilerOptions: {
       lib: ["es6","es2021","dom"],
       strict: false,

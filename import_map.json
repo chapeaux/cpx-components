@@ -1,0 +1,5 @@
+{
+    "imports": {
+        "semver-parser": "https://cdn.skypack.dev/semver-parser"
+    }
+}

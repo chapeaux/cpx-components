@@ -29,5 +29,8 @@
     "access": "public"
   },
   "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-operator-graph",
-  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
+  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d",
+  "dependencies": {
+    "semver-parser": "^4.0.0"
+  }
 }

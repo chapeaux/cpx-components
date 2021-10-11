@@ -6,6 +6,7 @@ const tmpl = `<style>
 .inbound, .outbound, .active { display: none; }
 [active] .node { stroke: var(--cpxOGActiveColor,#090); }
 [active] .active, [inbound] .inbound, [outbound] .outbound { display: block; }
+[active] .active { fill: var(--cpxOGActiveColor, #090); }
 [connect] .node { stroke: var(--cpxOGConnectedColor,#00F); }
 
 table { table-layout: fixed; max-width: 100%; width: 100%; border-collapse: collapse; border-spacing: 0; }
@@ -219,12 +220,12 @@ export class CPXOperatorGraph extends HTMLElement {
             this.versions.get(csv.version).add(csv.version);
           }
         }
-        if (this.channels.has(csv.channelName)) {
-          let channelInfo = this.channels.get(csv.channelName);
+        if (this.channels.has(csv.channel_name)) {
+          const channelInfo = this.channels.get(csv.channel_name);
           channelInfo.push(csv);
-          this.channels.set(csv.channelName, channelInfo);
+          this.channels.set(csv.channel_name, channelInfo);
         } else {
-          this.channels.set(csv.channelName, [csv]);
+          this.channels.set(csv.channel_name, [csv]);
         }
       });
 
@@ -286,7 +287,7 @@ export class CPXOperatorGraph extends HTMLElement {
     this.render();
   }
 
-  _channels = new Map<string,any>();
+  _channels = new Map<string,Array<unknown>>();
   get channels() {
     return this._channels;
   }
@@ -320,6 +321,7 @@ export class CPXOperatorGraph extends HTMLElement {
   connectedCallback() {
     //this.template = this.querySelector('template') as HTMLTemplateElement;
     this.addEventListener('pfe-select:change', evt=>this.channel=evt['detail'].value);
+    //this.shadowRoot.addEventListener('click', evt=>console.log(evt.target));
   }
 
   static get observedAttributes() {
@@ -328,6 +330,16 @@ export class CPXOperatorGraph extends HTMLElement {
 
   attributeChangedCallback(name: string, oldVal, newVal: any) {
     this[name] = newVal;
+  }
+
+  handleClick(id) {
+    return (e) => {
+      const active = this.shadowRoot.querySelector('[active]');
+      if (active) {
+        active.removeAttribute('active');
+      }
+      this.shadowRoot.getElementById(id).setAttribute('active','');
+    }
   }
 
   render(all?:boolean) {
@@ -339,24 +351,29 @@ export class CPXOperatorGraph extends HTMLElement {
     */
     this.shadowRoot.innerHTML = tmpl;
     // this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    this.channels.get(this.channel).map(d=> {
-      let row = document.createElement('tr');
-      row.innerHTML = `<td></td>
-      <th scope="row">${d['version']}</th>
-      <td>${d['replaces'] || ''}</td>
-      <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <g class="node">
-            <circle cx="20" cy="50" r="10"/>
-            <circle class="active" cx="20" cy="50" r="3"/>
-            <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-            <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-            <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-        </g>
-        <g class="edges"></g>
-      </svg></td>
-      <td>${d['channels'] || ''}</td>`;
-      this.body.appendChild(row);
-    });
+    if (this.channels.get(this.channel)) {
+      this.channels.get(this.channel).forEach(csv=> {
+        let row = document.createElement('tr');
+        row.id = csv['_id'];
+        row.onclick = this.handleClick(row.id);
+        row.innerHTML = `<td></td>
+        <th scope="row">${csv['version']}</th>
+        <td>${csv['replaces'] || ''}</td>
+        <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g class="node">
+              <circle cx="20" cy="50" r="10"/>
+              <circle class="active" cx="20" cy="50" r="3"/>
+              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+          </g>
+          <g class="edges"></g>
+        </svg></td>
+        <td>${csv['channels'] || ''}</td>`;
+        this.body.appendChild(row);
+      });
+    }
+    
     // if (this.channels.size > 0) {
     //   const channelSelect = this.template.content.querySelector('#channels');
     //   [...this.channels.keys()].forEach(channel => {
