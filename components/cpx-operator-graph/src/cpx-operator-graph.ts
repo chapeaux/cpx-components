@@ -1,34 +1,81 @@
 import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
 
 const tmpl = `<style>
-.node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #ccc); }
-.edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#369); }
+:host { font-family: Red Hat Display, sans-serif; }
+.node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
+.edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
 .inbound, .outbound, .active { display: none; }
-[active] .node { stroke: var(--cpxOGActiveColor,#090); }
+[active] .node { stroke: var(--cpxOGActiveColor,#93d434); }
 [active] .active, [inbound] .inbound, [outbound] .outbound { display: block; }
-[active] .active { fill: var(--cpxOGActiveColor, #090); }
-[connect] .node { stroke: var(--cpxOGConnectedColor,#00F); }
+[active] .active { fill: var(--cpxOGActiveColor, #93d434); }
+[connect] .node { stroke: var(--cpxOGConnectedColor,#0266c8); }
 
 table { table-layout: fixed; max-width: 100%; width: 100%; border-collapse: collapse; border-spacing: 0; }
-thead th:nth-child(1) { width: 5%; }
-thead th:nth-child(2) { width: 25%; text-align:left; }
+thead th { padding-bottom: 20px; }
+thead th:nth-child(1) { width: 8%; }
+thead th:nth-child(2) { width: 12%; text-align:left; }
 thead th:nth-child(3) { width: 25%; }
 thead th:nth-child(4) { width: 25%; text-align: left; }
-thead th:nth-child(5) { width: 20%; text-align: left; }
+thead th:nth-child(5) { width: 30%; text-align: left; }
 tr { border-bottom: 1px solid #999; }
 td { padding: 0; }
 tbody td:nth-child(1) {}
-tbody th:nth-child(2) { color: #369; text-align: left; }
+tbody th:nth-child(2) { color: var(--cpxOGConnectedColor, #0266c8); text-align: left; }
 tbody td:nth-child(3) { text-align: right; }
-tbody td:nth-child(4) {}
+tbody td:nth-child(4) { padding-left: 24px; }
 tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
+
+.toggle { line-height: 25px; padding-left: 0; font-size: 16px; position:relative; }
+input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
+label {
+  cursor: pointer;
+  text-indent: 60px;
+  font-size: 20px;
+  width: 50px;
+  height: 30px;
+  background: var(--cpxOGDisconnectedColor, #d2d2d2);
+  display: block;
+  border-radius: 25px;
+  position: absolute;
+  right: 8em;
+  top: 0;
+  white-space: nowrap;
+  line-height: 30px;
+  color: var(--cpxOGDisconnectedColor, #d2d2d2);
+}
+
+label:after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  width: 17px;
+  height: 17px;
+  background: #fff;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+input:checked + label {
+  background: var(--cpxOGConnectedColor, #0266c8);
+  color: #151515;
+}
+
+input:checked + label:after  {
+  left: calc(100% - 7px); transform: translateX(-100%); }
+label:active:after { width: 33px; }
+.options { display: grid; grid-template-columns: 50% 50%; margin-bottom: 60px; }
 </style>
 <section>
 <h3>Channel</h3>
-<pfe-select><select id="channels"></select></pfe-select>
-<input type="checkbox" name="all-channels" value="all" id="all-channels">
-<label for="all-channels">All operator versions</label>
+<div class="options">
+  <pfe-select><select id="channels"></select></pfe-select>
+  <div class="toggle">
+    <input type="checkbox" name="all-channels" value="all" id="all-channels">
+    <label for="all-channels">Show all versions</label>
+  </div>
+</div>
 <table>
     <caption></caption>
     <thead><tr>
@@ -181,14 +228,6 @@ export class CPXOperatorGraph extends HTMLElement {
     return "cpx-operator-graph";
   }
 
-  // _template = new HTMLTemplateElement();
-  // get template() {
-  //   return this._template;
-  // }
-  // set template(val) {
-  //   this._template = val;
-  // }
-
   _url = "";
   get url() {
     return this._url;
@@ -236,38 +275,23 @@ export class CPXOperatorGraph extends HTMLElement {
         }));
       });
     }
+    
+    this.shadowRoot.innerHTML = tmpl;
     this.render();
+    if (this.channels.size > 0) {
+      const channelSelect = this.shadowRoot.querySelector('#channels');
+      [...this.channels.keys()].forEach(channel => {
+        const opt = document.createElement('option');
+        opt.innerHTML = channel;
+        opt.setAttribute('value',channel);
+        if (this.channel === channel) { opt.setAttribute('selected', 'selected'); }
+        channelSelect.appendChild(opt);
+      });
+    }
+    
   }
 
-  _filter = "";
-  get filter() {
-    return this._filter;
-  }
-  set filter(val) {
-    if (this._filter === val) return;
-    this._filter = val;
-    this.render();
-  }
-
-  _query = "";
-  get query() {
-    return this._query;
-  }
-  set query(val) {
-    if (this._query === val) return;
-    this._query = val;
-  }
-
-  _sort = "";
-  get sort() {
-    return this._sort;
-  }
-  set sort(val) {
-    if (this._sort === val) return;
-    this._sort = val;
-  }
-
-  _order = "asc";
+  _order = "desc";
   get order() {
     return this._order;
   }
@@ -278,7 +302,7 @@ export class CPXOperatorGraph extends HTMLElement {
 
   _channel = "";
   get channel() {
-    return this._channel;
+    return this._channel !== "" ? this._channel : [...this.channels.keys()][0];
   }
   set channel(val) {
     if (this._channel === val) return;
@@ -343,35 +367,35 @@ export class CPXOperatorGraph extends HTMLElement {
   }
 
   render(all?:boolean) {
-    /*
-        Template Parsing
-        data-key = in the scope, place the data[key] in any delimiter
-        data-repeat = iterate over the scoped item
-        data-group = iterate and group on key
-    */
-    this.shadowRoot.innerHTML = tmpl;
     // this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    if (this.channels.get(this.channel)) {
-      this.channels.get(this.channel).forEach(csv=> {
-        let row = document.createElement('tr');
-        row.id = csv['_id'];
-        row.onclick = this.handleClick(row.id);
-        row.innerHTML = `<td></td>
-        <th scope="row">${csv['version']}</th>
-        <td>${csv['replaces'] || ''}</td>
-        <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <g class="node">
-              <circle cx="20" cy="50" r="10"/>
-              <circle class="active" cx="20" cy="50" r="3"/>
-              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-          </g>
-          <g class="edges"></g>
-        </svg></td>
-        <td>${csv['channels'] || ''}</td>`;
-        this.body.appendChild(row);
-      });
+    if (this.channels.size > 0) {
+      if (!all) {
+        if (this.channels.get(this.channel)) {
+          while (this.body.firstChild) {
+            this.body.removeChild(this.body.firstChild);
+          }
+          this.channels.get(this.channel).forEach(csv=> {
+            const row = document.createElement('tr');
+            row.id = csv['_id'];
+            row.onclick = this.handleClick(row.id);
+            row.innerHTML = `<td></td>
+            <th scope="row">${csv['version']}</th>
+            <td>${csv['replaces'] || ''}</td>
+            <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <g class="node">
+                  <circle cx="20" cy="50" r="10"/>
+                  <circle class="active" cx="20" cy="50" r="3"/>
+                  <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                  <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                  <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+              </g>
+              <g class="edges"></g>
+            </svg></td>
+            <td>${csv['channels'] || ''}</td>`;
+            this.body.appendChild(row);
+          });
+        }
+      }
     }
     
     // if (this.channels.size > 0) {
@@ -404,3 +428,7 @@ export class CPXOperatorGraph extends HTMLElement {
 }
 
 window.customElements.define(CPXOperatorGraph.tag, CPXOperatorGraph);
+document.dispatchEvent(new CustomEvent("cpx-operator-graph-ready", {
+  composed: true,
+  bubbles: true,
+}));
