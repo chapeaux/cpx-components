@@ -61,12 +61,15 @@ input:checked + label {
   color: #151515;
 }
 
-input:checked + label:after  {
-  left: calc(100% - 7px); transform: translateX(-100%); }
+input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
 label:active:after { width: 33px; }
 .options { display: grid; grid-template-columns: 50% 50%; margin-bottom: 60px; }
 </style>
 <section>
+<h3>OpenShift Version</h3>
+<div class="options">
+  <pfe-select><select id="ocp_versions"></select></pfe-select>
+</div>
 <h3>Channel</h3>
 <div class="options">
   <pfe-select><select id="channels"></select></pfe-select>

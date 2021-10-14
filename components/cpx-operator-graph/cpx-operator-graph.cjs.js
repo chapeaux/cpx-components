@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CPXOperatorGraph = void 0;
-const semver_parser_1 = require("https://cdn.skypack.dev/semver-parser");
+const semver_parser_1 = require("semver-parser");
 const tmpl = `<style>
 :host { font-family: Red Hat Display, sans-serif; }
 .node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
@@ -64,12 +64,15 @@ input:checked + label {
   color: #151515;
 }
 
-input:checked + label:after  {
-  left: calc(100% - 7px); transform: translateX(-100%); }
+input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
 label:active:after { width: 33px; }
 .options { display: grid; grid-template-columns: 50% 50%; margin-bottom: 60px; }
 </style>
 <section>
+<h3>OpenShift Version</h3>
+<div class="options">
+  <pfe-select><select id="ocp_versions"></select></pfe-select>
+</div>
 <h3>Channel</h3>
 <div class="options">
   <pfe-select><select id="channels"></select></pfe-select>
