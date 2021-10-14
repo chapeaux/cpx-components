@@ -1,6 +1,13 @@
-import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
 const tmpl = `<style>
-:host { font-family: Red Hat Display, sans-serif; }
+:host { 
+  font-family: var(--cpxOGFontFamily, 'Red Hat Display', sans-serif);
+  font-size: var(--cpxOGFontSize, 16px );
+}
+h3 { 
+  font-family: var(--cpxOGH3FontFamily, 'Red Hat Display', sans-serif);
+  font-weight: medium; 
+  font-size: var(--cpxOGH3FontSize, 20px); 
+}
 .node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
 .edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
 .inbound, .outbound, .active { display: none; }
@@ -20,17 +27,18 @@ tr { border-bottom: 1px solid #999; }
 td { padding: 0; }
 tbody td:nth-child(1) {}
 tbody th:nth-child(2) { color: var(--cpxOGConnectedColor, #0266c8); text-align: left; }
+tbody [active] th:nth-child(2) { color: #333; font-weight: normal; }
 tbody td:nth-child(3) { text-align: right; }
 tbody td:nth-child(4) { padding-left: 24px; }
 tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
 
-.toggle { line-height: 25px; padding-left: 0; font-size: 16px; position:relative; }
+.toggle { line-height: 25px; padding-left: 0; font-size: var(--cpxOGToggleFontSize, 16px); position:relative; }
 input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
 label {
   cursor: pointer;
   text-indent: 60px;
-  font-size: 20px;
+  font-size: var(--cpxOGToggleFontSize, 16px);
   width: 50px;
   height: 30px;
   background: var(--cpxOGDisconnectedColor, #d2d2d2);
@@ -125,7 +133,74 @@ function setCurve(edge) {
     const controlPointDistances = [controlPointDistance, -1 * controlPointDistance];
     edge.data('controlPointDistances', controlPointDistances.join(' '));
 }
+class SkipRange {
+    constructor(range) {
+        Object.defineProperty(this, "min", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "max", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        range.split(' ');
+    }
+}
 class OperatorVersion {
+    constructor() {
+        Object.defineProperty(this, "channel_name", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "csv_name", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "latest_in_channel", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "ocp_version", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "version", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "skips", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "skip_range", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "replaces", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
 }
 class OperatorPackage {
 }
@@ -166,25 +241,33 @@ class OperatorGraph {
     }
 }
 class OperatorBundle {
-    constructor() {
+    constructor(data) {
         Object.defineProperty(this, "versions", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: new Set()
+            value: new Map()
         });
         Object.defineProperty(this, "channels", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: new Map()
         });
-        Object.defineProperty(this, "index", {
+        Object.defineProperty(this, "indices", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: new Map()
         });
+        data.map(op => {
+            this.indices.set(op.ocp_version, []);
+            this.channels.set(op.channel_name, []);
+            this.versions.set(op.version, op);
+        });
+        console.log('Indices:', this.indices);
+        console.log('Channels:', this.channels);
+        console.log('Versions:', this.versions);
     }
     getVersions() { }
     getChannels() { }
@@ -198,11 +281,17 @@ export class CPXOperatorGraph extends HTMLElement {
             writable: true,
             value: ""
         });
-        Object.defineProperty(this, "_data", {
+        Object.defineProperty(this, "bundle", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: void 0
+        });
+        Object.defineProperty(this, "_data", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: []
         });
         Object.defineProperty(this, "_order", {
             enumerable: true,
@@ -210,23 +299,17 @@ export class CPXOperatorGraph extends HTMLElement {
             writable: true,
             value: "desc"
         });
-        Object.defineProperty(this, "_channel", {
+        Object.defineProperty(this, "_index", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: ""
         });
-        Object.defineProperty(this, "_channels", {
+        Object.defineProperty(this, "_channel", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: new Map()
-        });
-        Object.defineProperty(this, "_versions", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: new Map()
+            value: ""
         });
         Object.defineProperty(this, "_body", {
             enumerable: true,
@@ -260,37 +343,26 @@ export class CPXOperatorGraph extends HTMLElement {
         if (this._data === val)
             return;
         this._data = val;
+        this.bundle = new OperatorBundle(this._data);
         if (this._data) {
-            this._data.map(csv => {
-                if (!this.versions.has(csv.version)) {
-                    this.versions.set(csv.version, new Set(csv.version));
-                }
-                else {
-                    if (!this.versions.get(csv.version).has(csv.version)) {
-                        this.versions.get(csv.version).add(csv.version);
-                    }
-                }
-                if (this.channels.has(csv.channel_name)) {
-                    const channelInfo = this.channels.get(csv.channel_name);
-                    channelInfo.push(csv);
-                    this.channels.set(csv.channel_name, channelInfo);
-                }
-                else {
-                    this.channels.set(csv.channel_name, [csv]);
-                }
-            });
-            this.channels.forEach((versions, channel, d) => {
-                d.set(channel, versions.sort((a, b) => {
-                    const ord = { desc: 1, asc: -1 };
-                    return compareSemVer(b['version'], a['version']) * ord[this.order];
-                }));
-            });
         }
         this.shadowRoot.innerHTML = tmpl;
         this.render();
-        if (this.channels.size > 0) {
+        if (this.bundle.indices.size > 0) {
+            const indexSelect = this.shadowRoot.querySelector('#ocp_versions');
+            [...this.bundle.indices.keys()].forEach(index => {
+                const opt = document.createElement('option');
+                opt.innerHTML = index;
+                opt.setAttribute('value', index);
+                if (this.index === index) {
+                    opt.setAttribute('selected', 'selected');
+                }
+                indexSelect.appendChild(opt);
+            });
+        }
+        if (this.bundle.channels.size > 0) {
             const channelSelect = this.shadowRoot.querySelector('#channels');
-            [...this.channels.keys()].forEach(channel => {
+            [...this.bundle.channels.keys()].forEach(channel => {
                 const opt = document.createElement('option');
                 opt.innerHTML = channel;
                 opt.setAttribute('value', channel);
@@ -309,8 +381,18 @@ export class CPXOperatorGraph extends HTMLElement {
             return;
         this._order = val;
     }
+    get index() {
+        return this._index !== "" ? this._index : this.bundle.indices[0];
+    }
+    set index(val) {
+        if (this._index === val)
+            return;
+        this._index = val;
+        this.setAttribute('index', this._index);
+        this.render();
+    }
     get channel() {
-        return this._channel !== "" ? this._channel : [...this.channels.keys()][0];
+        return this._channel !== "" ? this._channel : this.bundle.channels[0];
     }
     set channel(val) {
         if (this._channel === val)
@@ -318,22 +400,6 @@ export class CPXOperatorGraph extends HTMLElement {
         this._channel = val;
         this.setAttribute('channel', this._channel);
         this.render();
-    }
-    get channels() {
-        return this._channels;
-    }
-    set channels(val) {
-        if (this._channels === val)
-            return;
-        this._channels = val;
-    }
-    get versions() {
-        return this._versions;
-    }
-    set versions(val) {
-        if (this._versions === val)
-            return;
-        this._versions = val;
     }
     get body() {
         if (!this._body) {
@@ -345,10 +411,10 @@ export class CPXOperatorGraph extends HTMLElement {
         this.addEventListener('pfe-select:change', evt => this.channel = evt['detail'].value);
     }
     static get observedAttributes() {
-        return ["url", "filter", "query", "sort", "order", "group", "channel"];
+        return ["url", "order", "channel", "index"];
     }
-    attributeChangedCallback(name, oldVal, newVal) {
-        this[name] = newVal;
+    attributeChangedCallback(attr, oldVal, newVal) {
+        this[attr] = newVal;
     }
     handleClick(id) {
         return (e) => {
@@ -360,13 +426,13 @@ export class CPXOperatorGraph extends HTMLElement {
         };
     }
     render(all) {
-        if (this.channels.size > 0) {
+        if (this.bundle.channels && this.bundle.channels.size > 0) {
             if (!all) {
-                if (this.channels.get(this.channel)) {
+                if (this.bundle.channels.get(this.channel)) {
                     while (this.body.firstChild) {
                         this.body.removeChild(this.body.firstChild);
                     }
-                    this.channels.get(this.channel).forEach(csv => {
+                    this.bundle.channels.get(this.channel).forEach(csv => {
                         const row = document.createElement('tr');
                         row.id = csv['_id'];
                         row.onclick = this.handleClick(row.id);

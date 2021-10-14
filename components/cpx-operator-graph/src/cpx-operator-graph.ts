@@ -1,7 +1,15 @@
 import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
 
 const tmpl = `<style>
-:host { font-family: Red Hat Display, sans-serif; }
+:host { 
+  font-family: var(--cpxOGFontFamily, 'Red Hat Display', sans-serif);
+  font-size: var(--cpxOGFontSize, 16px );
+}
+h3 { 
+  font-family: var(--cpxOGH3FontFamily, 'Red Hat Display', sans-serif);
+  font-weight: medium; 
+  font-size: var(--cpxOGH3FontSize, 20px); 
+}
 .node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
 .edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
 .inbound, .outbound, .active { display: none; }
@@ -21,17 +29,18 @@ tr { border-bottom: 1px solid #999; }
 td { padding: 0; }
 tbody td:nth-child(1) {}
 tbody th:nth-child(2) { color: var(--cpxOGConnectedColor, #0266c8); text-align: left; }
+tbody [active] th:nth-child(2) { color: #333; font-weight: normal; }
 tbody td:nth-child(3) { text-align: right; }
 tbody td:nth-child(4) { padding-left: 24px; }
 tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
 
-.toggle { line-height: 25px; padding-left: 0; font-size: 16px; position:relative; }
+.toggle { line-height: 25px; padding-left: 0; font-size: var(--cpxOGToggleFontSize, 16px); position:relative; }
 input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
 label {
   cursor: pointer;
   text-indent: 60px;
-  font-size: 20px;
+  font-size: var(--cpxOGToggleFontSize, 16px);
   width: 50px;
   height: 30px;
   background: var(--cpxOGDisconnectedColor, #d2d2d2);
@@ -175,7 +184,25 @@ function setCurve(edge) {
   edge.data('controlPointDistances', controlPointDistances.join(' '));
 }
 
-class OperatorVersion {}
+class SkipRange {
+  constructor(range:string) {
+    range.split(' ')
+  }
+  min:string;
+  max:string;
+}
+
+class OperatorVersion {
+  channel_name: string;
+  csv_name:string;
+  latest_in_channel:boolean;
+  ocp_version: string;
+  version:string;
+  skips:Array<string>;
+  skip_range: SkipRange;
+  replaces:string;
+}
+
 class OperatorPackage {}
 class OperatorChannel {}
 class OperatorGraph  {
@@ -218,11 +245,84 @@ class OperatorGraph  {
 
 
 class OperatorBundle {
-  versions = new Set();
-  channels;
-  index;
+  constructor(data:Array<OperatorVersion>) {
+    data.map(op=> {
+      this.indices.set(op.ocp_version,[]);
+      this.channels.set(op.channel_name, []);
+      this.versions.set(op.version,op);
+    });
+    console.log('Indices:',this.indices);
+    console.log('Channels:',this.channels);
+    console.log('Versions:',this.versions);
+    // this.indices = [...new Set(data.map(c=>c.ocp_version))].sort();
+    // this.channels = [...new Set(data.map(c=>c.channel_name))].sort();
+    // this.versions = [...new Set(data.map(c=>c.version))].sort(compareSemVer);
+  }
+
+  versions:Map<string,OperatorVersion> = new Map();
+  channels:Map<string,Array<unknown>> = new Map();
+  indices:Map<string,Array<unknown>> = new Map();
   getVersions() {}
   getChannels() {}
+
+  // _indices = new Map<string,Array<unknown>>();
+  // get indices() {
+  //   return this._indices;
+  // }
+  // set indices(val) {
+  //   if (this._indices === val) return;
+  //   this._indices = val;
+  // }
+
+  // _channels = new Map<string,Array<unknown>>();
+  // get channels() {
+  //   return this._channels;
+  // }
+  // set channels(val) {
+  //   if (this._channels === val) return;
+  //   this._channels = val;
+  // }
+
+  // _versions = new Map<string,Set<string>>();
+  // get versions() {
+  //   return this._versions;
+  // }
+  // set versions(val) {
+  //   if (this._versions === val) return;
+  //   this._versions = val;
+  // }
+
+
+  // this._data.map(csv=>{
+      //   if (!this.versions.has(csv.version)) {
+      //     this.versions.set(csv.version, new Set(csv.version));
+      //   } else {
+      //     if(!this.versions.get(csv.version).has(csv.version)) {
+      //       this.versions.get(csv.version).add(csv.version);
+      //     }
+      //   }
+      //   if (this.channels.has(csv.channel_name)) {
+      //     const channelInfo = this.channels.get(csv.channel_name);
+      //     channelInfo.push(csv);
+      //     this.channels.set(csv.channel_name, channelInfo);
+      //   } else {
+      //     this.channels.set(csv.channel_name, [csv]);
+      //   }
+      //   if (this.indices.has(csv.ocp_version)) {
+      //     const indexInfo = this.indices.get(csv.ocp_version);
+      //     indexInfo.push(csv);
+      //     this.indices.set(csv.ocp_version, indexInfo);
+      //   } else {
+      //     this.indices.set(csv.ocp_version, [csv]);
+      //   }
+      // });
+
+      // this.channels.forEach((versions,channel,d)=> {
+      //   d.set(channel,versions.sort((a, b) => {
+      //     const ord = { desc: 1, asc: -1 };
+      //     return compareSemVer(b['version'], a['version']) * ord[this.order];
+      //   }));
+      // });
 }
 
 // Chapeaux Branch Component: cpx-branch
@@ -246,44 +346,41 @@ export class CPXOperatorGraph extends HTMLElement {
     });
   }
 
-  _data: any;
+  bundle: OperatorBundle;
+  _data = [];
   get data() {
     return this._data;
   }
   set data(val) {
     if (this._data === val) return;
     this._data = val;
+    this.bundle = new OperatorBundle(this._data);
     if (this._data) {
-      this._data.map(csv=>{
-        if (!this.versions.has(csv.version)) {
-          this.versions.set(csv.version, new Set(csv.version));
-        } else {
-          if(!this.versions.get(csv.version).has(csv.version)) {
-            this.versions.get(csv.version).add(csv.version);
-          }
-        }
-        if (this.channels.has(csv.channel_name)) {
-          const channelInfo = this.channels.get(csv.channel_name);
-          channelInfo.push(csv);
-          this.channels.set(csv.channel_name, channelInfo);
-        } else {
-          this.channels.set(csv.channel_name, [csv]);
-        }
-      });
-
-      this.channels.forEach((versions,channel,d)=> {
-        d.set(channel,versions.sort((a, b) => {
-          const ord = { desc: 1, asc: -1 };
-          return compareSemVer(b['version'], a['version']) * ord[this.order];
-        }));
-      });
+      /* 
+      Top-level is ocp_version
+      Every OCPVersion has channels
+      Every Channel has Versions
+      Versions can be in multiple channels
+      */
     }
 
     this.shadowRoot.innerHTML = tmpl;
     this.render();
-    if (this.channels.size > 0) {
+
+    if (this.bundle.indices.size >0 ) {
+      const indexSelect = this.shadowRoot.querySelector('#ocp_versions');
+      [...this.bundle.indices.keys()].forEach(index => {
+        const opt = document.createElement('option');
+        opt.innerHTML = index;
+        opt.setAttribute('value', index);
+        if (this.index === index) { opt.setAttribute('selected','selected'); }
+        indexSelect.appendChild(opt);
+      })
+    }
+
+    if (this.bundle.channels.size > 0) {
       const channelSelect = this.shadowRoot.querySelector('#channels');
-      [...this.channels.keys()].forEach(channel => {
+      [...this.bundle.channels.keys()].forEach(channel => {
         const opt = document.createElement('option');
         opt.innerHTML = channel;
         opt.setAttribute('value',channel);
@@ -303,9 +400,20 @@ export class CPXOperatorGraph extends HTMLElement {
     this._order = val;
   }
 
+  _index = "";
+  get index() {
+    return this._index !== "" ? this._index : this.bundle.indices[0];
+  }
+  set index(val) {
+    if (this._index === val) return;
+    this._index = val;
+    this.setAttribute('index', this._index);
+    this.render();
+  }
+
   _channel = "";
   get channel() {
-    return this._channel !== "" ? this._channel : [...this.channels.keys()][0];
+    return this._channel !== "" ? this._channel : this.bundle.channels[0];
   }
   set channel(val) {
     if (this._channel === val) return;
@@ -314,24 +422,7 @@ export class CPXOperatorGraph extends HTMLElement {
     this.render();
   }
 
-  _channels = new Map<string,Array<unknown>>();
-  get channels() {
-    return this._channels;
-  }
-  set channels(val) {
-    if (this._channels === val) return;
-    this._channels = val;
-  }
-
-  _versions = new Map<string,Set<string>>();
-  get versions() {
-    return this._versions;
-  }
-  set versions(val) {
-    if (this._versions === val) return;
-    this._versions = val;
-  }
-
+  
   _body;
   get body() {
     if (!this._body) {
@@ -352,11 +443,11 @@ export class CPXOperatorGraph extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["url", "filter", "query", "sort", "order", "group", "channel"];
+    return ["url", "order", "channel", "index"];
   }
 
-  attributeChangedCallback(name: string, oldVal, newVal: any) {
-    this[name] = newVal;
+  attributeChangedCallback(attr, oldVal, newVal) {
+    this[attr] = newVal;
   }
 
   handleClick(id) {
@@ -371,13 +462,13 @@ export class CPXOperatorGraph extends HTMLElement {
 
   render(all?:boolean) {
     // this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    if (this.channels.size > 0) {
+    if (this.bundle.channels && this.bundle.channels.size > 0) {
       if (!all) {
-        if (this.channels.get(this.channel)) {
+        if (this.bundle.channels.get(this.channel)) {
           while (this.body.firstChild) {
             this.body.removeChild(this.body.firstChild);
           }
-          this.channels.get(this.channel).forEach(csv=> {
+          this.bundle.channels.get(this.channel).forEach(csv=> {
             const row = document.createElement('tr');
             row.id = csv['_id'];
             row.onclick = this.handleClick(row.id);

@@ -6,10 +6,15 @@
     <title>Chapeaux Operator Graph Component</title>
     <style>
         :root {
-            --cpxOGConnectedColor: #36F;
-            --cpxOGActiveColor: #090;
-            --cpxOGDisconnectedColor: #ccc;
+            --cpxOGConnectedColor: #0266c8;
+            --cpxOGActiveColor: #93d434;
+            --cpxOGDisconnectedColor: #d2d2d2;
             --cpxOGStrokeWidth: 3;
+            --cpxOGFontFamily: 'Red Hat Display';
+            --cpxOGFontSize: 16px;
+            --cpxOGH3FontFamily: 'Red Hat Display';
+            --cpxOGH3FontSize: 20px;
+            --cpxOGToggleFontSize: 16px;
         }
     </style>
 </head>
@@ -48,6 +53,7 @@
             td { padding: 0; }
             tbody td:nth-child(1) {}
             tbody th:nth-child(2) { color: #369; text-align: left; }
+            tbody [active] th:nth-child(2) { color: #333; font-weight: normal; }
             tbody td:nth-child(3) { text-align: right; }
             tbody td:nth-child(4) {}
             tbody td:nth-child(5) {}
@@ -189,6 +195,7 @@
                   "csv_name": null,
                   "latest_in_channel": null,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.5",
                   "version": "3.3.1",
                   "skips": null,
                   "skip_range": null,
@@ -200,6 +207,7 @@
                   "csv_name": null,
                   "latest_in_channel": null,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.6",
                   "version": "3.3.1",
                   "skips": null,
                   "skip_range": null,
@@ -211,6 +219,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.1",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.1",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.1",
@@ -222,6 +231,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.5",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.5",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.5",
@@ -233,6 +243,7 @@
                   "csv_name": "quay-bridge-operator.v3.3.4",
                   "latest_in_channel": true,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.3.4",
                   "skips": [],
                   "skip_range": ">=3.3.0 <3.3.4",
@@ -244,6 +255,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.3",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.3",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.3",
@@ -255,6 +267,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.1",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.1",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.1",
@@ -266,6 +279,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.4",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.4",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.4",
@@ -277,6 +291,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.6",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.6",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.6",
@@ -288,6 +303,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.6",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.6",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.6",
@@ -299,6 +315,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.4",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.4",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.4",
@@ -310,6 +327,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.7",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.7",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.7",
@@ -321,6 +339,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.2",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.2",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.2",
@@ -332,6 +351,7 @@
                   "csv_name": "quay-bridge-operator.v3.5.3",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.5.3",
                   "skips": [],
                   "skip_range": ">=3.4.x <3.5.3",
@@ -343,6 +363,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.2",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.2",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.2",
@@ -354,6 +375,7 @@
                   "csv_name": "quay-bridge-operator.v3.4.5",
                   "latest_in_channel": false,
                   "package": "quay-bridge-operator",
+                  "ocp_version": "4.7",
                   "version": "3.4.5",
                   "skips": [],
                   "skip_range": ">=3.3.x <3.4.5",
