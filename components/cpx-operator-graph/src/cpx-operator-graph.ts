@@ -78,11 +78,11 @@ label:active:after { width: 33px; }
 <section>
 <h3>OpenShift Version</h3>
 <div class="options">
-  <pfe-select><select id="ocp_versions"></select></pfe-select>
+  <pfe-select id="ocp_versions"><select></select></pfe-select>
 </div>
 <h3>Channel</h3>
 <div class="options">
-  <pfe-select><select id="channels"></select></pfe-select>
+  <pfe-select id="channels"><select></select></pfe-select>
   <div class="toggle">
     <input type="checkbox" name="all-channels" value="all" id="all-channels">
     <label for="all-channels">Show all versions</label>
@@ -99,54 +99,6 @@ label:active:after { width: 33px; }
     </tr></thead>
     <tbody></tbody>
 </table>`;
-
-function versionSelector(strings, csv, versions, all) {
-  return `<tr>
-  <td>Head</td>
-  <th scope="row">
-    <input name="${csv.packageName}" type="radio" id="${csv.version}" />
-    <label for="${csv.version}">${csv.version}</label>
-  </th>
-  <td>
-  ${csv.replaces ? `Replaces: ${csv.replaces}`:''}
-  ${csv.skips ? `Skips: ${csv.skips}`:''}
-  </td>
-  <td><!-- INACTIVE ONLY IN -->
-      <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <g class="node">
-              <circle cx="20" cy="50" r="10"/>
-              <circle class="active" cx="20" cy="50" r="3"/>
-              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-          </g>
-          <g class="edges">
-              <path d="M 31 53 C 50 58, 80 60, 80 100" />
-              <path d="M 31 53 C 50 58, 90 60, 90 100" />
-          </g>
-      </svg>
-  </td>
-  <td>beta</td>
-</tr>`;
-  /*
-  <tr>
-    <td><input name="${csv.packageName}" type="radio" id="${csv.version}" /></td>
-    <td><label for="${csv.version}">${csv.version}</label>
-      <!--<ul>
-        ${csv.replaces ? `<li>Replaces: ${csv.replaces}</li>`:''}
-        ${csv.skips ? `<li>Skips: ${csv.skips}</li>`:''}
-        <li>Channel: ${csv.channelName}</li>
-      </ul>-->
-    </td>
-    <td></td>
-    ${all || true ? `<td>
-      <ul>
-        <li>${[...versions]}</li>
-      </ul>
-    </td>`:''}
-  </tr>`;
-  */
-}
 
 /*
 Operator Graph
@@ -192,19 +144,7 @@ class SkipRange {
   max:string;
 }
 
-class OperatorVersion {
-  channel_name: string;
-  csv_name:string;
-  latest_in_channel:boolean;
-  ocp_version: string;
-  version:string;
-  skips:Array<string>;
-  skip_range: SkipRange;
-  replaces:string;
-}
 
-class OperatorPackage {}
-class OperatorChannel {}
 class OperatorGraph  {
   active = false;
   inbound = false;
@@ -243,86 +183,62 @@ class OperatorGraph  {
   */
 }
 
+class OperatorVersion {
+  constructor(op) {
+    Object.assign(this,op);
+  }
+  channel_name: string;
+  csv_name:string;
+  latest_in_channel:boolean;
+  ocp_version: string;
+  version:string;
+  skips:Array<string>;
+  skip_range: SkipRange;
+  replaces:string;
+}
+
+class OperatorPackage {}
+class OperatorChannel {
+  constructor(name:string, version?:OperatorVersion) {
+    this.name = name;
+    this.versions.set(version.version, version);
+  }
+  versions: Map<string, OperatorVersion> = new Map();
+  name: string;
+}
+class OperatorIndex {
+  constructor(version:string, channel?:OperatorChannel) {
+    this.version = version;
+    this.channels.set(channel.name,channel);
+  }
+  channels: Map<string,OperatorChannel> = new Map();
+  version: string;
+}
 
 class OperatorBundle {
   constructor(data:Array<OperatorVersion>) {
     data.map(op=> {
-      this.indices.set(op.ocp_version,[]);
-      this.channels.set(op.channel_name, []);
-      this.versions.set(op.version,op);
+      const version = new OperatorVersion(op);
+      const channel = new OperatorChannel(op.channel_name,version);
+      const index = new OperatorIndex(op.ocp_version, channel);
+      if (this.indices.has(index.version)) {
+        if (this.indices.get(index.version).channels.has(channel.name)) {
+          if (!this.indices.get(index.version).channels.get(channel.name).versions.has(version.version)) {
+            this.indices.get(index.version).channels.get(channel.name).versions.set(version.version,version);
+          }
+        } else {
+          this.indices.get(index.version).channels.set(channel.name, channel);
+        }
+      } else {
+        this.indices.set(index.version, index);
+      }
     });
-    console.log('Indices:',this.indices);
-    console.log('Channels:',this.channels);
-    console.log('Versions:',this.versions);
-    // this.indices = [...new Set(data.map(c=>c.ocp_version))].sort();
-    // this.channels = [...new Set(data.map(c=>c.channel_name))].sort();
-    // this.versions = [...new Set(data.map(c=>c.version))].sort(compareSemVer);
   }
 
-  versions:Map<string,OperatorVersion> = new Map();
-  channels:Map<string,Array<unknown>> = new Map();
-  indices:Map<string,Array<unknown>> = new Map();
-  getVersions() {}
-  getChannels() {}
+  indices:Map<string,OperatorIndex> = new Map();
+  getChannelsByIndex(index) {}
+  getVersionsByChannel(channel) {}
 
-  // _indices = new Map<string,Array<unknown>>();
-  // get indices() {
-  //   return this._indices;
-  // }
-  // set indices(val) {
-  //   if (this._indices === val) return;
-  //   this._indices = val;
-  // }
-
-  // _channels = new Map<string,Array<unknown>>();
-  // get channels() {
-  //   return this._channels;
-  // }
-  // set channels(val) {
-  //   if (this._channels === val) return;
-  //   this._channels = val;
-  // }
-
-  // _versions = new Map<string,Set<string>>();
-  // get versions() {
-  //   return this._versions;
-  // }
-  // set versions(val) {
-  //   if (this._versions === val) return;
-  //   this._versions = val;
-  // }
-
-
-  // this._data.map(csv=>{
-      //   if (!this.versions.has(csv.version)) {
-      //     this.versions.set(csv.version, new Set(csv.version));
-      //   } else {
-      //     if(!this.versions.get(csv.version).has(csv.version)) {
-      //       this.versions.get(csv.version).add(csv.version);
-      //     }
-      //   }
-      //   if (this.channels.has(csv.channel_name)) {
-      //     const channelInfo = this.channels.get(csv.channel_name);
-      //     channelInfo.push(csv);
-      //     this.channels.set(csv.channel_name, channelInfo);
-      //   } else {
-      //     this.channels.set(csv.channel_name, [csv]);
-      //   }
-      //   if (this.indices.has(csv.ocp_version)) {
-      //     const indexInfo = this.indices.get(csv.ocp_version);
-      //     indexInfo.push(csv);
-      //     this.indices.set(csv.ocp_version, indexInfo);
-      //   } else {
-      //     this.indices.set(csv.ocp_version, [csv]);
-      //   }
-      // });
-
-      // this.channels.forEach((versions,channel,d)=> {
-      //   d.set(channel,versions.sort((a, b) => {
-      //     const ord = { desc: 1, asc: -1 };
-      //     return compareSemVer(b['version'], a['version']) * ord[this.order];
-      //   }));
-      // });
 }
 
 // Chapeaux Branch Component: cpx-branch
@@ -355,40 +271,23 @@ export class CPXOperatorGraph extends HTMLElement {
     if (this._data === val) return;
     this._data = val;
     this.bundle = new OperatorBundle(this._data);
-    if (this._data) {
-      /* 
-      Top-level is ocp_version
-      Every OCPVersion has channels
-      Every Channel has Versions
-      Versions can be in multiple channels
-      */
-    }
-
     this.shadowRoot.innerHTML = tmpl;
     this.render();
 
     if (this.bundle.indices.size >0 ) {
-      const indexSelect = this.shadowRoot.querySelector('#ocp_versions');
-      [...this.bundle.indices.keys()].forEach(index => {
+      const indexSelect = this.shadowRoot.querySelector('#ocp_versions select');
+      [...this.bundle.indices.keys()].sort().forEach(index => {
         const opt = document.createElement('option');
         opt.innerHTML = index;
         opt.setAttribute('value', index);
-        if (this.index === index) { opt.setAttribute('selected','selected'); }
+        if (this.index === index) { 
+          this.index = index;
+          this.setChannels();
+          opt.setAttribute('selected','selected'); 
+        }
         indexSelect.appendChild(opt);
       })
     }
-
-    if (this.bundle.channels.size > 0) {
-      const channelSelect = this.shadowRoot.querySelector('#channels');
-      [...this.bundle.channels.keys()].forEach(channel => {
-        const opt = document.createElement('option');
-        opt.innerHTML = channel;
-        opt.setAttribute('value',channel);
-        if (this.channel === channel) { opt.setAttribute('selected', 'selected'); }
-        channelSelect.appendChild(opt);
-      });
-    }
-    
   }
 
   _order = "desc";
@@ -402,18 +301,19 @@ export class CPXOperatorGraph extends HTMLElement {
 
   _index = "";
   get index() {
-    return this._index !== "" ? this._index : this.bundle.indices[0];
+    return this._index !== "" ? this._index : [...this.bundle.indices.keys()][0];
   }
   set index(val) {
     if (this._index === val) return;
     this._index = val;
     this.setAttribute('index', this._index);
+    this.setChannels();
     this.render();
   }
 
   _channel = "";
   get channel() {
-    return this._channel !== "" ? this._channel : this.bundle.channels[0];
+    return this._channel !== "" ? this._channel : [...this.bundle.indices.get(this.index).channels.keys()][0];
   }
   set channel(val) {
     if (this._channel === val) return;
@@ -438,7 +338,13 @@ export class CPXOperatorGraph extends HTMLElement {
 
   connectedCallback() {
     //this.template = this.querySelector('template') as HTMLTemplateElement;
-    this.addEventListener('pfe-select:change', evt=>this.channel=evt['detail'].value);
+    this.shadowRoot.addEventListener('pfe-select:change', evt=> {
+      if (evt.target['id'] === 'ocp_versions') {
+        this.index = evt['detail'].value;
+      } else if (evt.target['id'] === 'channels') {
+        this.channel=evt['detail'].value;
+      }
+    });
     //this.shadowRoot.addEventListener('click', evt=>console.log(evt.target));
   }
 
@@ -460,15 +366,45 @@ export class CPXOperatorGraph extends HTMLElement {
     }
   }
 
+  setChannels() {
+    this.channel = "";
+    if (this.bundle && this.bundle.indices) {
+      if (this.bundle.indices.get(this.index).channels.size > 0) {
+        const channelSelect = this.shadowRoot.querySelector('#channels select');
+        while (channelSelect.firstChild) {
+          channelSelect.removeChild(channelSelect.firstChild);
+        }
+        [...this.bundle.indices.get(this.index).channels.keys()].sort().forEach(channel => {
+          const opt = document.createElement('option');
+          opt.innerHTML = channel;
+          opt.setAttribute('value',channel);
+          if (this.channel === channel) { 
+            this.channel = channel;
+            opt.setAttribute('selected', 'selected'); 
+          }
+          channelSelect.appendChild(opt);
+        });
+      }
+    }
+  }
+
   render(all?:boolean) {
     // this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    if (this.bundle.channels && this.bundle.channels.size > 0) {
-      if (!all) {
-        if (this.bundle.channels.get(this.channel)) {
+    if (this.bundle && this.bundle.indices) {
+      const currIndex = this.bundle.indices.get(this.index);
+      const currChannel = this.bundle.indices.get(this.index).channels.get(this.channel);
+      if (currIndex && currChannel && currChannel.versions.size > 0) {
+        if (!all) {
           while (this.body.firstChild) {
             this.body.removeChild(this.body.firstChild);
           }
-          this.bundle.channels.get(this.channel).forEach(csv=> {
+          currChannel.versions.forEach(csv=> {
+            const verChannels = [];
+            currIndex.channels.forEach(ch => {
+              if (ch.name !== csv.channel_name && ch.versions.has(csv.version)) {
+                verChannels.push(ch.name);
+              }
+            })
             const row = document.createElement('tr');
             row.id = csv['_id'];
             row.onclick = this.handleClick(row.id);
@@ -485,39 +421,12 @@ export class CPXOperatorGraph extends HTMLElement {
               </g>
               <g class="edges"></g>
             </svg></td>
-            <td>${csv['channels'] || ''}</td>`;
+            <td>${verChannels.join(', ')}</td>`;
             this.body.appendChild(row);
           });
         }
       }
     }
-    
-    // if (this.channels.size > 0) {
-    //   const channelSelect = this.template.content.querySelector('#channels');
-    //   [...this.channels.keys()].forEach(channel => {
-    //     const opt = document.createElement('option');
-    //     opt.innerHTML = channel;
-    //     opt.setAttribute('value',channel);
-    //     if (this.channel === channel) { opt.setAttribute('selected', 'selected'); }
-    //     channelSelect.appendChild(opt);
-    //   });
-
-    //   // Set version rows
-    //   // if (!all) {
-    //     const versionsNode = this.template.content.querySelector('[data-repeat="versions"]');
-    //     this.channels.get(this.channel).forEach(csv=>{
-    //       versionsNode.innerHTML += versionSelector`${csv}${this.versions}${all}`;
-    //     });
-    //     const graphImg = versionsNode.querySelector('tr td:nth-child(3)');
-    //     graphImg.id = 'graph';
-    //     graphImg.innerHTML = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="50" r="10" stroke="black" fill="transparent" stroke-width="3"></circle></svg>';
-    //   // }
-
-    //   while (this.shadowRoot.firstChild) {
-    //     this.shadowRoot.removeChild(this.shadowRoot.firstChild);
-    //   }
-    //   this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    // }
   }
 }
 

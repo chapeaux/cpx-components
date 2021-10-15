@@ -79,11 +79,11 @@ label:active:after { width: 33px; }
 <section>
 <h3>OpenShift Version</h3>
 <div class="options">
-  <pfe-select><select id="ocp_versions"></select></pfe-select>
+  <pfe-select id="ocp_versions"><select></select></pfe-select>
 </div>
 <h3>Channel</h3>
 <div class="options">
-  <pfe-select><select id="channels"></select></pfe-select>
+  <pfe-select id="channels"><select></select></pfe-select>
   <div class="toggle">
     <input type="checkbox" name="all-channels" value="all" id="all-channels">
     <label for="all-channels">Show all versions</label>
@@ -100,35 +100,6 @@ label:active:after { width: 33px; }
     </tr></thead>
     <tbody></tbody>
 </table>`;
-function versionSelector(strings, csv, versions, all) {
-    return `<tr>
-  <td>Head</td>
-  <th scope="row">
-    <input name="${csv.packageName}" type="radio" id="${csv.version}" />
-    <label for="${csv.version}">${csv.version}</label>
-  </th>
-  <td>
-  ${csv.replaces ? `Replaces: ${csv.replaces}` : ''}
-  ${csv.skips ? `Skips: ${csv.skips}` : ''}
-  </td>
-  <td><!-- INACTIVE ONLY IN -->
-      <svg active inbound viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <g class="node">
-              <circle cx="20" cy="50" r="10"/>
-              <circle class="active" cx="20" cy="50" r="3"/>
-              <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-              <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-              <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-          </g>
-          <g class="edges">
-              <path d="M 31 53 C 50 58, 80 60, 80 100" />
-              <path d="M 31 53 C 50 58, 90 60, 90 100" />
-          </g>
-      </svg>
-  </td>
-  <td>beta</td>
-</tr>`;
-}
 function setCurve(edge) {
     const edgeVerticalLength = edge.source().renderedPosition('x') - edge.target().renderedPosition('x');
     const decreaseFactor = -0.1;
@@ -153,8 +124,42 @@ class SkipRange {
         range.split(' ');
     }
 }
-class OperatorVersion {
+class OperatorGraph {
     constructor() {
+        Object.defineProperty(this, "active", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "inbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "outbound", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "connected", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
+        Object.defineProperty(this, "graph", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        });
+    }
+}
+class OperatorVersion {
+    constructor(op) {
         Object.defineProperty(this, "channel_name", {
             enumerable: true,
             configurable: true,
@@ -203,60 +208,49 @@ class OperatorVersion {
             writable: true,
             value: void 0
         });
+        Object.assign(this, op);
     }
 }
 class OperatorPackage {
 }
 class OperatorChannel {
-}
-class OperatorGraph {
-    constructor() {
-        Object.defineProperty(this, "active", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "inbound", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "outbound", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "connected", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "graph", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-        });
-    }
-}
-class OperatorBundle {
-    constructor(data) {
+    constructor(name, version) {
         Object.defineProperty(this, "versions", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: new Map()
         });
+        Object.defineProperty(this, "name", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this.name = name;
+        this.versions.set(version.version, version);
+    }
+}
+class OperatorIndex {
+    constructor(version, channel) {
         Object.defineProperty(this, "channels", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: new Map()
         });
+        Object.defineProperty(this, "version", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this.version = version;
+        this.channels.set(channel.name, channel);
+    }
+}
+class OperatorBundle {
+    constructor(data) {
         Object.defineProperty(this, "indices", {
             enumerable: true,
             configurable: true,
@@ -264,16 +258,26 @@ class OperatorBundle {
             value: new Map()
         });
         data.map(op => {
-            this.indices.set(op.ocp_version, []);
-            this.channels.set(op.channel_name, []);
-            this.versions.set(op.version, op);
+            const version = new OperatorVersion(op);
+            const channel = new OperatorChannel(op.channel_name, version);
+            const index = new OperatorIndex(op.ocp_version, channel);
+            if (this.indices.has(index.version)) {
+                if (this.indices.get(index.version).channels.has(channel.name)) {
+                    if (!this.indices.get(index.version).channels.get(channel.name).versions.has(version.version)) {
+                        this.indices.get(index.version).channels.get(channel.name).versions.set(version.version, version);
+                    }
+                }
+                else {
+                    this.indices.get(index.version).channels.set(channel.name, channel);
+                }
+            }
+            else {
+                this.indices.set(index.version, index);
+            }
         });
-        console.log('Indices:', this.indices);
-        console.log('Channels:', this.channels);
-        console.log('Versions:', this.versions);
     }
-    getVersions() { }
-    getChannels() { }
+    getChannelsByIndex(index) { }
+    getVersionsByChannel(channel) { }
 }
 class CPXOperatorGraph extends HTMLElement {
     constructor(url) {
@@ -347,32 +351,20 @@ class CPXOperatorGraph extends HTMLElement {
             return;
         this._data = val;
         this.bundle = new OperatorBundle(this._data);
-        if (this._data) {
-        }
         this.shadowRoot.innerHTML = tmpl;
         this.render();
         if (this.bundle.indices.size > 0) {
-            const indexSelect = this.shadowRoot.querySelector('#ocp_versions');
-            [...this.bundle.indices.keys()].forEach(index => {
+            const indexSelect = this.shadowRoot.querySelector('#ocp_versions select');
+            [...this.bundle.indices.keys()].sort().forEach(index => {
                 const opt = document.createElement('option');
                 opt.innerHTML = index;
                 opt.setAttribute('value', index);
                 if (this.index === index) {
+                    this.index = index;
+                    this.setChannels();
                     opt.setAttribute('selected', 'selected');
                 }
                 indexSelect.appendChild(opt);
-            });
-        }
-        if (this.bundle.channels.size > 0) {
-            const channelSelect = this.shadowRoot.querySelector('#channels');
-            [...this.bundle.channels.keys()].forEach(channel => {
-                const opt = document.createElement('option');
-                opt.innerHTML = channel;
-                opt.setAttribute('value', channel);
-                if (this.channel === channel) {
-                    opt.setAttribute('selected', 'selected');
-                }
-                channelSelect.appendChild(opt);
             });
         }
     }
@@ -385,17 +377,18 @@ class CPXOperatorGraph extends HTMLElement {
         this._order = val;
     }
     get index() {
-        return this._index !== "" ? this._index : this.bundle.indices[0];
+        return this._index !== "" ? this._index : [...this.bundle.indices.keys()][0];
     }
     set index(val) {
         if (this._index === val)
             return;
         this._index = val;
         this.setAttribute('index', this._index);
+        this.setChannels();
         this.render();
     }
     get channel() {
-        return this._channel !== "" ? this._channel : this.bundle.channels[0];
+        return this._channel !== "" ? this._channel : [...this.bundle.indices.get(this.index).channels.keys()][0];
     }
     set channel(val) {
         if (this._channel === val)
@@ -411,7 +404,14 @@ class CPXOperatorGraph extends HTMLElement {
         return this._body;
     }
     connectedCallback() {
-        this.addEventListener('pfe-select:change', evt => this.channel = evt['detail'].value);
+        this.shadowRoot.addEventListener('pfe-select:change', evt => {
+            if (evt.target['id'] === 'ocp_versions') {
+                this.index = evt['detail'].value;
+            }
+            else if (evt.target['id'] === 'channels') {
+                this.channel = evt['detail'].value;
+            }
+        });
     }
     static get observedAttributes() {
         return ["url", "order", "channel", "index"];
@@ -428,14 +428,43 @@ class CPXOperatorGraph extends HTMLElement {
             this.shadowRoot.getElementById(id).setAttribute('active', '');
         };
     }
+    setChannels() {
+        this.channel = "";
+        if (this.bundle && this.bundle.indices) {
+            if (this.bundle.indices.get(this.index).channels.size > 0) {
+                const channelSelect = this.shadowRoot.querySelector('#channels select');
+                while (channelSelect.firstChild) {
+                    channelSelect.removeChild(channelSelect.firstChild);
+                }
+                [...this.bundle.indices.get(this.index).channels.keys()].sort().forEach(channel => {
+                    const opt = document.createElement('option');
+                    opt.innerHTML = channel;
+                    opt.setAttribute('value', channel);
+                    if (this.channel === channel) {
+                        this.channel = channel;
+                        opt.setAttribute('selected', 'selected');
+                    }
+                    channelSelect.appendChild(opt);
+                });
+            }
+        }
+    }
     render(all) {
-        if (this.bundle.channels && this.bundle.channels.size > 0) {
-            if (!all) {
-                if (this.bundle.channels.get(this.channel)) {
+        if (this.bundle && this.bundle.indices) {
+            const currIndex = this.bundle.indices.get(this.index);
+            const currChannel = this.bundle.indices.get(this.index).channels.get(this.channel);
+            if (currIndex && currChannel && currChannel.versions.size > 0) {
+                if (!all) {
                     while (this.body.firstChild) {
                         this.body.removeChild(this.body.firstChild);
                     }
-                    this.bundle.channels.get(this.channel).forEach(csv => {
+                    currChannel.versions.forEach(csv => {
+                        const verChannels = [];
+                        currIndex.channels.forEach(ch => {
+                            if (ch.name !== csv.channel_name && ch.versions.has(csv.version)) {
+                                verChannels.push(ch.name);
+                            }
+                        });
                         const row = document.createElement('tr');
                         row.id = csv['_id'];
                         row.onclick = this.handleClick(row.id);
@@ -452,7 +481,7 @@ class CPXOperatorGraph extends HTMLElement {
               </g>
               <g class="edges"></g>
             </svg></td>
-            <td>${csv['channels'] || ''}</td>`;
+            <td>${verChannels.join(', ')}</td>`;
                         this.body.appendChild(row);
                     });
                 }

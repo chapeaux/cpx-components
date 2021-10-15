@@ -181,15 +181,14 @@
         </section>
     </template>
     <!-- <cpx-operator-graph channel="beta" sort="version" order="desc" url="https://catalog.redhat.com/api/containers/v1/operators/bundles?filter=organization==redhat-marketplace;package==instana-agent-rhmp"></cpx-operator-graph> -->
-    <cpx-operator-graph></cpx-operator-graph>
-    <cpx-operator-graph></cpx-operator-graph>
+    <cpx-operator-graph index="4.7"></cpx-operator-graph>
     <script type="module" src="/cpx-operator-graph/demo/pfelement.js"></script>
     <script type="module" src="/cpx-operator-graph/demo/pfe-select.js"></script>
     <script type="module" src="/cpx-operator-graph/cpx-operator-graph.js"></script>
     <script>
         document.addEventListener('cpx-operator-graph-ready', e=> {
             const data = [
-                {
+            {
                   "_id": "5f3ea551a2e583d3e3857c08",
                   "channel_name": "quay-v3.3",
                   "csv_name": null,
@@ -197,6 +196,30 @@
                   "package": "quay-bridge-operator",
                   "ocp_version": "4.5",
                   "version": "3.3.1",
+                  "skips": null,
+                  "skip_range": null,
+                  "replaces": null
+                },
+                {
+                  "_id": "5f3ea551a2e583d3e3857c08",
+                  "channel_name": "quay-v3.3.booyah",
+                  "csv_name": null,
+                  "latest_in_channel": null,
+                  "package": "quay-bridge-operator",
+                  "ocp_version": "4.5",
+                  "version": "3.3.1",
+                  "skips": null,
+                  "skip_range": null,
+                  "replaces": null
+                },
+                {
+                  "_id": "5f3ea551a2e583d3e3857c08",
+                  "channel_name": "quay-v3.3.booyah",
+                  "csv_name": null,
+                  "latest_in_channel": true,
+                  "package": "quay-bridge-operator",
+                  "ocp_version": "4.5",
+                  "version": "3.3.2",
                   "skips": null,
                   "skip_range": null,
                   "replaces": null
