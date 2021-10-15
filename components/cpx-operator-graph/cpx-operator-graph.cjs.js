@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CPXOperatorGraph = void 0;
+const semver_parser_1 = require("https://cdn.skypack.dev/semver-parser");
 const tmpl = `<style>
 :host { 
   font-family: var(--cpxOGFontFamily, 'Red Hat Display', sans-serif);
@@ -29,16 +30,18 @@ thead th:nth-child(5) { width: 30%; text-align: left; }
 tr { border-bottom: 1px solid #999; }
 td { padding: 0; }
 tbody td:nth-child(1) {}
-tbody th:nth-child(2) { color: var(--cpxOGConnectedColor, #0266c8); text-align: left; }
-tbody [active] th:nth-child(2) { color: #333; font-weight: normal; }
+tbody th:nth-child(2) { }
+tbody th:nth-child(2) label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left; }
+tbody th:nth-child(2) input { opacity: 0; width:0; height:0; }
+tbody [active] th:nth-child(2) label { color: #333; font-weight: normal; }
 tbody td:nth-child(3) { text-align: right; }
 tbody td:nth-child(4) { padding-left: 24px; }
 tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
 
 .toggle { line-height: 25px; padding-left: 0; font-size: var(--cpxOGToggleFontSize, 16px); position:relative; }
-input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
-label {
+.toggle input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
+.toggle label {
   cursor: pointer;
   text-indent: 60px;
   font-size: var(--cpxOGToggleFontSize, 16px);
@@ -55,7 +58,7 @@ label {
   color: var(--cpxOGDisconnectedColor, #d2d2d2);
 }
 
-label:after {
+.toggle label:after {
   content: '';
   position: absolute;
   top: 6px;
@@ -67,13 +70,13 @@ label:after {
   transition: 0.3s;
 }
 
-input:checked + label {
+.toggle input:checked + label {
   background: var(--cpxOGConnectedColor, #0266c8);
   color: #151515;
 }
 
-input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
-label:active:after { width: 33px; }
+.toggle input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
+.toggle label:active:after { width: 33px; }
 .options { display: grid; grid-template-columns: 50% 50%; margin-bottom: 60px; }
 </style>
 <section>
@@ -229,6 +232,9 @@ class OperatorChannel {
         });
         this.name = name;
         this.versions.set(version.version, version);
+    }
+    getVersions(ord) {
+        return [...this.versions.keys()].sort((a, b) => (0, semver_parser_1.compareSemVer)(b, a));
     }
 }
 class OperatorIndex {
@@ -458,7 +464,10 @@ class CPXOperatorGraph extends HTMLElement {
                     while (this.body.firstChild) {
                         this.body.removeChild(this.body.firstChild);
                     }
-                    currChannel.versions.forEach(csv => {
+                    currChannel.getVersions().map(ver => {
+                        const csv = currChannel.versions.get(ver);
+                        const escVer = ver.replaceAll('.', '');
+                        const escChannel = currChannel.name.replaceAll('.', '');
                         const verChannels = [];
                         currIndex.channels.forEach(ch => {
                             if (ch.name !== csv.channel_name && ch.versions.has(csv.version)) {
@@ -469,7 +478,7 @@ class CPXOperatorGraph extends HTMLElement {
                         row.id = csv['_id'];
                         row.onclick = this.handleClick(row.id);
                         row.innerHTML = `<td></td>
-            <th scope="row">${csv['version']}</th>
+            <th scope="row"><label for="${escVer}">${csv['version']}</label><input type="radio" id="${escVer}" name="${escChannel}" value="${csv['version']}"></th>
             <td>${csv['replaces'] || ''}</td>
             <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <g class="node">
