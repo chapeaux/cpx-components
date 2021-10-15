@@ -36,8 +36,8 @@ tbody td:nth-child(4) { padding-left: 24px; }
 tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
 
-.toggle { line-height: 25px; padding-left: 0; font-size: var(--cpxOGToggleFontSize, 16px); position:relative; }
-.toggle input[type=checkbox] { height: 0; width: 0; visibility: hidden; order: 2; }
+.toggle { justify-self: end; padding-right: 10em;  font-size: var(--cpxOGToggleFontSize, 16px); }
+.toggle input[type=checkbox] { height: 0; width: 0; opacity: 0; }
 .toggle label {
   cursor: pointer;
   text-indent: 60px;
@@ -47,9 +47,7 @@ svg { display: block; max-width: 100px; }
   background: var(--cpxOGDisconnectedColor, #d2d2d2);
   display: block;
   border-radius: 25px;
-  position: absolute;
-  right: 8em;
-  top: 0;
+  position: relative;
   white-space: nowrap;
   line-height: 30px;
   color: var(--cpxOGDisconnectedColor, #d2d2d2);
@@ -74,7 +72,11 @@ svg { display: block; max-width: 100px; }
 
 .toggle input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
 .toggle label:active:after { width: 33px; }
-.options { display: grid; grid-template-columns: 50% 50%; margin-bottom: 60px; }
+.options { 
+  display: grid; 
+  grid-template-columns: 1fr 3fr; 
+  margin-bottom: 60px; 
+}
 </style>
 <section>
 <h3>OpenShift Version</h3>
@@ -100,13 +102,6 @@ svg { display: block; max-width: 100px; }
     </tr></thead>
     <tbody></tbody>
 </table>`;
-function setCurve(edge) {
-    const edgeVerticalLength = edge.source().renderedPosition('x') - edge.target().renderedPosition('x');
-    const decreaseFactor = -0.1;
-    const controlPointDistance = edgeVerticalLength * decreaseFactor;
-    const controlPointDistances = [controlPointDistance, -1 * controlPointDistance];
-    edge.data('controlPointDistances', controlPointDistances.join(' '));
-}
 class SkipRange {
     constructor(range) {
         Object.defineProperty(this, "min", {
@@ -160,6 +155,12 @@ class OperatorGraph {
 }
 class OperatorVersion {
     constructor(op) {
+        Object.defineProperty(this, "package", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "channel_name", {
             enumerable: true,
             configurable: true,
@@ -209,6 +210,9 @@ class OperatorVersion {
             value: void 0
         });
         Object.assign(this, op);
+        if (op.skip_range) {
+            this.skip_range = new SkipRange(op.skip_range);
+        }
     }
 }
 class OperatorPackage {
@@ -250,6 +254,16 @@ class OperatorIndex {
         });
         this.version = version;
         this.channels.set(channel.name, channel);
+    }
+    getAllVersions() {
+        const versions = new Map();
+        const chs = this.channels.forEach(ch => {
+            ch.versions.forEach(v => {
+                versions.set(v.version, v);
+            });
+        });
+        const orderedVersions = [...versions.keys()].sort((a, b) => compareSemVer(b, a));
+        return orderedVersions;
     }
 }
 class OperatorBundle {
@@ -429,6 +443,9 @@ export class CPXOperatorGraph extends HTMLElement {
                 active.removeAttribute('active');
             }
             this.shadowRoot.getElementById(id).setAttribute('active', '');
+            const activeInput = this.shadowRoot.querySelector(`[active] input`);
+            activeInput['click']();
+            activeInput['focus']();
         };
     }
     setChannels() {
@@ -457,10 +474,10 @@ export class CPXOperatorGraph extends HTMLElement {
             const currIndex = this.bundle.indices.get(this.index);
             const currChannel = this.bundle.indices.get(this.index).channels.get(this.channel);
             if (currIndex && currChannel && currChannel.versions.size > 0) {
+                while (this.body.firstChild) {
+                    this.body.removeChild(this.body.firstChild);
+                }
                 if (!all) {
-                    while (this.body.firstChild) {
-                        this.body.removeChild(this.body.firstChild);
-                    }
                     currChannel.getVersions().map(ver => {
                         const csv = currChannel.versions.get(ver);
                         const escVer = ver.replaceAll('.', '');
@@ -474,9 +491,18 @@ export class CPXOperatorGraph extends HTMLElement {
                         const row = document.createElement('tr');
                         row.id = csv['_id'];
                         row.onclick = this.handleClick(row.id);
+                        if (csv.latest_in_channel && csv.replaces !== null) {
+                            row.setAttribute('inbound', '');
+                        }
+                        if (csv.replaces === null) {
+                            row.setAttribute('outbound', '');
+                        }
                         row.innerHTML = `<td></td>
             <th scope="row"><label for="${escVer}">${csv['version']}</label><input type="radio" id="${escVer}" name="${escChannel}" value="${csv['version']}"></th>
-            <td>${csv['replaces'] || ''}</td>
+            <td>
+              ${csv['replaces'] ? `Replaces: ${csv['replaces'].replace(csv.package + '.', '')}` : ''}
+              ${csv.skips && csv.skips.length ? `Skips: ${csv.skips.join(',')}` : ''}
+            </td>
             <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <g class="node">
                   <circle cx="20" cy="50" r="10"/>
@@ -490,6 +516,8 @@ export class CPXOperatorGraph extends HTMLElement {
             <td>${verChannels.join(', ')}</td>`;
                         this.body.appendChild(row);
                     });
+                }
+                else {
                 }
             }
         }
