@@ -37,7 +37,7 @@ tbody td:nth-child(5) {}
 svg { display: block; max-width: 100px; }
 
 .toggle { justify-self: end; padding-right: 10em;  font-size: var(--cpxOGToggleFontSize, 16px); }
-.toggle input[type=checkbox] { height: 0; width: 0; opacity: 0; }
+.toggle input[type=checkbox] { height: 0; width: 0; opacity: 0; position: absolute; }
 .toggle label {
   cursor: pointer;
   text-indent: 60px;
@@ -257,12 +257,14 @@ class OperatorIndex {
     }
     getAllVersions() {
         const versions = new Map();
-        const chs = this.channels.forEach(ch => {
+        this.channels.forEach(ch => {
             ch.versions.forEach(v => {
                 versions.set(v.version, v);
             });
         });
-        const orderedVersions = [...versions.keys()].sort((a, b) => compareSemVer(b, a));
+        const orderedVersions = [...versions.keys()]
+            .sort((a, b) => compareSemVer(b, a))
+            .reduce((a, c) => a.set(c, versions.get(c)), new Map());
         return orderedVersions;
     }
 }
@@ -334,6 +336,12 @@ export class CPXOperatorGraph extends HTMLElement {
             configurable: true,
             writable: true,
             value: ""
+        });
+        Object.defineProperty(this, "_all", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
         });
         Object.defineProperty(this, "_body", {
             enumerable: true,
@@ -414,6 +422,15 @@ export class CPXOperatorGraph extends HTMLElement {
         this.setAttribute('channel', this._channel);
         this.render();
     }
+    get all() {
+        return this._all;
+    }
+    set all(val) {
+        if (this._all === val)
+            return;
+        this._all = val;
+        this.render();
+    }
     get body() {
         if (!this._body) {
             this._body = this.shadowRoot.querySelector('tbody');
@@ -429,9 +446,14 @@ export class CPXOperatorGraph extends HTMLElement {
                 this.channel = evt['detail'].value;
             }
         });
+        this.shadowRoot.addEventListener('change', evt => {
+            if (evt.target['id'] === 'all-channels') {
+                this.all = evt.target['checked'] ? true : false;
+            }
+        });
     }
     static get observedAttributes() {
-        return ["url", "order", "channel", "index"];
+        return ["url", "order", "channel", "index", "all"];
     }
     attributeChangedCallback(attr, oldVal, newVal) {
         this[attr] = newVal;
@@ -469,7 +491,7 @@ export class CPXOperatorGraph extends HTMLElement {
             }
         }
     }
-    render(all) {
+    render() {
         if (this.bundle && this.bundle.indices) {
             const currIndex = this.bundle.indices.get(this.index);
             const currChannel = this.bundle.indices.get(this.index).channels.get(this.channel);
@@ -477,7 +499,7 @@ export class CPXOperatorGraph extends HTMLElement {
                 while (this.body.firstChild) {
                     this.body.removeChild(this.body.firstChild);
                 }
-                if (!all) {
+                if (!this.all) {
                     currChannel.getVersions().map(ver => {
                         const csv = currChannel.versions.get(ver);
                         const escVer = ver.replaceAll('.', '');
@@ -497,7 +519,7 @@ export class CPXOperatorGraph extends HTMLElement {
                         if (csv.replaces === null) {
                             row.setAttribute('outbound', '');
                         }
-                        row.innerHTML = `<td></td>
+                        row.innerHTML = `<td>${csv.latest_in_channel ? '<em>Head</em>' : ''}</td>
             <th scope="row"><label for="${escVer}">${csv['version']}</label><input type="radio" id="${escVer}" name="${escChannel}" value="${csv['version']}"></th>
             <td>
               ${csv['replaces'] ? `Replaces: ${csv['replaces'].replace(csv.package + '.', '')}` : ''}
@@ -518,6 +540,42 @@ export class CPXOperatorGraph extends HTMLElement {
                     });
                 }
                 else {
+                    currIndex.getAllVersions().forEach(csv => {
+                        const escVer = csv.version.replaceAll('.', '');
+                        const verChannels = [];
+                        currIndex.channels.forEach(ch => {
+                            if (ch.versions.has(csv.version)) {
+                                verChannels.push(ch.name);
+                            }
+                        });
+                        const row = document.createElement('tr');
+                        row.id = csv['_id'];
+                        row.onclick = this.handleClick(row.id);
+                        if (csv.latest_in_channel && csv.replaces !== null) {
+                            row.setAttribute('inbound', '');
+                        }
+                        if (csv.replaces === null) {
+                            row.setAttribute('outbound', '');
+                        }
+                        row.innerHTML = `<td></td>
+            <th scope="row"><label for="${escVer}">${csv.version}</label><input type="radio" id="${escVer}" name="all-versions" value="${csv.version}"></th>
+            <td>
+              ${csv.replaces ? `Replaces: ${csv.replaces.replace(csv.package + '.', '')}` : ''}
+              ${csv.skips && csv.skips.length ? `Skips: ${csv.skips.join(',')}` : ''}
+            </td>
+            <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <g class="node">
+                  <circle cx="20" cy="50" r="10"/>
+                  <circle class="active" cx="20" cy="50" r="3"/>
+                  <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
+                  <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
+                  <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
+              </g>
+              <g class="edges"></g>
+            </svg></td>
+            <td>${verChannels.join(', ')}</td>`;
+                        this.body.appendChild(row);
+                    });
                 }
             }
         }
