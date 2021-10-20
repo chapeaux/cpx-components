@@ -109,14 +109,16 @@ class CPXOperatorVersion extends HTMLElement {
     if (op.skip_range) {
       this.skip_range = new SkipRange(op.skip_range);
     }
+    this.activeListener.bind(this);
   }
 
   connectedCallback() {
     this.shadowRoot.innerHTML = this.html;
-    this.addEventListener('click', evt=> {
+    this.addEventListener('click', _evt=> {
       this.active = true;
       console.log('Activate:',this.version);
     });
+    globalThis.addEventListener('graph-active', this.activeListener);
   }
 
   package: string;
@@ -127,7 +129,7 @@ class CPXOperatorVersion extends HTMLElement {
   version:string;
   skips:Array<string> = [];
   skip_range: SkipRange;
-  replaces:string;
+  replaces = '';
   channels: Array<string> = [];
 
   _active = false;
@@ -138,13 +140,26 @@ class CPXOperatorVersion extends HTMLElement {
     const edges = this.shadowRoot.getElementById('edges');
     if (this._active) {
       this.setAttribute('active','');
-      const input = this.shadowRoot.querySelector('input');
-      input.focus();
+      //const input = this.shadowRoot.querySelector('input');
+      //input.focus();
       if (this.replaces) {
         const repLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
         repLine.setAttributeNS(null, 'd', 'M 31 53 C 50 58, 70 60, 70 100');
         edges.appendChild(repLine);
       }
+
+      globalThis.dispatchEvent(new CustomEvent('graph-active', {
+        detail: {
+          version: this.version,
+          replaces: this.replaces.replace(`${this.package}.v`,''),
+          skips: this.skips,
+          skip_min: this.skip_range.min,
+          skip_max: this.skip_range.max
+        },
+        bubbles: true,
+        composed: true
+      }));
+
     } else {
       this.removeAttribute('active');
       
@@ -153,6 +168,14 @@ class CPXOperatorVersion extends HTMLElement {
       }
     }
   }
+
+  activeListener(evt) {
+    console.log(evt);
+    if (evt.detail && evt.detail.version && evt.detail.version !== this.version) {
+      this.active = false;
+    }
+  }
+
   get escVer() { return this.version.replaceAll('.','-'); }
   get escChannel() { return this.channel_name.replaceAll('.','-'); }
 }

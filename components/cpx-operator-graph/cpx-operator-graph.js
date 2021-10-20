@@ -105,7 +105,7 @@ class CPXOperatorVersion extends HTMLElement {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: ''
         });
         Object.defineProperty(this, "channels", {
             enumerable: true,
@@ -124,6 +124,7 @@ class CPXOperatorVersion extends HTMLElement {
         if (op.skip_range) {
             this.skip_range = new SkipRange(op.skip_range);
         }
+        this.activeListener.bind(this);
     }
     static get tag() { return "cpx-operator-version"; }
     get html() {
@@ -175,10 +176,11 @@ class CPXOperatorVersion extends HTMLElement {
     }
     connectedCallback() {
         this.shadowRoot.innerHTML = this.html;
-        this.addEventListener('click', evt => {
+        this.addEventListener('click', _evt => {
             this.active = true;
             console.log('Activate:', this.version);
         });
+        globalThis.addEventListener('graph-active', this.activeListener);
     }
     get active() { return this._active; }
     set active(val) {
@@ -188,19 +190,34 @@ class CPXOperatorVersion extends HTMLElement {
         const edges = this.shadowRoot.getElementById('edges');
         if (this._active) {
             this.setAttribute('active', '');
-            const input = this.shadowRoot.querySelector('input');
-            input.focus();
             if (this.replaces) {
                 const repLine = document.createElementNS('http://www.w3.org/2000/svg', "path");
                 repLine.setAttributeNS(null, 'd', 'M 31 53 C 50 58, 70 60, 70 100');
                 edges.appendChild(repLine);
             }
+            globalThis.dispatchEvent(new CustomEvent('graph-active', {
+                detail: {
+                    version: this.version,
+                    replaces: this.replaces.replace(`${this.package}.v`, ''),
+                    skips: this.skips,
+                    skip_min: this.skip_range.min,
+                    skip_max: this.skip_range.max
+                },
+                bubbles: true,
+                composed: true
+            }));
         }
         else {
             this.removeAttribute('active');
             while (edges.firstChild) {
                 edges.removeChild(edges.firstChild);
             }
+        }
+    }
+    activeListener(evt) {
+        console.log(evt);
+        if (evt.detail && evt.detail.version && evt.detail.version !== this.version) {
+            this.active = false;
         }
     }
     get escVer() { return this.version.replaceAll('.', '-'); }
