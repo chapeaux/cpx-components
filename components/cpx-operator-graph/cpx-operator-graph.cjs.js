@@ -136,13 +136,13 @@ class CPXOperatorVersion extends HTMLElement {
       border-bottom: 1px solid #999;
       padding: 0;align-items:center; }
 
-    .node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
-    .edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
+    #node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
+    #edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
     .inbound, .outbound, .active { display: none; }
-    :host([active]) .node { stroke: var(--cpxOGActiveColor,#93d434); }
+    :host([active]) #node { stroke: var(--cpxOGActiveColor,#93d434); }
     :host([active]) .active, :host([inbound]) .inbound, :host([outbound]) .outbound { display: block; }
     :host([active]) .active { fill: var(--cpxOGActiveColor, #93d434); }
-    :host([connect]) .node { stroke: var(--cpxOGConnectedColor,#0266c8); }
+    :host([connect]) #node { stroke: var(--cpxOGConnectedColor,#0266c8); }
 
     aside { }
     div label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left;  }
@@ -159,20 +159,20 @@ class CPXOperatorVersion extends HTMLElement {
     svg { display: block; max-width: 100px; max-height: 100%; }
     </style>
     <aside>${this.latest_in_channel ? '<em>Head</em>' : ''}</aside>
-    <div><label for="${this.escVer}">${this.version}</label><input type="radio" id="${this.escVer}" name="${this.escChannel}" value="${this.version}"></div>
+    <div><label tabindex="0" for="${this.escVer}">${this.version}</label><input type="radio" id="${this.escVer}" name="${this.escChannel}" value="${this.version}"></div>
     <aside>
       ${this.replaces && this.replaces.length > 0 ? `Replaces: ${this.replaces.replace(this.package + '.', '')}` : ''}
       ${this.skips && this.skips.length ? `Skips: ${this.skips.join(',')}` : ''}
     </aside>
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <g class="node">
+      <g id="node">
           <circle cx="20" cy="50" r="10"/>
           <circle class="active" cx="20" cy="50" r="3"/>
           <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
           <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
           <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
       </g>
-      <g class="edges"></g>
+      <g id="edges"></g>
     </svg>
     <ul>${this.channels.map(ch => `<li>${ch}</li>`)}</ul>`;
     }
@@ -183,31 +183,27 @@ class CPXOperatorVersion extends HTMLElement {
             console.log('Activate:', this.version);
         });
     }
-    handleClick(id) {
-        return (e) => {
-            const active = this.shadowRoot.querySelector('[active]');
-            if (active) {
-                active.removeAttribute('active');
-            }
-            this.shadowRoot.getElementById(id).setAttribute('active', '');
-            const activeInput = this.shadowRoot.querySelector(`[active] input`);
-            activeInput['click']();
-            activeInput['focus']();
-        };
-    }
     get active() { return this._active; }
     set active(val) {
         if (this._active === val)
             return;
         this._active = val;
+        const edges = this.shadowRoot.getElementById('edges');
         if (this._active) {
             this.setAttribute('active', '');
             const input = this.shadowRoot.querySelector('input');
-            input.click();
             input.focus();
+            if (this.replaces) {
+                const repLine = document.createElementNS('http://www.w3.org/2000/svg', "path");
+                repLine.setAttributeNS(null, 'd', 'M 31 53 C 50 58, 70 60, 70 100');
+                edges.appendChild(repLine);
+            }
         }
         else {
             this.removeAttribute('active');
+            while (edges.firstChild) {
+                edges.removeChild(edges.firstChild);
+            }
         }
     }
     get escVer() { return this.version.replaceAll('.', '-'); }
@@ -400,6 +396,10 @@ class CPXOperatorGraph extends HTMLElement {
       background: #fff;
       border-radius: 20px;
       transition: 0.3s;
+    }
+
+    .toggle label:focus {
+      outline: 8px ridge --var(--cpxOGConnectedColor, #0266c8);
     }
 
     .toggle input:checked + label {
