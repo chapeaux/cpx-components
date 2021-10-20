@@ -113,6 +113,12 @@ class CPXOperatorVersion extends HTMLElement {
             writable: true,
             value: []
         });
+        Object.defineProperty(this, "_active", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
+        });
         this.attachShadow({ mode: "open" });
         Object.assign(this, op);
         if (op.skip_range) {
@@ -130,15 +136,15 @@ class CPXOperatorVersion extends HTMLElement {
     .node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
     .edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
     .inbound, .outbound, .active { display: none; }
-    [active] .node { stroke: var(--cpxOGActiveColor,#93d434); }
-    [active] .active, [inbound] .inbound, [outbound] .outbound { display: block; }
-    [active] .active { fill: var(--cpxOGActiveColor, #93d434); }
-    [connect] .node { stroke: var(--cpxOGConnectedColor,#0266c8); }
+    :host([active]) .node { stroke: var(--cpxOGActiveColor,#93d434); }
+    :host([active]) .active, :host([inbound]) .inbound, :host([outbound]) .outbound { display: block; }
+    :host([active]) .active { fill: var(--cpxOGActiveColor, #93d434); }
+    :host([connect]) .node { stroke: var(--cpxOGConnectedColor,#0266c8); }
 
     aside { }
     div label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left;  }
     div input { opacity: 0; width:0; height:0; }
-    [active] div label { color: #333; font-weight: normal; }
+    :host([active]) div label { color: #333; font-weight: normal; }
 
     main :nth-child(1) {}
     main :nth-child(2) { }
@@ -170,6 +176,7 @@ class CPXOperatorVersion extends HTMLElement {
     connectedCallback() {
         this.shadowRoot.innerHTML = this.html;
         this.addEventListener('click', evt => {
+            this.active = true;
             console.log('Activate:', this.version);
         });
     }
@@ -184,6 +191,21 @@ class CPXOperatorVersion extends HTMLElement {
             activeInput['click']();
             activeInput['focus']();
         };
+    }
+    get active() { return this._active; }
+    set active(val) {
+        if (this._active === val)
+            return;
+        this._active = val;
+        if (this._active) {
+            this.setAttribute('active', '');
+            const input = this.shadowRoot.querySelector('input');
+            input.click();
+            input.focus();
+        }
+        else {
+            this.removeAttribute('active');
+        }
     }
     get escVer() { return this.version.replaceAll('.', '-'); }
     get escChannel() { return this.channel_name.replaceAll('.', '-'); }
@@ -571,33 +593,7 @@ export class CPXOperatorGraph extends HTMLElement {
                                 verChannels.push(ch.name);
                             }
                         });
-                        const row = document.createElement('cpx-operator-version');
-                        row.id = csv['_id'];
-                        row.onclick = this.handleClick(row.id);
-                        if (csv.latest_in_channel && csv.replaces !== null) {
-                            row.setAttribute('inbound', '');
-                        }
-                        if (csv.replaces === null) {
-                            row.setAttribute('outbound', '');
-                        }
-                        row.innerHTML = `<td></td>
-            <th scope="row"><label for="${escVer}">${csv.version}</label><input type="radio" id="${escVer}" name="all-versions" value="${csv.version}"></th>
-            <td>
-              ${csv.replaces ? `Replaces: ${csv.replaces.replace(csv.package + '.', '')}` : ''}
-              ${csv.skips && csv.skips.length ? `Skips: ${csv.skips.join(',')}` : ''}
-            </td>
-            <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <g class="node">
-                  <circle cx="20" cy="50" r="10"/>
-                  <circle class="active" cx="20" cy="50" r="3"/>
-                  <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-                  <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-                  <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-              </g>
-              <g class="edges"></g>
-            </svg></td>
-            <td>${verChannels.join(', ')}</td>`;
-                        this.body.appendChild(row);
+                        this.body.appendChild(csv);
                     });
                 }
             }
