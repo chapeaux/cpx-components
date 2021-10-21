@@ -1,8 +1,10 @@
-import { compareSemVer } from 'https://cdn.skypack.dev/semver-parser';
-
+import { compareSemVer } from 'https://cdn.esm.sh/v54/semver-parser@4.0.0/es2021/semver-parser.js';
 class SkipRange {
   constructor(range:string) {
-    range.split(' ')
+    const rangeArray = range.replace('>=','').replace('<','').replace('x','0').split(' ');
+    this.min = rangeArray[0];
+    this.max = rangeArray.length > 0 ? rangeArray[1] : '';
+
   }
   min:string;
   max:string;
@@ -67,7 +69,7 @@ class CPXOperatorVersion extends HTMLElement {
     :host([active]) #node { stroke: var(--cpxOGActiveColor,#93d434); }
     :host([active]) .active, :host([inbound]) .inbound, :host([outbound]) .outbound { display: block; }
     :host([active]) .active { fill: var(--cpxOGActiveColor, #93d434); }
-    :host([connect]) #node { stroke: var(--cpxOGConnectedColor,#0266c8); }
+    :host([connected]) #node { stroke: var(--cpxOGConnectedColor,#0266c8); }
 
     aside { }
     div label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left;  }
@@ -105,11 +107,10 @@ class CPXOperatorVersion extends HTMLElement {
   constructor(op) {
     super();
     this.attachShadow({ mode: "open" });
+    op.replaces = op.replaces ? op.replaces.replace(op.package+'.v','') : '';
+    op.skip_range = op.skip_range ? new SkipRange(op.skip_range) : null;
     Object.assign(this,op);
-    if (op.skip_range) {
-      this.skip_range = new SkipRange(op.skip_range);
-    }
-    this.activeListener.bind(this);
+    this.activeListener = this.activeListener.bind(this);
   }
 
   connectedCallback() {
@@ -119,6 +120,7 @@ class CPXOperatorVersion extends HTMLElement {
       console.log('Activate:',this.version);
     });
     globalThis.addEventListener('graph-active', this.activeListener);
+    if (!this.replaces && !this.skip_range && !this.skips) { this.setAttribute('outbound',''); }
   }
 
   package: string;
@@ -129,32 +131,66 @@ class CPXOperatorVersion extends HTMLElement {
   version:string;
   skips:Array<string> = [];
   skip_range: SkipRange;
-  replaces = '';
+  replaces:string;
   channels: Array<string> = [];
+  
+  _edges;
+  get edges() { 
+    if (!this._edges) {
+      this._edges = this.shadowRoot.getElementById('edges');
+    }
+    return this._edges; 
+  }
+  
+  _replaced = false;
+  get replaced() { return this._replaced; }
+  set replaced(val) {
+    if (this._replaced === val) return;
+    this._replaced = val;
+    if (this._replaced) {
+      const repLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
+      repLine.setAttributeNS(null, 'd', 'M 31 47 C 50 42, 70 40, 70 0');
+      this.edges.appendChild(repLine);
+    }
+  }
+
+  _connected = false;
+  get connected() { return this._connected; }
+  set connected(val) {
+    if (this._connected === val) return;
+    this._connected = val;
+    if (this._connected) {
+      this.setAttribute('connected','');
+    } else {
+      this.removeAttribute('connected');
+    }
+  }
 
   _active = false;
   get active() { return this._active; }
   set active(val) {
     if (this._active === val) return;
     this._active = val;
-    const edges = this.shadowRoot.getElementById('edges');
+    while (this.edges.firstChild) {
+      this.edges.removeChild(this.edges.firstChild);
+    }
     if (this._active) {
       this.setAttribute('active','');
       //const input = this.shadowRoot.querySelector('input');
       //input.focus();
-      if (this.replaces) {
+      if (this.replaces || this.skip_range || this.skips) {
         const repLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
         repLine.setAttributeNS(null, 'd', 'M 31 53 C 50 58, 70 60, 70 100');
-        edges.appendChild(repLine);
+        this.edges.appendChild(repLine);
       }
 
-      globalThis.dispatchEvent(new CustomEvent('graph-active', {
+      this.dispatchEvent(new CustomEvent('graph-active', {
         detail: {
           version: this.version,
-          replaces: this.replaces.replace(`${this.package}.v`,''),
+          replaces: this.replaces ? this.replaces.replace(`${this.package}.v`,''):'',
           skips: this.skips,
-          skip_min: this.skip_range.min,
-          skip_max: this.skip_range.max
+          skip_min: this.skip_range ? this.skip_range.min : null,
+          skip_max: this.skip_range ? this.skip_range.max : null
         },
         bubbles: true,
         composed: true
@@ -162,17 +198,60 @@ class CPXOperatorVersion extends HTMLElement {
 
     } else {
       this.removeAttribute('active');
-      
-      while (edges.firstChild) {
-        edges.removeChild(edges.firstChild);
-      }
+      this.replaced = false;
     }
   }
 
   activeListener(evt) {
-    console.log(evt);
-    if (evt.detail && evt.detail.version && evt.detail.version !== this.version) {
-      this.active = false;
+    //console.log(evt);
+    const detail = evt.detail;
+    if (detail) {
+      if (detail.version && detail.version !== this.version) {
+        while (this.edges.firstChild) {
+          this.edges.removeChild(this.edges.firstChild);
+        }
+        this.active = false;
+        this.connected = false;
+        if (detail.replaces && detail.replaces === this.version) {
+          const repLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
+          repLine.setAttributeNS(null, 'd', 'M 31 47 C 50 42, 70 40, 70 0');
+          this.edges.appendChild(repLine);
+          this.connected = true;
+        } 
+
+        if (this.replaces === detail.version) {
+          const overLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
+          overLine.setAttributeNS(null, 'd', 'M 31 53 C 50 58, 70 60, 70 100');
+          this.edges.appendChild(overLine);
+          evt.composedPath()[0].replaced = true;
+          this.connected = true;
+        }
+
+        if (detail.skips && detail.skips.indexOf(this.version) >= 0) {
+          const skipLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          skipLine.setAttributeNS(null, 'x1', '70');
+          skipLine.setAttributeNS(null, 'x2', '70');
+          skipLine.setAttributeNS(null, 'y1', '100');
+          skipLine.setAttributeNS(null, 'y2', '0');
+          this.edges.appendChild(skipLine);
+          this.connected = true;
+        }
+
+        if (detail.skip_min && compareSemVer(this.version,detail.skip_min) >= 0 && compareSemVer(this.version,detail.skip_max) < 0) {
+          if (this.version !== detail.skip_min) {
+            const skipLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            skipLine.setAttributeNS(null, 'x1', '70');
+            skipLine.setAttributeNS(null, 'x2', '70');
+            skipLine.setAttributeNS(null, 'y1', '100');
+            skipLine.setAttributeNS(null, 'y2', '0');
+            this.edges.appendChild(skipLine);
+          }          
+          const repLine = document.createElementNS('http://www.w3.org/2000/svg',"path");
+          repLine.setAttributeNS(null, 'd', 'M 31 47 C 50 42, 70 40, 70 0');
+          this.edges.appendChild(repLine);
+          this.connected = true;
+        }
+      }
     }
   }
 
@@ -347,7 +426,7 @@ export class CPXOperatorGraph extends HTMLElement {
     fetch(val).then((resp) => {
       return resp.json()
     }).then((data) => {
-      this.data = data['data']; // data.replaceAll("}\n{", "}|||{").split("|||").map((c) => JSON.parse(c) );
+      this.data = data; // data.replaceAll("}\n{", "}|||{").split("|||").map((c) => JSON.parse(c) );
     });
   }
 

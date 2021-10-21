@@ -8,7 +8,7 @@ async function browserEmit(path: string) {
   //console.info('Browser Path',path);
   let { files, diagnostics } = await Deno.emit(path, {
     check: true,
-    importMapPath: importMapPath,
+    //importMapPath: importMapPath,
     compilerOptions: {
       lib: ["es6", "es2021", "dom"],
       strict: false,
@@ -37,7 +37,7 @@ async function browserEmit(path: string) {
 
   ({ files, diagnostics } = await Deno.emit(path, {
     check: true,
-    importMapPath: importMapPath,
+    //importMapPath: importMapPath,
     compilerOptions: {
       lib: ["es6","es2021","dom"],
       strict: false,
