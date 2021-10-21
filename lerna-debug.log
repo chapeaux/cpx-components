@@ -1,9 +1,0 @@
-31 error Error: Command failed: git add -- components/cpx-user/package.json components/cpx-user/package-lock.json components/cpx-keycloak/package.json components/cpx-keycloak/package-lock.json
-31 error The following paths are ignored by one of your .gitignore files:
-31 error components/cpx-keycloak/package-lock.json
-31 error components/cpx-user/package-lock.json
-31 error Use -f if you really want to add them.
-31 error
-31 error     at makeError (/usr/local/lib/node_modules/lerna/node_modules/execa/index.js:174:9)
-31 error     at /usr/local/lib/node_modules/lerna/node_modules/execa/index.js:278:16
-31 error     at processTicksAndRejections (internal/process/task_queues.js:97:5)

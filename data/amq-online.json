@@ -1,0 +1,64 @@
+[
+    {
+      "_id": "6166e4e7f17be59674c67dcc",
+      "channel_name": "stable",
+      "csv_name": "amq-online.1.7.1-0.1628610187.p",
+      "latest_in_channel": false,
+      "package": "amq-online",
+      "ocp_version": "4.7",
+      "version": "1.7.1+0.1628610187.p",
+      "skips": [
+        "amq-online.1.7.1"
+      ],
+      "skip_range": null,
+      "replaces": "amq-online.1.7.0"
+    },
+    {
+      "_id": "6166e59ef17be59674c67e16",
+      "channel_name": "stable",
+      "csv_name": "amq-online.1.6.2",
+      "latest_in_channel": false,
+      "package": "amq-online",
+      "ocp_version": "4.7",
+      "version": "1.6.2",
+      "skips": [],
+      "skip_range": ">=1.5.4 <1.6.0",
+      "replaces": null
+    },
+    {
+      "_id": "6166e5cff17be59674c67e2c",
+      "channel_name": "stable",
+      "csv_name": "amq-online.1.7.2",
+      "latest_in_channel": false,
+      "package": "amq-online",
+      "ocp_version": "4.7",
+      "version": "1.7.2",
+      "skips": [],
+      "skip_range": null,
+      "replaces": "amq-online.1.7.1-0.1628610187.p"
+    },
+    {
+      "_id": "6166e6aff17be59674c67e8b",
+      "channel_name": "stable",
+      "csv_name": "amq-online.1.7.1",
+      "latest_in_channel": false,
+      "package": "amq-online",
+      "ocp_version": "4.7",
+      "version": "1.7.1",
+      "skips": [],
+      "skip_range": null,
+      "replaces": null
+    },
+    {
+      "_id": "6166e947f17be59674c67fa3",
+      "channel_name": "stable",
+      "csv_name": "amq-online.1.7.0",
+      "latest_in_channel": false,
+      "package": "amq-online",
+      "ocp_version": "4.7",
+      "version": "1.7.0",
+      "skips": [],
+      "skip_range": null,
+      "replaces": "amq-online.1.6.2"
+    }
+  ]

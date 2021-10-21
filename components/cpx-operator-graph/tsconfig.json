@@ -9,10 +9,10 @@
     "checkJs": false,
     "disableSizeLimit": false,
     "declaration": true,
-    "declarationDir": ".",
+    "composite": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "module": "ES2020",
+    "lib": ["es6", "ES2021", "DOM"],
+    "module": "es6",
     "moduleResolution": "Node",
     "outDir": ".",
     "rootDir": "./src",
@@ -34,7 +34,7 @@
     "strictPropertyInitialization": false,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
-    "target": "ESNext"
+    "target": "es6"
   },
   "include": ["src/**/*"],
   "exclude": []
