@@ -1,7 +1,7 @@
 apiVersion: v2
 publisher: deno_land
 name: deno-che
-version: 3.7.0
+version: 3.9.1
 type: VS Code extension
 displayName: Deno Support in Che
 title: Deno for Eclipse Che
@@ -12,5 +12,5 @@ category: Language
 firstPublicationDate: '2020-06-10'
 spec:                                                             
   extensions:
-  - "https://github.com/denoland/vscode_deno/releases/download/3.7.0/vscode-deno.vsix" 
-latestUpdateDate: "2021-07-04"
+  - "https://github.com/denoland/vscode_deno/releases/download/3.9.1/vscode-deno.vsix" 
+latestUpdateDate: "2021-09-14"
