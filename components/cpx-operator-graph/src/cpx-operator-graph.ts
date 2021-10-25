@@ -1,3 +1,6 @@
+/*
+https://fontawesome.com/license
+*/
 import { compareSemVer } from 'https://cdn.esm.sh/v54/semver-parser@4.0.0/es2021/semver-parser.js';
 class SkipRange {
   constructor(range:string) {
@@ -62,7 +65,12 @@ class CPXOperatorVersion extends HTMLElement {
       grid-template-columns: 8% 12% 25% 25% 30%;
       border-bottom: 1px solid #999;
       padding: 0;align-items:center; }
-
+    ul { list-style: none; margin: 0; padding: 0; color: var(--cpxOGConnectedColor,#0266c8); }
+    ul li { display: inline-block; float: left; }
+    ul li:after { content: ', '; }
+    ul li:last-child:after { content: ''; }
+    aside span { display: none; }
+    aside em { border-radius: 10px; padding: .1em 1em; background-color: #ccc; font-size: calc(var(--cpxOGFontSize,16px)*.75);}
     #node { fill: transparent; stroke-width:  var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGDisconnectedColor, #d2d2d2); }
     #edges { fill: transparent; stroke-width: var(--cpxOGStrokeWidth,3); stroke: var(--cpxOGConnectedColor,#0266c8); }
     .inbound, .outbound, .active { display: none; }
@@ -70,12 +78,14 @@ class CPXOperatorVersion extends HTMLElement {
     :host([active]) .active, :host([inbound]) .inbound, :host([outbound]) .outbound { display: block; }
     :host([active]) .active { fill: var(--cpxOGActiveColor, #93d434); }
     :host([connected]) #node { stroke: var(--cpxOGConnectedColor,#0266c8); }
-
-    aside { }
+    :host([connected]) aside span { display: inline; border-radius: 10px; padding: .1em 1em; background-color: #ccc; font-size: calc(var(--cpxOGFontSize,16px)*.75); }
+    
+    
     div label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left;  }
+    div svg { display: none;margin-left:.5em; height: calc(var(--cpxOGFontSize, 16px )*.76); }
     div input { opacity: 0; width:0; height:0; }
     :host([active]) div label { color: #333; font-weight: normal; }
-
+    :host([active]) div svg { display: inline;  }
     main :nth-child(1) {}
     main :nth-child(2) { }
 
@@ -86,10 +96,14 @@ class CPXOperatorVersion extends HTMLElement {
     svg { display: block; max-width: 100px; max-height: 100%; }
     </style>
     <aside>${this.latest_in_channel ? '<em>Head</em>' : ''}</aside>
-    <div><label tabindex="0" for="${this.escVer}">${this.version}</label><input type="radio" id="${this.escVer}" name="${this.escChannel}" value="${this.version}"></div>
+    <div>
+      <label tabindex="0" for="${this.escVer}">${this.version}</label>
+      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="code-branch" class="svg-inline--fa fa-code-branch fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M384 144c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 36.4 24.3 67.1 57.5 76.8-.6 16.1-4.2 28.5-11 36.9-15.4 19.2-49.3 22.4-85.2 25.7-28.2 2.6-57.4 5.4-81.3 16.9v-144c32.5-10.2 56-40.5 56-76.3 0-44.2-35.8-80-80-80S0 35.8 0 80c0 35.8 23.5 66.1 56 76.3v199.3C23.5 365.9 0 396.2 0 432c0 44.2 35.8 80 80 80s80-35.8 80-80c0-34-21.2-63.1-51.2-74.6 3.1-5.2 7.8-9.8 14.9-13.4 16.2-8.2 40.4-10.4 66.1-12.8 42.2-3.9 90-8.4 118.2-43.4 14-17.4 21.1-39.8 21.6-67.9 31.6-10.8 54.4-40.7 54.4-75.9zM80 64c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16zm0 384c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zm224-320c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16z"></path></svg>
+      <input type="radio" id="${this.escVer}" name="${this.escChannel}" value="${this.version}">
+    </div>
     <aside>
-      ${this.replaces && this.replaces.length > 0 ? `Replaces: ${this.replaces.replace(this.package+'.','')}` : ''}
-      ${this.skips && this.skips.length ? `Skips: ${this.skips.join(',')}` : ''}
+      ${this.replaces && this.replaces.length > 0 ? `<span>Replaces: ${this.replaces.replace(this.package+'.','')}</span>` : ''}
+      ${this.skips && this.skips.length ? `<span>Skips: ${this.skips.join(',')}</span>` : ''}
     </aside>
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <g id="node">
@@ -101,7 +115,7 @@ class CPXOperatorVersion extends HTMLElement {
       </g>
       <g id="edges"></g>
     </svg>
-    <ul>${this.channels.map(ch=>`<li>${ch}</li>`)}</ul>`;
+    <ul>${this.channels.map(ch=>`<li>${ch}</li>`).join('')}</ul>`;
   }
 
   constructor(op) {
@@ -111,17 +125,34 @@ class CPXOperatorVersion extends HTMLElement {
     op.skip_range = op.skip_range ? new SkipRange(op.skip_range) : null;
     Object.assign(this,op);
     this.activeListener = this.activeListener.bind(this);
+    this.addEventListener('click', _evt=> {
+      this.active = true;
+    });
   }
 
   connectedCallback() {
     this.shadowRoot.innerHTML = this.html;
-    this.addEventListener('click', _evt=> {
-      this.active = true;
-      console.log('Activate:',this.version);
-    });
     globalThis.addEventListener('graph-active', this.activeListener);
     if (!this.replaces && !this.skip_range && !this.skips) { this.setAttribute('outbound',''); }
   }
+
+  disconnectedCallback() {
+    this.active = false;
+    this.connected = false;
+    this.replaced = false;
+    // while (this.edges.firstChild) {
+    //   this.edges.removeChild(this.edges.firstChild);
+    // }
+    globalThis.removeEventListener('graph-active',null);
+  }
+
+  // static get observedAttributes() {
+  //   return ["active", "connected"];
+  // }
+
+  // attributeChangedCallback(attr, oldVal, newVal) {
+  //   this[attr] = newVal ? true : false;
+  // }
 
   package: string;
   channel_name: string;
@@ -171,10 +202,12 @@ class CPXOperatorVersion extends HTMLElement {
   set active(val) {
     if (this._active === val) return;
     this._active = val;
+    console.log('Active change',this._active,this.version,this.edges.firstChild);
     while (this.edges.firstChild) {
       this.edges.removeChild(this.edges.firstChild);
     }
     if (this._active) {
+      this.connected = false;
       this.setAttribute('active','');
       //const input = this.shadowRoot.querySelector('input');
       //input.focus();
@@ -205,8 +238,9 @@ class CPXOperatorVersion extends HTMLElement {
   activeListener(evt) {
     //console.log(evt);
     const detail = evt.detail;
-    if (detail) {
+    if (this.edges && detail) {
       if (detail.version && detail.version !== this.version) {
+        console.log('Listener removal',this.version,this.edges.firstChild);
         while (this.edges.firstChild) {
           this.edges.removeChild(this.edges.firstChild);
         }
@@ -251,7 +285,10 @@ class CPXOperatorVersion extends HTMLElement {
           this.edges.appendChild(repLine);
           this.connected = true;
         }
+
+        //console.info(this.version,'Edge children:',this.edges.children.length);
       }
+      //console.log('Listener placed',this.version,detail.replaces,detail.skip_min,this.edges.innerHTML);
     }
   }
 
@@ -334,7 +371,7 @@ export class CPXOperatorGraph extends HTMLElement {
       font-size: var(--cpxOGH3FontSize, 20px); 
     }
 
-    section { display:grid; grid-template-rows: auto; }
+    section { display:grid; grid-template-rows: auto; margin-bottom: 60px; }
     header, cpx-operator-version { display: grid; grid-template-columns: 8% 12% 25% 25% 30%; border-bottom: 1px solid #999; padding: 0; }
     header { padding-bottom: 20px; }
     header strong:nth-child(1) {  }
@@ -383,10 +420,10 @@ export class CPXOperatorGraph extends HTMLElement {
 
     .toggle input:checked + label:after  { left: calc(100% - 7px); transform: translateX(-100%); }
     .toggle label:active:after { width: 33px; }
+    .toggle svg { height: var(--cpxOGToggleFontSize, 16px);  }
     .options { 
       display: grid; 
       grid-template-columns: 1fr 3fr; 
-      margin-bottom: 60px; 
     }
     </style>
     <section>
@@ -438,9 +475,8 @@ export class CPXOperatorGraph extends HTMLElement {
   set data(val) {
     if (this._data === val) return;
     this._data = val;
-    this.bundle = new OperatorBundle(this._data);
+    this.bundle = new OperatorBundle(this.data);
     this.shadowRoot.innerHTML = CPXOperatorGraph.tmpl;
-    this.render();
 
     if (this.bundle.indices.size >0 ) {
       const indexSelect = this.shadowRoot.querySelector('#ocp_versions select');
@@ -454,7 +490,7 @@ export class CPXOperatorGraph extends HTMLElement {
           opt.setAttribute('selected','selected'); 
         }
         indexSelect.appendChild(opt);
-      })
+      });   
     }
   }
 
@@ -574,14 +610,15 @@ export class CPXOperatorGraph extends HTMLElement {
         if (!this.all) {
           currChannel.getVersions().map(ver => {
             const csv = currChannel.versions.get(ver);
-            const escVer = ver.replaceAll('.','');
-            const escChannel = currChannel.name.replaceAll('.','');
+            // const escVer = ver.replaceAll('.','');
+            // const escChannel = currChannel.name.replaceAll('.','');
             const verChannels = [];
             currIndex.channels.forEach(ch => {
               if (ch.name !== csv.channel_name && ch.versions.has(csv.version)) {
                 verChannels.push(ch.name);
               }
-            })
+            });
+            csv.channels = verChannels;
             // const row = document.createElement('tr');
             // row.id = csv['_id'];
             // row.onclick = this.handleClick(row.id);
@@ -614,7 +651,8 @@ export class CPXOperatorGraph extends HTMLElement {
               if (ch.versions.has(csv.version)) {
                 verChannels.push(ch.name);
               }
-            })
+            });
+            csv.channels = verChannels;
             // const row = document.createElement('cpx-operator-version');
             // row.id = csv['_id'];
             // row.onclick = this.handleClick(row.id);
@@ -640,6 +678,7 @@ export class CPXOperatorGraph extends HTMLElement {
             this.body.appendChild(csv);
           });
         }
+        this.body.firstChild.click();
       }
     }
   }
