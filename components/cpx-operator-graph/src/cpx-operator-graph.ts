@@ -164,13 +164,9 @@ class CPXOperatorVersion extends HTMLElement {
   skip_range: SkipRange;
   replaces:string;
   channels: Array<string> = [];
-  
-  _edges;
+ 
   get edges() { 
-    if (!this._edges) {
-      this._edges = this.shadowRoot.getElementById('edges');
-    }
-    return this._edges; 
+    return this.shadowRoot.getElementById('edges');
   }
   
   _replaced = false;
@@ -202,7 +198,7 @@ class CPXOperatorVersion extends HTMLElement {
   set active(val) {
     if (this._active === val) return;
     this._active = val;
-    console.log('Active change',this._active,this.version,this.edges.firstChild);
+    //console.log('Active change',this._active,this.version,this.edges.firstChild);
     while (this.edges.firstChild) {
       this.edges.removeChild(this.edges.firstChild);
     }
@@ -240,7 +236,7 @@ class CPXOperatorVersion extends HTMLElement {
     const detail = evt.detail;
     if (this.edges && detail) {
       if (detail.version && detail.version !== this.version) {
-        console.log('Listener removal',this.version,this.edges.firstChild);
+        //console.log('Listener removal',this.version,this.edges.firstChild);
         while (this.edges.firstChild) {
           this.edges.removeChild(this.edges.firstChild);
         }
