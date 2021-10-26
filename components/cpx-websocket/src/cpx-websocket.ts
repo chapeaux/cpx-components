@@ -84,7 +84,7 @@ export class CPXWebSocket extends HTMLElement {
         if (dr.length === 0) {
           let drtxt = btoa(el.innerHTML.trim());
           el.setAttribute("data-repeat", drtxt);
-          while (el.firstChild)el.removeChild(el.firstChild);
+          while (el.firstChild) el.removeChild(el.firstChild);
         }
       });
     }
@@ -138,7 +138,7 @@ export class CPXWebSocket extends HTMLElement {
       let repeatEls = this.shadowRoot.querySelectorAll("[data-repeat]");
       if (repeatEls.length > 0) {
         repeatEls.forEach((el) => {
-          while (el.firstChild)el.removeChild(el.firstChild);
+          while (el.firstChild) el.removeChild(el.firstChild);
           this.renderTemplate(this.data, el);
         });
       }

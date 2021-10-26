@@ -39,11 +39,10 @@ class CPXResult extends HTMLElement {
     this._layout = val;
   }
   get url() {
-    const stage =
-      window.location.href.indexOf("stage") >= 0 ||
+    const stage = window.location.href.indexOf("stage") >= 0 ||
         window.location.href.indexOf("developers") < 0
-        ? ".stage"
-        : "";
+      ? ".stage"
+      : "";
     return !this.premium
       ? this._url
       : `https://broker${stage}.redhat.com/partner/drc/userMapping?redirect=${

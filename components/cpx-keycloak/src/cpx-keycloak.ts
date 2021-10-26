@@ -11,7 +11,6 @@ declare var Keycloak: any;
  * @attr {String} realm - Keycloak Realm
  *
  * @prop {Keycloak} keycloak - Keycloak object storage
- *
  */
 export class CPXKeycloak extends HTMLElement {
   _keycloak;
@@ -84,7 +83,7 @@ export class CPXKeycloak extends HTMLElement {
     if (this._loginAttr === val) return;
     this._loginAttr = val;
   }
-  
+
   _logoutElement;
   get logoutElement() {
     return this._logoutElement;
@@ -119,9 +118,14 @@ export class CPXKeycloak extends HTMLElement {
 
   static get observedAttributes() {
     return [
-      "url", "realm", "client-id", "config",
-      "login-element","login-attr",
-      "logout-element","logout-attr"
+      "url",
+      "realm",
+      "client-id",
+      "config",
+      "login-element",
+      "login-attr",
+      "logout-element",
+      "logout-attr",
     ];
   }
 
@@ -160,18 +164,23 @@ export class CPXKeycloak extends HTMLElement {
           //   `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
           this.dispatchEvent(
             new CustomEvent("token-ready", {
-              detail: { 
-                token: this.keycloak.tokenParsed
+              detail: {
+                token: this.keycloak.tokenParsed,
               },
               composed: true,
-              bubbles: true
-            })
+              bubbles: true,
+            }),
           );
           if (this.logoutElement && this.logoutAttr) {
-            const logoutElement = top.document.querySelector(this.logoutElement);
-            logoutElement.setAttribute(this.logoutAttr, this.keycloak.createLogoutUrl());
+            const logoutElement = top.document.querySelector(
+              this.logoutElement,
+            );
+            logoutElement.setAttribute(
+              this.logoutAttr,
+              this.keycloak.createLogoutUrl(),
+            );
             logoutElement.userData = Object.assign(
-              // { 
+              // {
               //   username: ' ',
               //   firstName: ' ',
               //   lastName: ' ',
@@ -179,17 +188,22 @@ export class CPXKeycloak extends HTMLElement {
               // }
               {
                 realm_access: {
-                  roles: this.keycloak.tokenParsed[""] || ' '
+                  roles: this.keycloak.tokenParsed[""] || " ",
                 },
-                REDHAT_LOGIN: this.keycloak.tokenParsed["preferred_username"] || ' ',
-                lastName: this.keycloak.tokenParsed["family_name"] || ' ',
-                account_number: this.keycloak.tokenParsed["iat"].toString() || '', //Pretty sure this isn't right...
-                preferred_username: this.keycloak.tokenParsed["preferred_username"] || ' ',
-                firstName: this.keycloak.tokenParsed["given_name"] || ' ',
-                email: this.keycloak.tokenParsed["email"] || ' ',
-                username: this.keycloak.tokenParsed["preferred_username"] || ' '
-              }
-              , this.keycloak.tokenParsed);
+                REDHAT_LOGIN: this.keycloak.tokenParsed["preferred_username"] ||
+                  " ",
+                lastName: this.keycloak.tokenParsed["family_name"] || " ",
+                account_number: this.keycloak.tokenParsed["iat"].toString() ||
+                  "", //Pretty sure this isn't right...
+                preferred_username:
+                  this.keycloak.tokenParsed["preferred_username"] || " ",
+                firstName: this.keycloak.tokenParsed["given_name"] || " ",
+                email: this.keycloak.tokenParsed["email"] || " ",
+                username: this.keycloak.tokenParsed["preferred_username"] ||
+                  " ",
+              },
+              this.keycloak.tokenParsed,
+            );
           }
           this.ready = true;
         } else {
@@ -197,7 +211,10 @@ export class CPXKeycloak extends HTMLElement {
             this.login();
           }
           if (this.loginElement && this.loginAttr) {
-            top.document.querySelector(this.loginElement).setAttribute(this.loginAttr, this.keycloak.createLoginUrl());
+            top.document.querySelector(this.loginElement).setAttribute(
+              this.loginAttr,
+              this.keycloak.createLoginUrl(),
+            );
           }
         }
       });

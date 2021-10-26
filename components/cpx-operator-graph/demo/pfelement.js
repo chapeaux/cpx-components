@@ -63,7 +63,8 @@ function isAllowedType(definition) {
  * @return {Boolean} True if the default value matches the type of the definition object.
  */
 function isValidDefaultType(definition) {
-  return definition.hasOwnProperty("default") && definition.default.constructor === definition.type;
+  return definition.hasOwnProperty("default") &&
+    definition.default.constructor === definition.type;
 }
 
 // @POLYFILL  Array.includes
@@ -98,7 +99,9 @@ if (!Array.prototype.includes) {
       var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
 
       function sameValueZero(x, y) {
-        return x === y || (typeof x === "number" && typeof y === "number" && isNaN(x) && isNaN(y));
+        return x === y ||
+          (typeof x === "number" && typeof y === "number" && isNaN(x) &&
+            isNaN(y));
       }
 
       // 7. Repeat, while k < len
@@ -158,7 +161,8 @@ if (!Element.prototype.closest) {
 // @POLYFILL  Element.matches
 // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
 if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+  Element.prototype.matches = Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector;
 }
 
 // @POLYFILL  Array.prototype.find
@@ -213,17 +217,17 @@ if (!Array.prototype.find) {
  * PatternFly Elements: PFElement 1.11.1
  * @license
  * Copyright 2021 Red Hat, Inc.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -231,7 +235,7 @@ if (!Array.prototype.find) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
 */
 
 // /**
@@ -426,7 +430,10 @@ class PFElement extends HTMLElement {
     const properties = this.allProperties;
     if (properties) {
       const oa = Object.keys(properties)
-        .filter((prop) => properties[prop].observer || properties[prop].cascade || properties[prop].alias)
+        .filter((prop) =>
+          properties[prop].observer || properties[prop].cascade ||
+          properties[prop].alias
+        )
         .map((p) => this._convertPropNameToAttrName(p));
       return [...oa];
     }
@@ -481,17 +488,23 @@ class PFElement extends HTMLElement {
 
     if (typeof name === "string") {
       return (
-        [...this.children].filter((child) => child.hasAttribute("slot") && child.getAttribute("slot") === name).length >
-        0
+        [...this.children].filter((child) =>
+          child.hasAttribute("slot") && child.getAttribute("slot") === name
+        ).length >
+          0
       );
     } else if (Array.isArray(name)) {
       return name.reduce(
         (n) =>
-          [...this.children].filter((child) => child.hasAttribute("slot") && child.getAttribute("slot") === n).length >
-          0
+          [...this.children].filter((child) =>
+            child.hasAttribute("slot") && child.getAttribute("slot") === n
+          ).length >
+            0,
       );
     } else {
-      this.warn(`Expected hasSlot argument to be a string or an array, but it was given: ${typeof name}.`);
+      this.warn(
+        `Expected hasSlot argument to be a string or an array, but it was given: ${typeof name}.`,
+      );
       return;
     }
   }
@@ -504,7 +517,9 @@ class PFElement extends HTMLElement {
    */
   getSlot(name = "unassigned") {
     if (name !== "unassigned") {
-      return [...this.children].filter((child) => child.hasAttribute("slot") && child.getAttribute("slot") === name);
+      return [...this.children].filter((child) =>
+        child.hasAttribute("slot") && child.getAttribute("slot") === name
+      );
     } else {
       return [...this.children].filter((child) => !child.hasAttribute("slot"));
     }
@@ -516,7 +531,8 @@ class PFElement extends HTMLElement {
       element.style.setProperty(name, value);
       return value;
     }
-    return window.getComputedStyle(element).getPropertyValue(name).trim() || null;
+    return window.getComputedStyle(element).getPropertyValue(name).trim() ||
+      null;
   }
 
   /**
@@ -531,7 +547,11 @@ class PFElement extends HTMLElement {
         // If there is no parent element, return null
         if (!item.parentElement) return;
         // Otherwise, find the closest component that's this one
-        else return item.parentElement.closest(`[${this._pfeClass._getCache("prop2attr").pfelement}]`) === this;
+        else {
+          return item.parentElement.closest(
+            `[${this._pfeClass._getCache("prop2attr").pfelement}]`,
+          ) === this;
+        }
       });
 
     // Loop over shadow elements, find direct descendants that are components
@@ -540,8 +560,15 @@ class PFElement extends HTMLElement {
       // Closest will return itself or it's ancestor matching that selector
       .filter((item) => {
         // If there is a parent element and we can find another web component in the ancestor tree
-        if (item.parentElement && item.parentElement.closest(`[${this._pfeClass._getCache("prop2attr").pfelement}]`)) {
-          return item.parentElement.closest(`[${this._pfeClass._getCache("prop2attr").pfelement}]`) === this;
+        if (
+          item.parentElement &&
+          item.parentElement.closest(
+            `[${this._pfeClass._getCache("prop2attr").pfelement}]`,
+          )
+        ) {
+          return item.parentElement.closest(
+            `[${this._pfeClass._getCache("prop2attr").pfelement}]`,
+          ) === this;
         }
         // Otherwise, check if the host matches this context
         if (item.getRootNode().host === this) return true;
@@ -592,7 +619,9 @@ class PFElement extends HTMLElement {
 
     // Initialize the array of jump links pointers
     // Expects items in the array to be NodeItems
-    if (!this._pfeClass.instances || !(this._pfeClass.instances.length >= 0)) this._pfeClass.instances = [];
+    if (!this._pfeClass.instances || !(this._pfeClass.instances.length >= 0)) {
+      this._pfeClass.instances = [];
+    }
 
     // Set up the mark ID based on existing ID on component if it exists
     if (!this.id) {
@@ -614,7 +643,9 @@ class PFElement extends HTMLElement {
     this.template = document.createElement("template");
 
     // Set the default value to the passed in type
-    if (type && this._pfeClass.allProperties.type) this._pfeClass.allProperties.type.default = type;
+    if (type && this._pfeClass.allProperties.type) {
+      this._pfeClass.allProperties.type.default = type;
+    }
 
     // Initalize the properties and attributes from the property getter
     this._initializeProperties();
@@ -642,7 +673,9 @@ class PFElement extends HTMLElement {
 
     // If the slot definition exists, set up an observer
     if (typeof this.slots === "object") {
-      this._slotsObserver = new MutationObserver(() => this._initializeSlots(this.tag, this.slots));
+      this._slotsObserver = new MutationObserver(() =>
+        this._initializeSlots(this.tag, this.slots)
+      );
       this._initializeSlots(this.tag, this.slots);
     }
   }
@@ -689,13 +722,19 @@ class PFElement extends HTMLElement {
       // If the property/attribute pair has an observer, fire it
       // Observers receive the oldValue and the newValue from the attribute changed callback
       if (propDef.observer) {
-        this[propDef.observer](this._castPropertyValue(propDef, oldVal), this._castPropertyValue(propDef, newVal));
+        this[propDef.observer](
+          this._castPropertyValue(propDef, oldVal),
+          this._castPropertyValue(propDef, newVal),
+        );
       }
 
       // If the property/attribute pair has a cascade target, copy the attribute to the matching elements
       // Note: this handles the cascading of new/updated attributes
       if (propDef.cascade) {
-        this._cascadeAttribute(attr, this._pfeClass._convertSelectorsToArray(propDef.cascade));
+        this._cascadeAttribute(
+          attr,
+          this._pfeClass._convertSelectorsToArray(propDef.cascade),
+        );
       }
     }
   }
@@ -729,13 +768,17 @@ class PFElement extends HTMLElement {
           this._markCount = this._markCount + 1;
 
           // Navigation start, i.e., the browser first sees that the user has navigated to the page
-          performance.measure(`${this._markId}-from-navigation-to-first-render`, undefined, `${this._markId}-rendered`);
+          performance.measure(
+            `${this._markId}-from-navigation-to-first-render`,
+            undefined,
+            `${this._markId}-rendered`,
+          );
 
           // Render is run before connection unless delayRender is used
           performance.measure(
             `${this._markId}-from-defined-to-first-render`,
             `${this._markId}-defined`,
-            `${this._markId}-rendered`
+            `${this._markId}-rendered`,
           );
         }
       } catch (err) {
@@ -763,7 +806,10 @@ class PFElement extends HTMLElement {
   /**
    * A wrapper around an event dispatch to standardize formatting.
    */
-  emitEvent(name, { bubbles = true, cancelable = false, composed = true, detail = {} } = {}) {
+  emitEvent(
+    name,
+    { bubbles = true, cancelable = false, composed = true, detail = {} } = {},
+  ) {
     if (detail) this.log(`Custom event: ${name}`, detail);
     else this.log(`Custom event: ${name}`);
 
@@ -773,7 +819,7 @@ class PFElement extends HTMLElement {
         cancelable,
         composed,
         detail,
-      })
+      }),
     );
   }
 
@@ -799,7 +845,9 @@ class PFElement extends HTMLElement {
                 let attrNames = cascade[selector];
                 // each selector can match multiple properties/attributes, so
                 // copy each of them
-                attrNames.forEach((attrName) => this._copyAttribute(attrName, nodeItem));
+                attrNames.forEach((attrName) =>
+                  this._copyAttribute(attrName, nodeItem)
+                );
               }
             });
           });
@@ -809,20 +857,21 @@ class PFElement extends HTMLElement {
             .filter((item) => item.slice(0, prefix.length + 1) === `${prefix}-`)
             .map((name) => customElements.whenDefined(name));
 
-          if (components)
+          if (components) {
             Promise.all(components).then(() => {
               this._cascadeAttributes(selectors, cascade);
             });
-          else this._cascadeAttributes(selectors, cascade);
+          } else this._cascadeAttributes(selectors, cascade);
         }
       }
 
-      if (this._rendered && this._cascadeObserver)
+      if (this._rendered && this._cascadeObserver) {
         this._cascadeObserver.observe(this, {
           attributes: true,
           childList: true,
           subtree: true,
         });
+      }
     }
   }
 
@@ -868,9 +917,13 @@ class PFElement extends HTMLElement {
     // If there are no inline styles, a context might have been deleted, so call resetContext
     if (!newValue) this.resetContext();
     else {
-      this.log(`Style observer activated on ${this.tag}`, `${newValue || "null"}`);
+      this.log(
+        `Style observer activated on ${this.tag}`,
+        `${newValue || "null"}`,
+      );
       // Grep for context/theme
-      const regex = /--[\w|-]*(?:context|theme):\s*(?:\"*(light|dark|saturated)\"*)/gi;
+      const regex =
+        /--[\w|-]*(?:context|theme):\s*(?:\"*(light|dark|saturated)\"*)/gi;
       let match = regex.exec(newValue);
 
       // If no match is returned, exit the observer
@@ -891,7 +944,9 @@ class PFElement extends HTMLElement {
     for (let mutation of mutationsList) {
       // If a new node is added, attempt to cascade attributes to it
       if (mutation.type === "childList" && mutation.addedNodes.length) {
-        const nonTextNodes = [...mutation.addedNodes].filter((n) => n.nodeType !== HTMLElement.TEXT_NODE);
+        const nonTextNodes = [...mutation.addedNodes].filter((n) =>
+          n.nodeType !== HTMLElement.TEXT_NODE
+        );
         this.cascadeProperties(nonTextNodes);
       }
     }
@@ -907,13 +962,15 @@ class PFElement extends HTMLElement {
 
       // Verify that properties conform to the allowed data types
       if (!isAllowedType(propDef)) {
-        this.error(`Property "${propName}" on ${this.name} must have type String, Number, or Boolean.`);
+        this.error(
+          `Property "${propName}" on ${this.name} must have type String, Number, or Boolean.`,
+        );
       }
 
       // Verify the property name conforms to our naming rules
       if (!/^[a-z_]/.test(propName)) {
         this.error(
-          `Property ${this.name}.${propName} defined, but prop names must begin with a lower-case letter or an underscore`
+          `Property ${this.name}.${propName} defined, but prop names must begin with a lower-case letter or an underscore`,
         );
       }
 
@@ -922,10 +979,11 @@ class PFElement extends HTMLElement {
       // If the default value is not the same type as defined by the property
       // and it's not a function (we can't validate the output of the function
       // on the class level), throw a warning
-      if (propDef.default && !isValidDefaultType(propDef) && !isFunction)
+      if (propDef.default && !isValidDefaultType(propDef) && !isFunction) {
         this.error(
-          `[${this.name}] The default value \`${propDef.default}\` does not match the assigned type ${propDef.type.name} for the \'${propName}\' property`
+          `[${this.name}] The default value \`${propDef.default}\` does not match the assigned type ${propDef.type.name} for the \'${propName}\' property`,
         );
+      }
     }
   }
 
@@ -1019,7 +1077,9 @@ class PFElement extends HTMLElement {
           }
           // If it's the default slot, look for direct children not assigned to a slot
         } else {
-          result = [...this.children].filter((child) => !child.hasAttribute("slot"));
+          result = [...this.children].filter((child) =>
+            !child.hasAttribute("slot")
+          );
 
           if (result.length > 0) {
             slotObj.nodes = result;
@@ -1038,7 +1098,9 @@ class PFElement extends HTMLElement {
 
     this.log("Slots validated.");
 
-    if (this._slotsObserver) this._slotsObserver.observe(this, { childList: true });
+    if (this._slotsObserver) {
+      this._slotsObserver.observe(this, { childList: true });
+    }
   }
 
   /**
@@ -1058,7 +1120,7 @@ class PFElement extends HTMLElement {
       // to overwrite one accidentally.
       if (typeof this[propName] !== "undefined") {
         this.log(
-          `Property "${propName}" on ${this.constructor.name} cannot be defined because the property name is reserved`
+          `Property "${propName}" on ${this.constructor.name} cannot be defined because the property name is reserved`,
         );
       } else {
         const attrName = this._pfeClass._prop2attr(propName);
@@ -1130,9 +1192,11 @@ class PFElement extends HTMLElement {
       // (typeof propDef.values === "function" && !propDef.values(value))
     ) {
       this.warn(
-        `${value} is not a valid value for ${attr}. Please provide one of the following values: ${propDef.values.join(
-          ", "
-        )}`
+        `${value} is not a valid value for ${attr}. Please provide one of the following values: ${
+          propDef.values.join(
+            ", ",
+          )
+        }`,
       );
     }
 
@@ -1180,7 +1244,10 @@ class PFElement extends HTMLElement {
     }
 
     // Convert the property name to kebab case
-    const propName = attrName.replace(/-([A-Za-z])/g, (l) => l[1].toUpperCase());
+    const propName = attrName.replace(
+      /-([A-Za-z])/g,
+      (l) => l[1].toUpperCase(),
+    );
     return propName;
   }
 
@@ -1200,7 +1267,10 @@ class PFElement extends HTMLElement {
    * @param {String} to A CSS selector that matches the elements that should received the cascaded attribute.  The selector will be applied within `this` element's light and shadow DOM trees.
    */
   _cascadeAttribute(name, to) {
-    const recipients = [...this.querySelectorAll(to), ...this.shadowRoot.querySelectorAll(to)];
+    const recipients = [
+      ...this.querySelectorAll(to),
+      ...this.shadowRoot.querySelectorAll(to),
+    ];
 
     for (const node of recipients) {
       this._copyAttribute(name, node);
@@ -1222,7 +1292,9 @@ class PFElement extends HTMLElement {
       if (typeof selectors === "string") return selectors.split(",");
       else if (typeof selectors === "object") return selectors;
       else {
-        this.warn(`selectors should be provided as a string, array, or object; received: ${typeof selectors}.`);
+        this.warn(
+          `selectors should be provided as a string, array, or object; received: ${typeof selectors}.`,
+        );
       }
     }
 
@@ -1236,14 +1308,16 @@ class PFElement extends HTMLElement {
       let cascadeTo = this._convertSelectorsToArray(config.cascade);
 
       // Iterate over each node in the cascade list for this property
-      if (cascadeTo)
+      if (cascadeTo) {
         cascadeTo.map((nodeItem) => {
           let attr = this._prop2attr(propName);
           // Create an object with the node as the key and an array of attributes
           // that are to be cascaded down to it
-          if (!cascadingProperties[nodeItem]) cascadingProperties[nodeItem] = [attr];
-          else cascadingProperties[nodeItem].push(attr);
+          if (!cascadingProperties[nodeItem]) {
+            cascadingProperties[nodeItem] = [attr];
+          } else cascadingProperties[nodeItem].push(attr);
         });
+      }
     }
 
     return cascadingProperties;
@@ -1266,7 +1340,7 @@ class PFElement extends HTMLElement {
       // Check if the previous definition's version matches this one
       if (prevDefinition && prevDefinition.version !== pfe.version) {
         this.warn(
-          `${pfe.tag} was registered at version ${prevDefinition.version}; cannot register version ${pfe.version}.`
+          `${pfe.tag} was registered at version ${prevDefinition.version}; cannot register version ${pfe.version}.`,
         );
       }
 
@@ -1331,8 +1405,12 @@ class PFElement extends HTMLElement {
     pfe._setCache("attr2prop", attr2prop);
     pfe._setCache("prop2attr", prop2attr);
 
-    const cascadingProperties = this._parsePropertiesForCascade(mergedProperties);
-    if (Object.keys(cascadingProperties)) pfe._setCache("cascadingProperties", cascadingProperties);
+    const cascadingProperties = this._parsePropertiesForCascade(
+      mergedProperties,
+    );
+    if (Object.keys(cascadingProperties)) {
+      pfe._setCache("cascadingProperties", cascadingProperties);
+    }
   }
 
   /**
