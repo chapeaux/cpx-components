@@ -21,36 +21,6 @@ class OperatorGraph {
   outbound = false;
   connected = false;
   graph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  /*
-  Base Style
-  .node {
-      fill: transparent;
-      stroke-width: 3;
-      stroke: #ccc;
-  }
-  .edges {
-      fill: transparent;
-      stroke-width: 3;
-      stroke: #369;
-  }
-  .inbound, .outbound, .active { display: none; }
-  [active] .node { stroke: #090;}
-  [active] .active { display: block; }
-  [inbound] .inbound, [outbound] .outbound { display: block; }
-  [connect] .node { stroke: #369; }
-
-  Base Node Group
-  <g id="node">
-    <circle cx="20" cy="50" r="10"/>
-    <circle class="active" cx="20" cy="50" r="3"/>
-    <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-    <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-    <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-  </g>
-
-  Base Edge Group
-  <g id="edges">
-  */
 }
 
 /*
@@ -81,7 +51,7 @@ class CPXOperatorVersion extends HTMLElement {
     :host([active]) .active, :host([inbound]) .inbound, :host([outbound]) .outbound { display: block; }
     :host([active]) .active { fill: var(--cpxOGActiveColor, #93d434); }
     :host([connected]) #node { stroke: var(--cpxOGConnectedColor,#0266c8); }
-    :host([connected]) aside span { display: inline; border-radius: 10px; padding: .1em 1em; background-color: #ccc; font-size: calc(var(--cpxOGFontSize,16px)*.75); }
+    :host([connected]) aside span, :host([active]) aside span { display: inline; border-radius: 10px; padding: .1em 1em; background-color: #ccc; font-size: calc(var(--cpxOGFontSize,16px)*.75); }
     
     
     div label { color: var(--cpxOGConnectedColor, #0266c8); text-align: left;  }
@@ -107,9 +77,7 @@ class CPXOperatorVersion extends HTMLElement {
     <aside>
       ${
       this.replaces && this.replaces.length > 0
-        ? `<span>Replaces: ${
-          this.replaces.replace(this.package + ".", "")
-        }</span>`
+        ? `<span>Replaces: ${this.replaces}</span>`
         : ""
     }
       ${
@@ -128,15 +96,17 @@ class CPXOperatorVersion extends HTMLElement {
       </g>
       <g id="edges"></g>
     </svg>
-    <ul>${this.channels.map((ch) => `<li>${ch}</li>`).join("")}</ul>`;
+    <ul id="channels"></ul>`;
   }
 
   constructor(op) {
     super();
     this.attachShadow({ mode: "open" });
-    op.replaces = op.replaces ? op.replaces.replace(op.package + ".v", "") : "";
+    op.replaces = op.replaces ? op.replaces.replace(op.csv_name.split(op.version)[0], "") : "";
+    op.skips = op.skips ? op.skips.map(skp => skp.replace(op.csv_name.split(op.version)[0],"")) : [];
     op.skip_range = op.skip_range ? new SkipRange(op.skip_range) : null;
     Object.assign(this, op);
+    this.shadowRoot.innerHTML = this.html;
     this.activeListener = this.activeListener.bind(this);
     this.addEventListener("click", (_evt) => {
       this.active = true;
@@ -144,20 +114,16 @@ class CPXOperatorVersion extends HTMLElement {
   }
 
   connectedCallback() {
-    this.shadowRoot.innerHTML = this.html;
-    globalThis.addEventListener("graph-active", this.activeListener);
-    if (!this.replaces && !this.skip_range && !this.skips) {
+    if (!this.replaces && !this.skip_range && !this.skips.length) {
       this.setAttribute("outbound", "");
     }
+    globalThis.addEventListener("graph-active", this.activeListener);
   }
 
   disconnectedCallback() {
     this.active = false;
     this.connected = false;
     this.replaced = false;
-    // while (this.edges.firstChild) {
-    //   this.edges.removeChild(this.edges.firstChild);
-    // }
     globalThis.removeEventListener("graph-active", null);
   }
 
@@ -178,10 +144,20 @@ class CPXOperatorVersion extends HTMLElement {
   skips: Array<string> = [];
   skip_range: SkipRange;
   replaces: string;
-  channels: Array<string> = [];
+  //channels: Array<string> = [];
 
   get edges() {
     return this.shadowRoot.getElementById("edges");
+  }
+
+  _channels = [];
+  get channels() {
+    return this._channels;
+  }
+  set channels(val) {
+    if (this._channels === val) return;
+    this._channels = val;
+    this.shadowRoot.querySelector('#channels').innerHTML = this.channels.map((ch) => `<li>${ch}</li>`).join("");
   }
 
   _replaced = false;
@@ -220,18 +196,18 @@ class CPXOperatorVersion extends HTMLElement {
     return this._active;
   }
   set active(val) {
-    if (this._active === val) return;
     this._active = val;
-    //console.log('Active change',this._active,this.version,this.edges.firstChild);
-    while (this.edges.firstChild) {
-      this.edges.removeChild(this.edges.firstChild);
+    if (this.edges) {
+      while (this.edges.firstChild) {
+        this.edges.removeChild(this.edges.firstChild);
+      }
     }
+        
     if (this._active) {
       this.connected = false;
       this.setAttribute("active", "");
-      //const input = this.shadowRoot.querySelector('input');
-      //input.focus();
-      if (this.replaces || this.skip_range || this.skips) {
+
+      if (this.replaces || this.skip_range || this.skips.length) {
         const repLine = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path",
@@ -245,7 +221,7 @@ class CPXOperatorVersion extends HTMLElement {
           detail: {
             version: this.version,
             replaces: this.replaces
-              ? this.replaces.replace(`${this.package}.v`, "")
+              ? this.replaces
               : "",
             skips: this.skips,
             skip_min: this.skip_range ? this.skip_range.min : null,
@@ -262,11 +238,9 @@ class CPXOperatorVersion extends HTMLElement {
   }
 
   activeListener(evt) {
-    //console.log(evt);
     const detail = evt.detail;
-    if (this.edges && detail) {
+    if (detail) {
       if (detail.version && detail.version !== this.version) {
-        //console.log('Listener removal',this.version,this.edges.firstChild);
         while (this.edges.firstChild) {
           this.edges.removeChild(this.edges.firstChild);
         }
@@ -293,7 +267,7 @@ class CPXOperatorVersion extends HTMLElement {
           this.connected = true;
         }
 
-        if (detail.skips && detail.skips.indexOf(this.version) >= 0) {
+        if (detail.skips.length && detail.skips.indexOf(this.version) >= 0) {
           const skipLine = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line",
@@ -330,10 +304,7 @@ class CPXOperatorVersion extends HTMLElement {
           this.edges.appendChild(repLine);
           this.connected = true;
         }
-
-        //console.info(this.version,'Edge children:',this.edges.children.length);
       }
-      //console.log('Listener placed',this.version,detail.replaces,detail.skip_min,this.edges.innerHTML);
     }
   }
 
@@ -421,8 +392,10 @@ export class CPXOperatorGraph extends HTMLElement {
     }
     h3 { 
       font-family: var(--cpxOGH3FontFamily, 'Red Hat Display', sans-serif);
-      font-weight: medium; 
+      font-weight: var(--cpxOGH3FontWeight, medium); 
       font-size: var(--cpxOGH3FontSize, 20px); 
+      line-height: var(--cpxOGH3LineHeight, 20px);
+      margin: var(--cpxOGH3Margin, 20px 0);
     }
 
     section { display:grid; grid-template-rows: auto; margin-bottom: 60px; }
@@ -478,6 +451,7 @@ export class CPXOperatorGraph extends HTMLElement {
     .options { 
       display: grid; 
       grid-template-columns: 1fr 3fr; 
+      margin: var(--cpxOptionsMargin, 0);
     }
     </style>
     <section>
@@ -517,7 +491,7 @@ export class CPXOperatorGraph extends HTMLElement {
     fetch(val).then((resp) => {
       return resp.json();
     }).then((data) => {
-      this.data = data; // data.replaceAll("}\n{", "}|||{").split("|||").map((c) => JSON.parse(c) );
+      this.data = data; 
     });
   }
 
@@ -561,27 +535,27 @@ export class CPXOperatorGraph extends HTMLElement {
   get index() {
     return this._index !== ""
       ? this._index
-      : [...this.bundle.indices.keys()][0];
+      : [...this.bundle.indices.keys()].slice(-1)[0];
   }
   set index(val) {
     if (this._index === val) return;
     this._index = val;
     this.setAttribute("index", this._index);
     this.setChannels();
-    this.render();
+    this.requestRender();
   }
 
   _channel = "";
   get channel() {
     return this._channel !== ""
       ? this._channel
-      : [...this.bundle.indices.get(this.index).channels.keys()][0];
+      : [...this.bundle.indices.get(this.index).channels.keys()].slice(-1)[0];
   }
   set channel(val) {
     if (this._channel === val) return;
     this._channel = val;
     this.setAttribute("channel", this._channel);
-    this.render();
+    this.requestRender();
   }
 
   _all = false;
@@ -591,7 +565,7 @@ export class CPXOperatorGraph extends HTMLElement {
   set all(val) {
     if (this._all === val) return;
     this._all = val;
-    this.render();
+    this.requestRender();
   }
 
   _body;
@@ -602,13 +576,14 @@ export class CPXOperatorGraph extends HTMLElement {
     return this._body;
   }
 
+  rendered = false;
+
   constructor(url: string) {
     super();
     this.attachShadow({ mode: "open" });
   }
 
   connectedCallback() {
-    //this.template = this.querySelector('template') as HTMLTemplateElement;
     this.shadowRoot.addEventListener("pfe-select:change", (evt) => {
       if (evt.target["id"] === "ocp_versions") {
         this.index = evt["detail"].value;
@@ -621,7 +596,7 @@ export class CPXOperatorGraph extends HTMLElement {
         this.all = evt.target["checked"] ? true : false;
       }
     });
-    //this.shadowRoot.addEventListener('click', evt=>console.log(evt.target));
+    
   }
 
   static get observedAttributes() {
@@ -656,91 +631,54 @@ export class CPXOperatorGraph extends HTMLElement {
     }
   }
 
+  async requestRender() {
+    if (!this.rendered) {
+      this.rendered = true;
+      this.rendered = await false;
+      this.render();
+    }
+  }
+
   render() {
-    // this.shadowRoot.appendChild(this.template.content.cloneNode(true));
-    if (this.bundle && this.bundle.indices) {
-      const currIndex = this.bundle.indices.get(this.index);
-      const currChannel = this.bundle.indices.get(this.index).channels.get(
-        this.channel,
-      );
-      if (currIndex && currChannel && currChannel.versions.size > 0) {
-        while (this.body.firstChild) {
-          this.body.removeChild(this.body.firstChild);
-        }
-        if (!this.all) {
-          currChannel.getVersions().map((ver) => {
-            const csv = currChannel.versions.get(ver);
-            // const escVer = ver.replaceAll('.','');
-            // const escChannel = currChannel.name.replaceAll('.','');
-            const verChannels = [];
-            currIndex.channels.forEach((ch) => {
-              if (
-                ch.name !== csv.channel_name && ch.versions.has(csv.version)
-              ) {
-                verChannels.push(ch.name);
-              }
+    if(!this.rendered) {
+      if (this.bundle && this.bundle.indices) {
+        const currIndex = this.bundle.indices.get(this.index);
+        const currChannel = this.bundle.indices.get(this.index).channels.get(
+          this.channel,
+        );
+        if (currIndex && currChannel && currChannel.versions.size > 0) {
+          while (this.body.firstChild) {
+            this.body.removeChild(this.body.firstChild);
+          }
+          if (!this.all) {
+            currChannel.getVersions().map((ver) => {
+              const csv = currChannel.versions.get(ver);
+              const verChannels = [];
+              currIndex.channels.forEach((ch) => {
+                if (
+                  ch.name !== csv.channel_name && ch.versions.has(csv.version)
+                ) {
+                  verChannels.push(ch.name);
+                }
+              });
+              csv.channels = verChannels;
+              this.body.appendChild(csv);
             });
-            csv.channels = verChannels;
-            // const row = document.createElement('tr');
-            // row.id = csv['_id'];
-            // row.onclick = this.handleClick(row.id);
-            // if (csv.latest_in_channel && csv.replaces !== null) { row.setAttribute('inbound',''); }
-            // if (csv.replaces === null) { row.setAttribute('outbound','')}
-            // row.innerHTML = `<td>${csv.latest_in_channel ? '<em>Head</em>' : ''}</td>
-            // <th scope="row"><label for="${escVer}">${csv['version']}</label><input type="radio" id="${escVer}" name="${escChannel}" value="${csv['version']}"></th>
-            // <td>
-            //   ${csv['replaces'] ? `Replaces: ${csv['replaces'].replace(csv.package+'.','')}` : ''}
-            //   ${csv.skips && csv.skips.length ? `Skips: ${csv.skips.join(',')}` : ''}
-            // </td>
-            // <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            //   <g class="node">
-            //       <circle cx="20" cy="50" r="10"/>
-            //       <circle class="active" cx="20" cy="50" r="3"/>
-            //       <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-            //       <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-            //       <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-            //   </g>
-            //   <g class="edges"></g>
-            // </svg></td>
-            // <td>${verChannels.join(', ')}</td>`;
-            this.body.appendChild(csv);
-          });
-        } else {
-          currIndex.getAllVersions().forEach((csv) => {
-            const escVer = csv.version.replaceAll(".", "-");
-            const verChannels = [];
-            currIndex.channels.forEach((ch) => {
-              if (ch.versions.has(csv.version)) {
-                verChannels.push(ch.name);
-              }
+          } else {
+            currIndex.getAllVersions().forEach((csv) => {
+              const escVer = csv.version.replaceAll(".", "-");
+              const verChannels = [];
+              currIndex.channels.forEach((ch) => {
+                if (ch.versions.has(csv.version)) {
+                  verChannels.push(ch.name);
+                }
+              });
+              csv.channels = verChannels;
+              this.body.appendChild(csv);
             });
-            csv.channels = verChannels;
-            // const row = document.createElement('cpx-operator-version');
-            // row.id = csv['_id'];
-            // row.onclick = this.handleClick(row.id);
-            // if (csv.latest_in_channel && csv.replaces !== null) { row.setAttribute('inbound',''); }
-            // if (csv.replaces === null) { row.setAttribute('outbound','')}
-            // row.innerHTML = `<td></td>
-            // <th scope="row"><label for="${escVer}">${csv.version}</label><input type="radio" id="${escVer}" name="all-versions" value="${csv.version}"></th>
-            // <td>
-            //   ${csv.replaces ? `Replaces: ${csv.replaces.replace(csv.package+'.','')}` : ''}
-            //   ${csv.skips && csv.skips.length ? `Skips: ${csv.skips.join(',')}` : ''}
-            // </td>
-            // <td><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            //   <g class="node">
-            //       <circle cx="20" cy="50" r="10"/>
-            //       <circle class="active" cx="20" cy="50" r="3"/>
-            //       <line class="inbound outbound" x1="10" y1="50" x2="30" y2="50"/>
-            //       <line class="inbound" x1="5" y1="43" x2="35" y2="43" stroke="white" stroke-width="12"/>
-            //       <line class="outbound" x1="5" y1="57" x2="35" y2="57" stroke="white" stroke-width="12"/>
-            //   </g>
-            //   <g class="edges"></g>
-            // </svg></td>
-            // <td>${verChannels.join(', ')}</td>`;
-            this.body.appendChild(csv);
-          });
+          }
+          this.body.firstChild.active = true;
         }
-        this.body.firstChild.click();
       }
     }
   }
