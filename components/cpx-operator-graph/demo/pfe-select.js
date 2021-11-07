@@ -1,4 +1,4 @@
-import PFElement from './pfelement.js';
+import PFElement from "./pfelement.js";
 
 // @POLYFILL Object.assign, for IE11
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -35,17 +35,17 @@ if (typeof Object.assign !== "function") {
  * PatternFly Elements: PfeSelect 1.11.1
  * @license
  * Copyright 2021 Red Hat, Inc.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -53,11 +53,10 @@ if (typeof Object.assign !== "function") {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
 */
 
 class PfeSelect extends PFElement {
-
   // Injected at build-time
   static get version() {
     return "1.11.1";
@@ -88,8 +87,9 @@ class PfeSelect extends PFElement {
   }
 
   set pfeOptions(options) {
-    this._pfeOptions =
-      options.filter((el) => el.selected).length > 1 ? this._handleMultipleSelectedValues(options) : options;
+    this._pfeOptions = options.filter((el) => el.selected).length > 1
+      ? this._handleMultipleSelectedValues(options)
+      : options;
     this._modifyDOM();
   }
 
@@ -136,7 +136,11 @@ class PfeSelect extends PFElement {
         this._init();
       } else {
         if (this.hasLightDOM()) this._init();
-        else this.warn(`The first child in the light DOM must be a supported select tag`);
+        else {
+          this.warn(
+            `The first child in the light DOM must be a supported select tag`,
+          );
+        }
       }
     });
     this.observer.observe(this, { childList: true });
@@ -154,12 +158,16 @@ class PfeSelect extends PFElement {
 
   addOptions(options) {
     // Reset the pfeOptions by concatenating newly added options with _pfeOptions
-    this._pfeOptions = this._pfeOptions ? this._pfeOptions.concat(options) : options;
+    this._pfeOptions = this._pfeOptions
+      ? this._pfeOptions.concat(options)
+      : options;
   }
 
   _handleMultipleSelectedValues(options) {
     // Warn if options array has more than one selected value set as true
-    this.warn(`The first 'selected' option will take precedence over others in case of multiple 'selected' options`);
+    this.warn(
+      `The first 'selected' option will take precedence over others in case of multiple 'selected' options`,
+    );
     // Get the index of the first element with selected "true"
     const firstIndex = options.findIndex((el) => el.selected);
     // Update the options array with precedence to first element with selected value as true

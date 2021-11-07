@@ -1,5 +1,5 @@
 {
-    "imports": {
-        "semver-parser": "https://esm.sh/semver-parser"
-    }
+  "imports": {
+    "semver-parser": "https://esm.sh/semver-parser"
+  }
 }

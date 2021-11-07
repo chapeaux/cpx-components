@@ -1,9 +1,20 @@
 //import { serveTLS } from "https://deno.land/std/http/server.ts";
-import { Application, Router, HttpError, Status, send } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import {
+  Application,
+  HttpError,
+  Router,
+  send,
+  Status,
+} from "https://deno.land/x/oak@v6.2.0/mod.ts";
 //import { viewEngine, engineFactory, adapterFactory } from "https://deno.land/x/view_engine@v1.4.5/mod.ts";
-import { acceptWebSocket, acceptable, isWebSocketCloseEvent, WebSocket } from "https://deno.land/std/ws/mod.ts";
+import {
+  acceptable,
+  acceptWebSocket,
+  isWebSocketCloseEvent,
+  WebSocket,
+} from "https://deno.land/std/ws/mod.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
-import { walk, walkSync, WalkEntry } from "https://deno.land/std/fs/mod.ts";
+import { walk, WalkEntry, walkSync } from "https://deno.land/std/fs/mod.ts";
 
 //import { Session } from "https://deno.land/x/session/mod.ts";
 // import {
@@ -55,13 +66,17 @@ app.use(async (context, next) => {
     if (e instanceof HttpError) {
       context.response.status = e.status as any;
       if (e.expose) {
-        context.response.body = `<!doctype html><html><body><h1>${e.status} - ${e.message}</h1></body></html>`;
+        context.response.body =
+          `<!doctype html><html><body><h1>${e.status} - ${e.message}</h1></body></html>`;
       } else {
-        context.response.body = `<!doctype html><html><body><h1>${e.status} - ${Status[e.status]}</h1></body></html>`;
+        context.response.body = `<!doctype html><html><body><h1>${e.status} - ${
+          Status[e.status]
+        }</h1></body></html>`;
       }
     } else if (e instanceof Error) {
       context.response.status = 500;
-      context.response.body = `<!doctype html><html><body><h1>500 - Internal Server Error</h1></body></html>`;
+      context.response.body =
+        `<!doctype html><html><body><h1>500 - Internal Server Error</h1></body></html>`;
       console.log("Unhandled Error:", e.message);
       console.log(e.stack);
     }
@@ -70,15 +85,15 @@ app.use(async (context, next) => {
 
 // const users = [
 //   {id: 0, username: 'User One', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 0}
 //   ]},
 //   {id: 1, username: 'User Two', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 30},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 30}
 //   ]},
 //   {id: 2, username: 'User Three', evals: [
-//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 0}, 
+//     {product:{id: 'rhel', name: 'Red Hat Enterprise Linux'}, days_remaining: 0},
 //     {product:{id: 'openshift', name: 'Red Hat OpenShift Container Platform'}, days_remaining: 0}
 //   ]}
 // ];
@@ -168,39 +183,52 @@ app.use(async (context, next) => {
 // app.use(GraphQLService.routes(), GraphQLService.allowedMethods());
 
 router.get("/", async (ctx) => {
-  ctx.response.body = await Deno.readTextFile(`${Deno.cwd()}/components/index.html`);
+  ctx.response.body = await Deno.readTextFile(
+    `${Deno.cwd()}/components/index.html`,
+  );
 }).get("/assets/:path+", async (ctx) => {
   // console.log(`${Deno.cwd()}/data/${ctx.params.path}`);
-  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
-    root: `${Deno.cwd()}/assets/`
-  });
+  await send(
+    ctx,
+    ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname,
+    {
+      root: `${Deno.cwd()}/assets/`,
+    },
+  );
 }).get("/data/:path+", async (ctx) => {
   // console.log(`${Deno.cwd()}/data/${ctx.params.path}`);
-  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
-    root: `${Deno.cwd()}/data/`
-  });
+  await send(
+    ctx,
+    ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname,
+    {
+      root: `${Deno.cwd()}/data/`,
+    },
+  );
 }).get("/node/:path+", async (ctx) => {
-  await send(ctx, ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname, {
-    root: `${Deno.cwd()}/node_modules/`
-  });
+  await send(
+    ctx,
+    ctx.params && ctx.params.path ? ctx.params.path : ctx.request.url.pathname,
+    {
+      root: `${Deno.cwd()}/node_modules/`,
+    },
+  );
 }).get("/(.*)", async (ctx) => {
   // console.log(ctx.request.url.pathname);
-    await send(ctx, ctx.request.url.pathname, {
-      root: `${Deno.cwd()}/components/`,
-      index: 'index.html'
-    });
+  await send(ctx, ctx.request.url.pathname, {
+    root: `${Deno.cwd()}/components/`,
+    index: "index.html",
+  });
 });
 app.use(router.routes());
 app.use(router.allowedMethods());
-
 
 // File Watcher
 // let watchPaths = new Set<WalkEntry>();
 // for await (const entry of walk('./components')) {
 //   watchPaths.add(entry)
 // }
-    // .filter(path=>path.isDirectory&&(/components\/.+\/(?:src|demo)/).test(path.path))
-    // .map(path=>path.path);
+// .filter(path=>path.isDirectory&&(/components\/.+\/(?:src|demo)/).test(path.path))
+// .map(path=>path.path);
 
 // async function bundleFiles(path:string) {
 //   const { files, diagnostics } = await Deno.emit(path,{
@@ -233,7 +261,6 @@ app.use(router.allowedMethods());
 //     });
 // }
 // END File Watcher
-
 
 // const server = serveTLS({hostname: '0.0.0.0', port:4430, certFile: 'localhost.pem', keyFile: 'localhost-key.pem'})
 
@@ -270,7 +297,7 @@ app.use(router.allowedMethods());
 //     if (exists(`./components/${req.url}`)) {
 //       const file = `./components/${req.url}`
 //       const path = await Deno.stat(file);
-      
+
 //       req.respond({
 //         status: 200,
 //         body: await Deno.open(path.isFile ? file : file+'/index.html')
@@ -281,7 +308,7 @@ app.use(router.allowedMethods());
 //         body: 'Page not found'
 //       })
 //     }
-    
+
 //   }
 // }
 
@@ -293,12 +320,12 @@ app.use(router.allowedMethods());
 //   });
 // });
 
-app.addEventListener('listen', ({hostname, port}) => {
+app.addEventListener("listen", ({ hostname, port }) => {
   console.log(`Serving ${Deno.cwd()}/components`);
   console.log(`Start listening on ${hostname}:${port}`);
-})
+});
 
-await app.listen({hostname: "0.0.0.0", port: 8000 });
+await app.listen({ hostname: "0.0.0.0", port: 8000 });
 //await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
 /*
 for await (const req of serve(`:${port}`)) {
@@ -332,4 +359,3 @@ for await (const req of serve(`:${port}`)) {
     }
  }
  */
-
