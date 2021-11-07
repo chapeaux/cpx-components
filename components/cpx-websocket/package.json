@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-websocket",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "Chapeaux WebSocket Component",
   "type": "module",
   "main": "cpx-websocket.js",

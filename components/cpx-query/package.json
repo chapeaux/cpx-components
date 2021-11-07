@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-query",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Chapeaux Query Component",
   "type": "module",
   "main": "cpx-query.js",

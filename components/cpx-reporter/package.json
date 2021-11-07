@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-reporter",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Chapeaux Reporter Component",
   "type": "module",
   "main": "cpx-reporter.js",
