@@ -8,7 +8,7 @@ projects:
       type: github
 components:
   - type: cheEditor
-    reference: 'https://gist.githubusercontent.com/azatsarynnyy/50829c6c91df1ed3198eafee7a465b71/raw/c91095393384aae4c4b381fcd8958688327ea0ac/meta.yaml'
+    reference: 'https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/theia.yaml'
     alias: che-theia
   - alias: vscode-typescript
     id: vscode/typescript-language-features/latest
