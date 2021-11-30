@@ -7,6 +7,9 @@ projects:
       location: 'https://github.com/chapeaux/cpx-components.git'
       type: github
 components:
+  - type: cheEditor
+    reference: 'https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/theia.yaml'
+    alias: che-theia
   - alias: vscode-typescript
     id: vscode/typescript-language-features/latest
     type: chePlugin
