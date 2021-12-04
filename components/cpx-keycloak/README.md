@@ -3,7 +3,8 @@
 ## Keycloak Component Purpose
 
 - Interface with Keycloak
-- Provide centralized mechanism for auth
+- Create an HTML-based interface for Keycloak's [JS Adapter](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter)
+- Provide centralized mechanism for auth that can be distributed and used by a variety of teams
 
 ## Events
 

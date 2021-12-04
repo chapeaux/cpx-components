@@ -5,7 +5,7 @@ import {
   Router,
   send,
   Status,
-} from "https://deno.land/x/oak@v6.2.0/mod.ts";
+} from "https://deno.land/x/oak/mod.ts";
 //import { viewEngine, engineFactory, adapterFactory } from "https://deno.land/x/view_engine@v1.4.5/mod.ts";
 import {
   acceptable,
@@ -325,8 +325,8 @@ app.addEventListener("listen", ({ hostname, port }) => {
   console.log(`Start listening on ${hostname}:${port}`);
 });
 
-await app.listen({ hostname: "0.0.0.0", port: 8000 });
-//await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
+//await app.listen({ hostname: "0.0.0.0", port: 8000 });
+await app.listen({hostname: "0.0.0.0", port: 4430, secure: true, certFile: 'localhost.pem', keyFile: 'localhost-key.pem' });
 /*
 for await (const req of serve(`:${port}`)) {
   const { conn, r: bufReader, w: bufWriter, headers } = req;

@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKIT SPAship Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display&family=Red+Hat+Text:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/node/@cpelements/pfe-navigation/dist/pfe-navigation--lightdom.css" type="text/css">
+    <!-- <link rel="stylesheet" href="/node/@cpelements/pfe-navigation/dist/pfe-navigation--lightdom.css" type="text/css"> -->
 </head>
 <body>
-    <pfe-navigation id="pfe-navigation" role="banner">
+    <!-- <pfe-navigation id="pfe-navigation" role="banner">
         <nav class="pfe-navigation" aria-label="Main Navigation">
           <div class="pfe-navigation__logo-wrapper" id="pfe-navigation__logo-wrapper">
             <a href="/" class="pfe-navigation__logo-link">
-              <!-- !! Update logo src -->
               <img
                 class="pfe-navigation__logo-image pfe-navigation__logo-image--screen pfe-navigation__logo-image--print"
                 src="/assets/chapeaux_icon.png" width="400" alt="Redhat"
@@ -35,10 +34,11 @@
       
         </nav>
         <rh-account-dropdown slot="account"></rh-account-dropdown>
-      </pfe-navigation>
-    <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak>
-    <script type="module" src="/node/@cpelements/pfe-navigation/dist/pfe-navigation.min.js"></script>
-    <script type="module" src="/node/@cpelements/rh-account-dropdown/dist/rh-account-dropdown.min.js"></script>
+      </pfe-navigation> -->
+    <cpx-keycloak jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0, 'onLoad': 'login-required'}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}"></cpx-keycloak>
+    <!-- <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak> -->
+    <!-- <script type="module" src="/node/@cpelements/pfe-navigation/dist/pfe-navigation.min.js"></script>
+    <script type="module" src="/node/@cpelements/rh-account-dropdown/dist/rh-account-dropdown.min.js"></script> -->
     <script type="module" src="/cpx-user/cpx-user.js"></script>
     <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
     <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>

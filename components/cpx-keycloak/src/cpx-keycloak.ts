@@ -18,8 +18,10 @@ export class CPXKeycloak extends HTMLElement {
   _authenticated = false;
   _url: string;
   _config: string;
+  _options: string;
   _realm: string;
   _clientId: string;
+  _jwtCookie: string;
   _links: { logout: ""; login: ""; register: "" };
 
   get keycloak() {
@@ -43,6 +45,20 @@ export class CPXKeycloak extends HTMLElement {
   set config(val) {
     if (this._config === val) return;
     this._config = val;
+  }
+  get options() {
+    return this._options;
+  }
+  set options(val) {
+    if (this._options === val) return;
+    this._options = val;
+  }
+  get jwtCookie() {
+    return this._jwtCookie;
+  }
+  set jwtCookie(val) {
+    if (this._jwtCookie === val) return;
+    this._jwtCookie = val;
   }
   get realm() {
     return this._realm;
@@ -122,10 +138,15 @@ export class CPXKeycloak extends HTMLElement {
       "realm",
       "client-id",
       "config",
-      "login-element",
-      "login-attr",
-      "logout-element",
-      "logout-attr",
+      "config-url",
+      "options",
+      "options-url",
+      "jwt-cookie",
+      "jwt-token",
+      // "login-element",
+      // "login-attr",
+      // "logout-element",
+      // "logout-attr",
     ];
   }
 
@@ -150,18 +171,21 @@ export class CPXKeycloak extends HTMLElement {
 
   async init(config?: any) {
     if (typeof Keycloak !== "undefined") {
+      console.log("Config:", JSON.parse(config.replaceAll("'", '"')));
       this.keycloak = Keycloak(
         config
-          ? config
+          ? JSON.parse(config.replaceAll("'", '"'))
           : { url: this.url, realm: this.realm, clientId: this.clientId },
       );
-      await this.keycloak.init({}).then((authenticated) => {
+      console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
+      await this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {}).then((authenticated) => {
         this.authenticated = authenticated;
         if (authenticated) {
-          // document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
-          //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
-          // document.cookie =
-          //   `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
+          if (this.jwtCookie != "") {
+            document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
+            //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
+            document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
+          }
           this.dispatchEvent(
             new CustomEvent("token-ready", {
               detail: {

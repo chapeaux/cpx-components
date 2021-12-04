@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,7 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export class CPXKeycloak extends HTMLElement {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CPXKeycloak = void 0;
+class CPXKeycloak extends HTMLElement {
     constructor() {
         super();
         Object.defineProperty(this, "_keycloak", {
@@ -313,4 +316,5 @@ export class CPXKeycloak extends HTMLElement {
         return this.keycloak.createLogoutUrl();
     }
 }
+exports.CPXKeycloak = CPXKeycloak;
 window.customElements.define("cpx-keycloak", CPXKeycloak);
