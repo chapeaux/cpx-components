@@ -5,7 +5,15 @@ class CPXNewsdesk extends HTMLElement {
     }
 
     connectedCallback() {
-        
+        document.addEventListener('cpx-report', e => {
+            this.dispatchEvent(
+                new CustomEvent("newsflash", {
+                    detail: e['detail'],
+                    composed: true,
+                    bubbles: true,
+                })
+            );
+        });
     }
 }
 
