@@ -3,10 +3,7 @@ class CPXNewsdesk extends HTMLElement {
     constructor() {
         super();
     }
-
     connectedCallback() {
-        
     }
 }
-
-window.customElements.define(CPXNewsdesk.tag,CPXNewsdesk);
+window.customElements.define(CPXNewsdesk.tag, CPXNewsdesk);
