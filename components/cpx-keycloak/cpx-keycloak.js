@@ -271,11 +271,9 @@ export class CPXKeycloak extends HTMLElement {
     init(config) {
         return __awaiter(this, void 0, void 0, function* () {
             if (typeof Keycloak !== "undefined") {
-                console.log("Config:", JSON.parse(config.replaceAll("'", '"')));
                 this.keycloak = Keycloak(config
                     ? JSON.parse(config.replaceAll("'", '"'))
                     : { url: this.url, realm: this.realm, clientId: this.clientId });
-                console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
                 yield this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'", '"')) : {}).then((authenticated) => {
                     this.authenticated = authenticated;
                     if (authenticated) {
