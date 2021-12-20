@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-keycloak",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Chapeaux Keycloak Component",
   "type": "module",
   "main": "cpx-keycloak.js",
