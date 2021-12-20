@@ -21,7 +21,6 @@ export class CPXKeycloak extends HTMLElement {
   _options: string;
   _realm: string;
   _clientId: string;
-  _jwtCookie: string;
   _links: { logout: ""; login: ""; register: "" };
 
   get keycloak() {
@@ -53,13 +52,39 @@ export class CPXKeycloak extends HTMLElement {
     if (this._options === val) return;
     this._options = val;
   }
+
+  _cookies = new Map();
+
+  // JWT
+  _jwtCookie = "";
   get jwtCookie() {
     return this._jwtCookie;
   }
   set jwtCookie(val) {
-    if (this._jwtCookie === val) return;
+    if (this._jwtCookie == val) return;
     this._jwtCookie = val;
+    this.setAttribute("jwt-Cookie", this._jwtCookie);
+    if (this._cookies.has(this._jwtCookie)) {
+      let jwtVal = this._cookies.get(this._jwtCookie);
+      if (typeof jwtVal !== "undefined") {
+        this.jwtToken = this._cookies.get(this._jwtCookie);
+      }
+    }
   }
+
+  _jwtToken = "";
+  get jwtToken() {
+    return this._jwtToken;
+  }
+  set jwtToken(val) {
+    if (this._jwtToken === val) return;
+    this._jwtToken = val;
+    if (typeof this._jwtToken !== "undefined") {
+      //this.user = this.keycloak.tokenParsed; //jwt_decode(this._jwtToken);
+    }
+  }
+  // END JWT
+
   get realm() {
     return this._realm;
   }
@@ -130,6 +155,11 @@ export class CPXKeycloak extends HTMLElement {
   }
 
   connectedCallback() {
+    document.cookie.split(";").reduce((a, c) => {
+      let kv = c.trim().split("=");
+      a.set(kv[0], kv[1]);
+      return a;
+    }, this._cookies);
   }
 
   static get observedAttributes() {
