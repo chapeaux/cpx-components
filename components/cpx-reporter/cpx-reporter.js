@@ -1,3 +1,4 @@
+import { ReporterEvent } from "./reporter.js";
 class CPXReporter extends HTMLElement {
     constructor() {
         super();
@@ -27,13 +28,7 @@ class CPXReporter extends HTMLElement {
             return;
         this._beat = val;
         this.addEventListener(this._beat, e => {
-            this.dispatchEvent(new CustomEvent("cpx-report", {
-                detail: {
-                    event: this.event
-                },
-                composed: true,
-                bubbles: true,
-            }));
+            this.dispatchEvent(new ReporterEvent(this.event));
         });
         this.setAttribute('beat', this._beat);
     }

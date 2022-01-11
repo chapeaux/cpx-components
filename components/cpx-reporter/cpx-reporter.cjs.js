@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const reporter_1 = require("deno:///missing_dependency.d.ts");
 class CPXReporter extends HTMLElement {
     constructor() {
         super();
@@ -27,13 +30,7 @@ class CPXReporter extends HTMLElement {
             return;
         this._beat = val;
         this.addEventListener(this._beat, e => {
-            this.dispatchEvent(new CustomEvent("cpx-report", {
-                detail: {
-                    event: this.event
-                },
-                composed: true,
-                bubbles: true,
-            }));
+            this.dispatchEvent(new reporter_1.ReporterEvent(this.event));
         });
         this.setAttribute('beat', this._beat);
     }

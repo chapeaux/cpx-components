@@ -39,6 +39,12 @@
     <!-- <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak> -->
     <!-- <script type="module" src="/node/@cpelements/pfe-navigation/dist/pfe-navigation.min.js"></script>
     <script type="module" src="/node/@cpelements/rh-account-dropdown/dist/rh-account-dropdown.min.js"></script> -->
+    <script>
+      (() => {
+        document.addEventListener('kc-init-success', () => console.log('Keycloak Initialization Success'));
+        document.addEventListener('kc-init-failure', () => console.log('Keycloak Initialization Failure'));
+      })();
+    </script>
     <script type="module" src="/cpx-user/cpx-user.js"></script>
     <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
     <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>

@@ -1,60 +1,26 @@
-import { ReporterEvent } from "./reporter.ts";
-/*
-    Based off documentation for EDDL found here:
-    https://docs.google.com/document/d/18xVOJX8lJDv-5UzyHpioay9ysbivWNQ51Sbis4_0nLk/edit#
+export class ReporterEvent extends Event {
+    constructor(name, data?) {
+        super('cpx-report', { bubbles:true, composed:true });
+        this.name = name;
+        this.data = data;
+    }
+    data?:any;
+    name:string;
+    toJSON = () => Object.assign({ event: this.name },this.data);
+}
+
+/* OLD BROWSER COMPATIBLE 
+const scripts = document.getElementsByTagName('script');
+const reporter = scripts[scripts.length-1];
 */
+const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
+if (reporter instanceof HTMLElement) {
+    const data = JSON.parse(reporter.textContent ? reporter.textContent : '');
+    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data));
+}
 
-class CPXReporter extends HTMLElement {
-    static get tag() { return 'cpx-reporter'; }
-    
-    _beat:string;
-    get beat() { return this._beat; }
-    set beat(val) {
-        if (this._beat === val) return;
-        this._beat = val;
-        this.addEventListener(this._beat, e => {
-            this.dispatchEvent(new ReporterEvent(this.event));
-        });
-        this.setAttribute('beat',this._beat);
-    }
 
-    _event:string;
-    get event() { return this._event; }
-    set event(val) {
-        if (this._event === val) return;
-        this._event = val;
-        this.setAttribute('event', this._event);
-    }
-
-    _data:string;
-    get data() { return this._data; }
-    set data(val) {
-        if (this._data === val) return;
-        this._data = val;
-        this.setAttribute('data', this._data);
-    }
-
-    constructor() {
-        super();
-    }
-
-    connectedCallback() {
-        
-    }
-
-    static get observedAttributes() {
-        return [
-            "beat",
-            "event",
-            "data"
-        ];
-    }
-
-    attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-        this[name] = newVal;
-    }
-
-    /* Reporter Beats */
+/* Reporter Beats */
     
     /*
 
@@ -289,7 +255,3 @@ class CPXReporter extends HTMLElement {
     }
 
     */
-
-}
-
-window.customElements.define(CPXReporter.tag,CPXReporter);
