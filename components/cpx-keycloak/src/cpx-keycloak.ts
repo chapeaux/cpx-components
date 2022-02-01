@@ -1,13 +1,14 @@
 declare var Keycloak: any;
 /**
- * Creates a Keycloak web component
+ * Creates a Keycloak web component heavily mapping to the
+ * API and functionality here: https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter
  *
  * @element cpx-keycloak
  *
  * @fires token-ready - Keycloak has been initialized and the user is authenticated
  *
  * @attr {Boolean} ready - Ready state of the Keycloak object
- * @attr {String} url - Keycloak config JSON URL
+ * @attr {String} url - Keycloak config JSON URL (e.g. - https://sso.redhat.com/auth)
  * @attr {String} realm - Keycloak Realm
  *
  * @prop {Keycloak} keycloak - Keycloak object storage
@@ -21,7 +22,6 @@ export class CPXKeycloak extends HTMLElement {
   _options: string;
   _realm: string;
   _clientId: string;
-  _jwtCookie: string;
   _links: { logout: ""; login: ""; register: "" };
 
   get keycloak() {
@@ -53,13 +53,39 @@ export class CPXKeycloak extends HTMLElement {
     if (this._options === val) return;
     this._options = val;
   }
+
+  _cookies = new Map();
+
+  // JWT
+  _jwtCookie = "";
   get jwtCookie() {
     return this._jwtCookie;
   }
   set jwtCookie(val) {
-    if (this._jwtCookie === val) return;
+    if (this._jwtCookie == val) return;
     this._jwtCookie = val;
+    this.setAttribute("jwt-Cookie", this._jwtCookie);
+    if (this._cookies.has(this._jwtCookie)) {
+      let jwtVal = this._cookies.get(this._jwtCookie);
+      if (typeof jwtVal !== "undefined") {
+        this.jwtToken = this._cookies.get(this._jwtCookie);
+      }
+    }
   }
+
+  _jwtToken = "";
+  get jwtToken() {
+    return this._jwtToken;
+  }
+  set jwtToken(val) {
+    if (this._jwtToken === val) return;
+    this._jwtToken = val;
+    if (typeof this._jwtToken !== "undefined") {
+      //this.user = this.keycloak.tokenParsed; //jwt_decode(this._jwtToken);
+    }
+  }
+  // END JWT
+
   get realm() {
     return this._realm;
   }
@@ -130,6 +156,11 @@ export class CPXKeycloak extends HTMLElement {
   }
 
   connectedCallback() {
+    document.cookie.split(";").reduce((a, c) => {
+      let kv = c.trim().split("=");
+      a.set(kv[0], kv[1]);
+      return a;
+    }, this._cookies);
   }
 
   static get observedAttributes() {
@@ -169,80 +200,85 @@ export class CPXKeycloak extends HTMLElement {
       : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
   }
 
-  async init(config?: any) {
+  init(config?: any) {
     if (typeof Keycloak !== "undefined") {
-      console.log("Config:", JSON.parse(config.replaceAll("'", '"')));
+      //console.log("Config:", JSON.parse(config.replaceAll("'", '"')));
       this.keycloak = Keycloak(
         config
           ? JSON.parse(config.replaceAll("'", '"'))
           : { url: this.url, realm: this.realm, clientId: this.clientId },
       );
-      console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
-      await this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {}).then((authenticated) => {
-        this.authenticated = authenticated;
-        if (authenticated) {
-          if (this.jwtCookie != "") {
-            document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
-            //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
-            document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
-          }
-          this.dispatchEvent(
-            new CustomEvent("token-ready", {
-              detail: {
-                token: this.keycloak.tokenParsed,
-              },
-              composed: true,
-              bubbles: true,
-            }),
-          );
-          if (this.logoutElement && this.logoutAttr) {
-            const logoutElement = top.document.querySelector(
-              this.logoutElement,
-            );
-            logoutElement.setAttribute(
-              this.logoutAttr,
-              this.keycloak.createLogoutUrl(),
-            );
-            logoutElement.userData = Object.assign(
-              // {
-              //   username: ' ',
-              //   firstName: ' ',
-              //   lastName: ' ',
-              //   REDHAT_LOGIN: ' '
-              // }
-              {
-                realm_access: {
-                  roles: this.keycloak.tokenParsed[""] || " ",
+      //console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
+      this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {})
+        .then(authenticated => {
+          this.dispatchEvent(new Event('kc-init-success',{composed:true,bubbles:true}));
+          this.authenticated = authenticated;
+          if (authenticated) {
+            if (this.jwtCookie != "") {
+              document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
+              //let refreshExpiration = this.keycloak.refreshTokenParsed.exp - this.keycloak.refreshTokenParsed.iat
+              document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
+            }
+            this.dispatchEvent(
+              new CustomEvent("token-ready", {
+                detail: {
+                  token: this.keycloak.tokenParsed,
                 },
-                REDHAT_LOGIN: this.keycloak.tokenParsed["preferred_username"] ||
-                  " ",
-                lastName: this.keycloak.tokenParsed["family_name"] || " ",
-                account_number: this.keycloak.tokenParsed["iat"].toString() ||
-                  "", //Pretty sure this isn't right...
-                preferred_username:
-                  this.keycloak.tokenParsed["preferred_username"] || " ",
-                firstName: this.keycloak.tokenParsed["given_name"] || " ",
-                email: this.keycloak.tokenParsed["email"] || " ",
-                username: this.keycloak.tokenParsed["preferred_username"] ||
-                  " ",
-              },
-              this.keycloak.tokenParsed,
+                composed: true,
+                bubbles: true,
+              }),
             );
+            if (this.logoutElement && this.logoutAttr) {
+              const logoutElement = top.document.querySelector(
+                this.logoutElement,
+              );
+              logoutElement.setAttribute(
+                this.logoutAttr,
+                this.keycloak.createLogoutUrl(),
+              );
+              logoutElement.userData = Object.assign(
+                // {
+                //   username: ' ',
+                //   firstName: ' ',
+                //   lastName: ' ',
+                //   REDHAT_LOGIN: ' '
+                // }
+                {
+                  realm_access: {
+                    roles: this.keycloak.tokenParsed[""] || " ",
+                  },
+                  REDHAT_LOGIN: this.keycloak.tokenParsed["preferred_username"] ||
+                    " ",
+                  lastName: this.keycloak.tokenParsed["family_name"] || " ",
+                  account_number: this.keycloak.tokenParsed["iat"].toString() ||
+                    "", //Pretty sure this isn't right...
+                  preferred_username:
+                    this.keycloak.tokenParsed["preferred_username"] || " ",
+                  firstName: this.keycloak.tokenParsed["given_name"] || " ",
+                  email: this.keycloak.tokenParsed["email"] || " ",
+                  username: this.keycloak.tokenParsed["preferred_username"] ||
+                    " ",
+                },
+                this.keycloak.tokenParsed,
+              );
+            }
+            this.ready = true;
+          } else {
+            if (this.getAttribute("auto") !== null) {
+              this.login();
+            }
+            if (this.loginElement && this.loginAttr) {
+              top.document.querySelector(this.loginElement).setAttribute(
+                this.loginAttr,
+                this.keycloak.createLoginUrl(),
+              );
+            }
           }
-          this.ready = true;
-        } else {
-          if (this.getAttribute("auto") !== null) {
-            this.login();
-          }
-          if (this.loginElement && this.loginAttr) {
-            top.document.querySelector(this.loginElement).setAttribute(
-              this.loginAttr,
-              this.keycloak.createLoginUrl(),
-            );
-          }
-        }
+      }).catch(() => {
+        this.dispatchEvent(new Event('kc-init-failure',{composed:true,bubbles:true}));
       });
     } else {
+      
       // Keycloak is not available
     }
   }

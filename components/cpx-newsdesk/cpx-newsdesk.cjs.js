@@ -4,6 +4,13 @@ class CPXNewsdesk extends HTMLElement {
         super();
     }
     connectedCallback() {
+        document.addEventListener('cpx-report', e => {
+            this.dispatchEvent(new CustomEvent("newsflash", {
+                detail: e['detail'],
+                composed: true,
+                bubbles: true,
+            }));
+        });
     }
 }
 window.customElements.define(CPXNewsdesk.tag, CPXNewsdesk);

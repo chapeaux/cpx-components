@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKIT SPAship Test</title>
+    <script type="module" src="/cpx-newsdesk/newsdesk.js"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-event="Page Load Started">
+        {
+           "page": {
+               "analyticsTitle": "Extracting information from Python source code",
+               "blogAuthor": "Fridolin Pokorny",
+               "breadCrumbs": "xxx",
+               "pageCategory": "articles",
+               "cms": "RHD CMS 8",
+               "contentId": "269391",
+               "contentType": "article",
+               "dataObject": "digitalData",
+               "destinationUrl": "https://dxp-developer.docksal/articles/2022/01/05/extracting-information-python-source-code",
+               "errorType": "1234",
+               "gated": "False",
+               "pageName": "xxxx",
+               "queryParameters": "xxxx",
+               "severityLevel": "xxx",
+               "siteLanguage": "xx",
+               "pageStatus": "xxx",
+               "pageSubType": "xxx",
+               "pageTitle": "Extracting information from Python source code | Red Hat Developer",
+               "pageType": "xxx",
+               "productCategory": "xxx",
+               "productCertifiedVendor": "xx",
+               "productComponents": "xxx",
+               "productPublicationStatus": "xxx",
+               "productSBR": "xxx",
+               "productTags": "xxx",
+               "products": "OpenShift, RHEL"
+           }
+       }
+       </script>
+    <!-- <cpx-newsdesk></cpx-newsdesk>
+    <script type="module" src="/cpx-newsdesk/cpx-newsdesk.js"></script> -->
+    <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
+    <cpx-reporter auto event="Page Load Started">
+        <script type="data">
+            {
+        "pageCategory": "technologies",
+        "pageName": "<pageName>",
+        "pageTitle": "Red Hat Enterprise Linux operating system",
+        "analyticsTitle": "<Drupal analyticsTitle field>",        
+        "pageType": "pattern_template",
+        "pageSubType": "Product",
+        "siteExperience": "mobile",
+        "siteLanguage": "<siteLanguage>",
+        "subsection": "linux-platforms",
+        "subsection2": "enterprise-linux2",
+        "subsection3": "try-it",
+        "cms": "RH CMS 2020.14.0",
+        "analyticsTitle": "<Analytics Title field in Drupal>",
+        "blogAuthor": "<captures author of blog articles>",
+        "contentID": "545121",
+        "contentType": "E-book",
+        "destinationURL": "https://www.redhat.com/en/home-page",
+        "errorType": "404",
+        "gated": true,
+        "taxonomyMetaHreflang": ["29051"],
+        "taxonomyRegion": ["4521"],
+        "taxonomyBlogPostCategory": ["4261"],
+        "taxonomyBusinessChallenge":["161"],
+        "taxonomyProduct":["781"],
+        "taxonomyProductLine":["831"],
+        "taxonomySolution":["1071"],
+        "taxonomyTopic":["9011", "27061"],
+        "taxonomyAuthor":["1111"],
+        "taxonomyStage":["111"], 
+        "dataObject":"digitalData"
+        }
+        </script>
+    </cpx-reporter>
+    <style>
+        #results::before {
+            content: 'Results:';
+            font-size: 1.2em;
+        }
+        #results {
+            
+            padding: 1em;
+
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chapeaux Newsdesk Demo</h1>
+    <cpx-reporter beat="click" event="List Item Clicked">
+        <ul>
+            <li>Option 1</li>
+            <li>Option 2</li>
+            <li>Option 3</li>
+            </ul>
+    </cpx-reporter>
+    <ul id="results"></ul>
+
+    <script>
+        document.addEventListener('newsflash', e=> {
+            const item = document.createElement('li');
+            item.innerHTML = '<pre>'+JSON.stringify(e.detail)+'</pre>';
+            document.getElementById('results').appendChild(item);
+        });
+    </script>
+    <cpx-reporter auto event="Page Load Completed"></cpx-reporter>
+</body>
+</html>

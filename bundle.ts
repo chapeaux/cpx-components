@@ -10,9 +10,9 @@ async function browserEmit(path: string) {
     check: true,
     //importMapPath: importMapPath,
     compilerOptions: {
-      lib: ["es6", "es2021", "dom"],
+      lib: ["es6", "esnext", "dom"],
       strict: false,
-      module: "es6",
+      module: "esnext",
       target: "es6",
       declaration: true,
       sourceMap: false,
@@ -38,35 +38,35 @@ async function browserEmit(path: string) {
     }
   });
 
-  ({ files, diagnostics } = await Deno.emit(path, {
-    check: true,
-    //importMapPath: importMapPath,
-    compilerOptions: {
-      lib: ["es6", "es2021", "dom"],
-      strict: false,
-      module: "commonjs",
-      target: "es6",
-    },
-  }));
+  // ({ files, diagnostics } = await Deno.emit(path, {
+  //   check: true,
+  //   //importMapPath: importMapPath,
+  //   compilerOptions: {
+  //     lib: ["es6", "esnext", "dom"],
+  //     strict: false,
+  //     module: "commonjs",
+  //     target: "es6",
+  //   },
+  // }));
 
-  if (diagnostics.length) {
-    console.warn(Deno.formatDiagnostics(diagnostics));
-  }
+  // if (diagnostics.length) {
+  //   console.warn(Deno.formatDiagnostics(diagnostics));
+  // }
 
-  Object.keys(files).map((file) => {
-    //console.info('CJS file',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
-    if (
-      !mapFilter.test(file) && !fileFilter.test(file) && jsFilter.test(file)
-    ) {
-      const newFileName = file.replace("file://", "").replace("/src", "")
-        .replace(".ts", ".cjs");
-      //console.log('CJS',newFileName);
-      Deno.writeTextFile(
-        newFileName,
-        files[file],
-      );
-    }
-  });
+  // Object.keys(files).map((file) => {
+  //   //console.info('CJS file',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
+  //   if (
+  //     !mapFilter.test(file) && !fileFilter.test(file) && jsFilter.test(file)
+  //   ) {
+  //     const newFileName = file.replace("file://", "").replace("/src", "")
+  //       .replace(".ts", ".cjs");
+  //     //console.log('CJS',newFileName);
+  //     Deno.writeTextFile(
+  //       newFileName,
+  //       files[file],
+  //     );
+  //   }
+  // });
 
   return path;
 }

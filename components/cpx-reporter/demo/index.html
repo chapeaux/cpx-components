@@ -4,9 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPX-REPORTER</title>
+    <script>
+        window.addEventListener('cpx-report', e=>console.log("CPX REPORT:",JSON.stringify(e)));
+    </script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-event="Page Load Started">
+     {
+        "page": {
+            "analyticsTitle": "Extracting information from Python source code",
+            "blogAuthor": "Fridolin Pokorny",
+            "breadCrumbs": "xxx",
+            "pageCategory": "articles",
+            "cms": "RHD CMS 8",
+            "contentId": "269391",
+            "contentType": "article",
+            "dataObject": "digitalData",
+            "destinationUrl": "https://dxp-developer.docksal/articles/2022/01/05/extracting-information-python-source-code",
+            "errorType": "1234",
+            "gated": "False",
+            "pageName": "xxxx",
+            "queryParameters": "xxxx",
+            "severityLevel": "xxx",
+            "siteLanguage": "xx",
+            "pageStatus": "xxx",
+            "pageSubType": "xxx",
+            "pageTitle": "Extracting information from Python source code | Red Hat Developer",
+            "pageType": "xxx",
+            "productCategory": "xxx",
+            "productCertifiedVendor": "xx",
+            "productComponents": "xxx",
+            "productPublicationStatus": "xxx",
+            "productSBR": "xxx",
+            "productTags": "xxx",
+            "products": "OpenShift, RHEL"
+        }
+    }
+    </script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.5.0/custom-elements-es5-adapter.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.5.0/webcomponents-bundle.js"></script> -->
 </head>
 <body>
     <cpx-reporter></cpx-reporter>
-    
+</body>
+</html>    

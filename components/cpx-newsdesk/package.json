@@ -1,10 +1,10 @@
 {
-  "name": "@chapeaux/cpx-keycloak",
-  "version": "0.8.2",
-  "description": "Chapeaux Keycloak Component",
+  "name": "@chapeaux/cpx-newsdesk",
+  "version": "0.8.1",
+  "description": "Chapeaux Newsdesk Component",
   "type": "module",
-  "main": "cpx-keycloak.js",
-  "module": "cpx-keycloak.js",
+  "main": "cpx-newsdesk.js",
+  "module": "cpx-newsdesk.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "",
@@ -28,6 +28,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-keycloak",
-  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-newsdesk"
 }
