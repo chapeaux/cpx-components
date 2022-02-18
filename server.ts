@@ -149,7 +149,6 @@ router.get("/", async (ctx) => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-
 app.addEventListener("listen", ({ hostname, port }) => {
   console.log(`Serving ${Deno.cwd()}/components`);
   console.log(`Start listening on ${hostname}:${port}`);
