@@ -69,6 +69,10 @@ if (reporter instanceof HTMLElement) {
         }
 
 
+    ADDITIONAL PAGE OBJECT DATA
+    https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js
+    previousPage
+
     User Signed In
     "event": "User Signed In",
     "user": {

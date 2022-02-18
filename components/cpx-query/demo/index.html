@@ -5,50 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapeaux Query Component</title>
     <style>:root { --linkBlue: #369; }</style>
-    <link rel="stylesheet" href="https://unpkg.com/@patternfly/pfe-avatar@1.9.2/dist/pfe-avatar.min.css">
 </head>
 <body>
     <cpx-query auto url="data.json">
         <template>
-            <h1>${Title} - ${Year}</h1>
-            <ul>
-                <li></li>
-            </ul>
-        </template>
-    </cpx-query>
-    <cpx-query auto url="https://blog.kie.org/wp-json/wp/v2/posts">
-        <img src="loading.gif">
-        <template>
-            <link rel="stylesheet" href="/cpx-query/demo/result.css">
-            <article data-repeat>
-                <section>
-                    <header>
-                        <h2><a href="${link}">${title.rendered}</a></h2>
-                        <h3><pfe-datetime datetime="${date}">${date}</pfe-datetime> - <cpx-query auto url="${_links.author.0.href}" template="#authorTmpl"></cpx-query></h3>
-                    </header>
-                    ${excerpt.rendered}
-                </section>
-            </article>
-            <p>Total: ${length}</p>
+            <style>
+            section { 
+                display: grid; gap: 1em; grid-template-columns: repeat(4,1fr); 
+            }
+            ul {background: #eee;}
+            </style>
+            <section data-repeat>
+                <ul>
+                    <li>${Title}</li>
+                    <li>${Year}</li>
+                </ul>
+            </section>
         </template>
     </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>
-    <script type="module" src="https://unpkg.com/@patternfly/pfe-datetime@1.9.2/dist/pfe-datetime.js"></script>
-    <script type="module" src="https://unpkg.com/@patternfly/pfe-avatar@1.9.2/dist/pfe-avatar.js"></script>
-    <template id="authorTmpl">
-        <style>
-            :host { display: grid; grid-template-columns: 50px 1fr; align-items:center;grid-gap: 10px; } 
-            pfe-avatar { height: 48px; width: 48px; }
-            a {
-                text-decoration: none;
-                color: var(--linkBlue);
-            }
-            a:nth-child(2) {
-                color
-            }
-        </style>
-        <pfe-avatar name="${name}" src="${avatar_urls.48}" shape="circle"></pfe-avatar>
-        <a href="${link}">${name}</a>
-    </template>
 </body>
 </html>

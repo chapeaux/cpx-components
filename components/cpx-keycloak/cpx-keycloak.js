@@ -1,23 +1,23 @@
 export class CPXKeycloak extends HTMLElement {
     constructor() {
         super();
-        Object.defineProperty(this, "_keycloak", {
+        Object.defineProperty(this, "_cookies", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: new Map()
+        });
+        Object.defineProperty(this, "_links", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "_ready", {
+        Object.defineProperty(this, "_keycloak", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "_authenticated", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
+            value: void 0
         });
         Object.defineProperty(this, "_url", {
             enumerable: true,
@@ -49,17 +49,17 @@ export class CPXKeycloak extends HTMLElement {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "_links", {
+        Object.defineProperty(this, "_authenticated", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: false
         });
-        Object.defineProperty(this, "_cookies", {
+        Object.defineProperty(this, "_ready", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: new Map()
+            value: false
         });
         Object.defineProperty(this, "_jwtCookie", {
             enumerable: true,
@@ -131,6 +131,41 @@ export class CPXKeycloak extends HTMLElement {
             return;
         this._options = val;
     }
+    get realm() {
+        return this._realm;
+    }
+    set realm(val) {
+        if (this._realm === val)
+            return;
+        this._realm = val;
+    }
+    get clientId() {
+        return this._clientId;
+    }
+    set clientId(val) {
+        if (this._clientId === val)
+            return;
+        this._clientId = val;
+    }
+    get authenticated() {
+        return this._authenticated;
+    }
+    set authenticated(val) {
+        if (this._authenticated === val)
+            return;
+        this._authenticated = val;
+        this.setAttribute("authenticated", this._authenticated.toString());
+    }
+    get ready() {
+        return this._ready;
+    }
+    set ready(val) {
+        if (typeof val === "string")
+            val = true;
+        if (this._ready === val)
+            return;
+        this._ready = val;
+    }
     get jwtCookie() {
         return this._jwtCookie;
     }
@@ -155,32 +190,6 @@ export class CPXKeycloak extends HTMLElement {
         this._jwtToken = val;
         if (typeof this._jwtToken !== "undefined") {
         }
-    }
-    get realm() {
-        return this._realm;
-    }
-    set realm(val) {
-        if (this._realm === val)
-            return;
-        this._realm = val;
-    }
-    get clientId() {
-        return this._clientId;
-    }
-    set clientId(val) {
-        if (this._clientId === val)
-            return;
-        this._clientId = val;
-    }
-    get ready() {
-        return this._ready;
-    }
-    set ready(val) {
-        if (typeof val === "string")
-            val = true;
-        if (this._ready === val)
-            return;
-        this._ready = val;
     }
     get loginElement() {
         return this._loginElement;
@@ -214,15 +223,6 @@ export class CPXKeycloak extends HTMLElement {
             return;
         this._logoutAttr = val;
     }
-    get authenticated() {
-        return this._authenticated;
-    }
-    set authenticated(val) {
-        if (this._authenticated === val)
-            return;
-        this._authenticated = val;
-        this.setAttribute("authenticated", this._authenticated.toString());
-    }
     connectedCallback() {
         document.cookie.split(";").reduce((a, c) => {
             let kv = c.trim().split("=");
@@ -245,7 +245,8 @@ export class CPXKeycloak extends HTMLElement {
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[this.camelCase(name)] = newVal;
-        if (this.validateConfig()) {
+        if (!this.ready && this.validateConfig()) {
+            this.ready = true;
             this.init(this.config);
         }
     }
@@ -273,7 +274,7 @@ export class CPXKeycloak extends HTMLElement {
                         document.cookie = `${this.jwtCookie}=${this.keycloak.token}`;
                         document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
                     }
-                    this.dispatchEvent(new CustomEvent("token-ready", {
+                    this.dispatchEvent(new CustomEvent("kc-token-ready", {
                         detail: {
                             token: this.keycloak.tokenParsed,
                         },
@@ -299,7 +300,6 @@ export class CPXKeycloak extends HTMLElement {
                                 " ",
                         }, this.keycloak.tokenParsed);
                     }
-                    this.ready = true;
                 }
                 else {
                     if (this.getAttribute("auto") !== null) {
@@ -309,6 +309,7 @@ export class CPXKeycloak extends HTMLElement {
                         top.document.querySelector(this.loginElement).setAttribute(this.loginAttr, this.keycloak.createLoginUrl());
                     }
                 }
+                this.ready = true;
             }).catch(() => {
                 this.dispatchEvent(new Event('kc-init-failure', { composed: true, bubbles: true }));
             });

@@ -14,16 +14,11 @@ declare var Keycloak: any;
  * @prop {Keycloak} keycloak - Keycloak object storage
  */
 export class CPXKeycloak extends HTMLElement {
-  _keycloak;
-  _ready = false;
-  _authenticated = false;
-  _url: string;
-  _config: string;
-  _options: string;
-  _realm: string;
-  _clientId: string;
+  
+  _cookies = new Map();
   _links: { logout: ""; login: ""; register: "" };
-
+  
+  _keycloak;
   get keycloak() {
     return this._keycloak;
   }
@@ -32,6 +27,8 @@ export class CPXKeycloak extends HTMLElement {
     this._keycloak = val;
     this.ready = true;
   }
+
+  _url: string;
   get url() {
     return this._url;
   }
@@ -39,6 +36,8 @@ export class CPXKeycloak extends HTMLElement {
     if (this._url === val) return;
     this._url = val;
   }
+  
+  _config: string;
   get config() {
     return this._config;
   }
@@ -46,6 +45,7 @@ export class CPXKeycloak extends HTMLElement {
     if (this._config === val) return;
     this._config = val;
   }
+  _options: string;
   get options() {
     return this._options;
   }
@@ -53,8 +53,43 @@ export class CPXKeycloak extends HTMLElement {
     if (this._options === val) return;
     this._options = val;
   }
+  _realm: string;
+  get realm() {
+    return this._realm;
+  }
+  set realm(val) {
+    if (this._realm === val) return;
+    this._realm = val;
+  }
 
-  _cookies = new Map();
+  _clientId: string;
+  get clientId() {
+    return this._clientId;
+  }
+  set clientId(val) {
+    if (this._clientId === val) return;
+    this._clientId = val;
+  }
+  
+  _authenticated = false;
+  get authenticated() {
+    return this._authenticated;
+  }
+  set authenticated(val) {
+    if (this._authenticated === val) return;
+    this._authenticated = val;
+    this.setAttribute("authenticated", this._authenticated.toString());
+  }
+
+  _ready = false;
+  get ready() {
+    return this._ready;
+  }
+  set ready(val) {
+    if (typeof val === "string") val = true;
+    if (this._ready === val) return;
+    this._ready = val;
+  }
 
   // JWT
   _jwtCookie = "";
@@ -85,29 +120,6 @@ export class CPXKeycloak extends HTMLElement {
     }
   }
   // END JWT
-
-  get realm() {
-    return this._realm;
-  }
-  set realm(val) {
-    if (this._realm === val) return;
-    this._realm = val;
-  }
-  get clientId() {
-    return this._clientId;
-  }
-  set clientId(val) {
-    if (this._clientId === val) return;
-    this._clientId = val;
-  }
-  get ready() {
-    return this._ready;
-  }
-  set ready(val) {
-    if (typeof val === "string") val = true;
-    if (this._ready === val) return;
-    this._ready = val;
-  }
 
   _loginElement;
   get loginElement() {
@@ -142,14 +154,7 @@ export class CPXKeycloak extends HTMLElement {
     if (this._logoutAttr === val) return;
     this._logoutAttr = val;
   }
-  get authenticated() {
-    return this._authenticated;
-  }
-  set authenticated(val) {
-    if (this._authenticated === val) return;
-    this._authenticated = val;
-    this.setAttribute("authenticated", this._authenticated.toString());
-  }
+  
 
   constructor() {
     super();
@@ -183,7 +188,8 @@ export class CPXKeycloak extends HTMLElement {
 
   attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     this[this.camelCase(name)] = newVal;
-    if (this.validateConfig()) {
+    if (!this.ready && this.validateConfig()) {
+      this.ready = true;
       this.init(this.config);
     }
   }
@@ -220,7 +226,7 @@ export class CPXKeycloak extends HTMLElement {
               document.cookie = `${this.jwtCookie}_refresh=${this.keycloak.refreshToken}`;
             }
             this.dispatchEvent(
-              new CustomEvent("token-ready", {
+              new CustomEvent("kc-token-ready", {
                 detail: {
                   token: this.keycloak.tokenParsed,
                 },
@@ -262,7 +268,6 @@ export class CPXKeycloak extends HTMLElement {
                 this.keycloak.tokenParsed,
               );
             }
-            this.ready = true;
           } else {
             if (this.getAttribute("auto") !== null) {
               this.login();
@@ -274,6 +279,7 @@ export class CPXKeycloak extends HTMLElement {
               );
             }
           }
+          this.ready = true;
       }).catch(() => {
         this.dispatchEvent(new Event('kc-init-failure',{composed:true,bubbles:true}));
       });
