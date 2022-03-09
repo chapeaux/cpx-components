@@ -3,8 +3,6 @@ import { serve } from "https://deno.land/std@0.126.0/http/server.ts";
 import { Router } from "https://deno.land/x/nativerouter/mod.ts";
 import { walk } from "https://deno.land/std@0.126.0/fs/mod.ts";
 
-const components = walk('./components/', {maxDepth:1,includeFiles:false});
-
 const ContentTypes = new Map<string,string>([
   ['js', 'text/javascript'],
   ['html', 'text/html'],
@@ -26,6 +24,7 @@ const router = new Router();
 
 /* Route Handlers */
 const getIndex = async (req:Request, params:Record<string,string>):Promise<Response> => {
+  const components = await walk('./components/', {maxDepth:1,includeFiles:false});
   let list = '<!doctype html><html><head></head><body><ul>';
   for await(const cpx of components) { 
     list += cpx.name !== 'components' ? `<li><a href="${cpx.name}/demo">${cpx.name}</a></li>` : ''; 
