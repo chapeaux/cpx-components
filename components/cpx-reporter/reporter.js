@@ -1,8 +1,8 @@
 let eventMap = new Map([
-    ['Page Load Started', { obj: 'page', page: { "custKey": "<custKey>" } }],
+    ['Page Load Started', { obj: 'page', page: { "custKey": "{custKey}" } }],
     ['Page Load Completed', {}],
-    ['User Signed In', { obj: 'user', user: { "custKey": "<custKey>" } }],
-    ['User Detected', { obj: 'user', user: { "custKey": "<custKey>", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" } }],
+    ['User Signed In', { obj: 'user', user: { "custKey": "{custKey}" } }],
+    ['User Detected', { obj: 'user', user: { "custKey": "{custKey}", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" } }],
     ['Content Listing Displayed', { obj: 'listingDisplayed', listingDisplayed: { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" } }],
     ['Content Listing Item Clicked', { obj: 'listingClicked', listingClicked: { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" } }],
 ]);
@@ -35,8 +35,8 @@ export class ReporterEvent extends Event {
             value: () => Object.assign({ event: this.name }, this.data)
         });
         this.name = name;
-        this.obj = (_a = eventMap.get(name)) !== null && _a !== void 0 ? _a : { data: {} };
-        this.data = Object.assign(data, this.obj[this.obj['obj']]);
+        this.obj = (_a = eventMap.get(name)) !== null && _a !== void 0 ? _a : { obj: {}, data: {} };
+        this.data = Object.assign(data !== null && data !== void 0 ? data : {}, this.obj[this.obj.obj]);
     }
 }
 const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
