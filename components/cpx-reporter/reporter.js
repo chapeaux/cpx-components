@@ -1,14 +1,16 @@
 let eventMap = new Map([
-    ['Page Load Started', { obj: 'page', page: { "custKey": "{custKey}" } }],
+    ['Page Load Started', { payload: 'page', data: { page: { "custKey": "{custKey}" } } }],
     ['Page Load Completed', {}],
-    ['User Signed In', { obj: 'user', user: { "custKey": "{custKey}" } }],
-    ['User Detected', { obj: 'user', user: { "custKey": "{custKey}", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" } }],
-    ['Content Listing Displayed', { obj: 'listingDisplayed', listingDisplayed: { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" } }],
-    ['Content Listing Item Clicked', { obj: 'listingClicked', listingClicked: { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" } }],
+    ['User Signed In', { payload: 'user', data: { user: { "custKey": "{custKey}" } } }],
+    ['User Detected', { payload: 'user', data: { user: { "custKey": "{custKey}", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" } } }],
+    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" } } }],
+    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" } } }],
+    ['Form Viewed', { payload: 'form', data: { form: {} } }],
+    ['Form Submission Succeeded', { payload: 'form', data: { form: {} } }],
+    ['Form Submission Failed', { payload: 'form', data: { form: {} } }]
 ]);
 export class ReporterEvent extends Event {
     constructor(name, data) {
-        var _a;
         super('cpx-report', { bubbles: true, composed: true });
         Object.defineProperty(this, "obj", {
             enumerable: true,
@@ -35,8 +37,11 @@ export class ReporterEvent extends Event {
             value: () => Object.assign({ event: this.name }, this.data)
         });
         this.name = name;
-        this.obj = (_a = eventMap.get(name)) !== null && _a !== void 0 ? _a : { obj: {}, data: {} };
-        this.data = Object.assign(data !== null && data !== void 0 ? data : {}, this.obj[this.obj.obj]);
+        this.obj = eventMap.get(name);
+        if (this.obj && this.obj.payload && this.obj.data) {
+            this.obj.data[this.obj.payload] = Object.assign(this.obj.data[this.obj.payload], data !== null && data !== void 0 ? data : {});
+            this.data = this.obj.data;
+        }
     }
 }
 const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);

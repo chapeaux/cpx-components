@@ -18,13 +18,19 @@ class CPXReporter extends HTMLElement {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: void 0
+            value: {}
         });
-        Object.defineProperty(this, "ready", {
+        Object.defineProperty(this, "tasks", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: new Set(['beat', 'event', 'data'])
+        });
+        Object.defineProperty(this, "_ready", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
         });
     }
     static get tag() { return 'cpx-reporter'; }
@@ -50,12 +56,28 @@ class CPXReporter extends HTMLElement {
         if (this._data === val)
             return;
         this._data = val;
-        this.setAttribute('data', this._data);
+    }
+    get ready() { return this._ready; }
+    set ready(val) {
+        if (this._ready === !!val)
+            return;
+        this._ready = !!val;
+        if (this._ready) {
+            this.report();
+        }
     }
     connectedCallback() {
-        this.ready.forEach(r => {
-            if ([...this.attributes].map(a => a.name).indexOf(r) < 0) {
-                this.ready.delete(r);
+        const dataEle = this.querySelector('script[type="data"]');
+        if (dataEle) {
+            this.data = JSON.parse(dataEle.textContent);
+        }
+        const attrs = new Set();
+        for (let i = 0; i < this.attributes.length; i++) {
+            attrs.add(this.attributes[i]);
+        }
+        this.tasks.forEach(r => {
+            if (!attrs.has(r)) {
+                this.tasks.delete(r);
             }
         });
     }
@@ -68,12 +90,15 @@ class CPXReporter extends HTMLElement {
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[name] = newVal;
-        if (this.ready.has(name)) {
-            this.ready.delete(name);
+        if (this.tasks.has(name)) {
+            this.tasks.delete(name);
         }
-        if (this.ready.size === 0 && this.getAttribute('auto') === '') {
-            this.dispatchEvent(new ReporterEvent(this.event));
+        if (this.getAttribute('auto') === '' && this.tasks.size === 0) {
+            this.ready = true;
         }
+    }
+    report() {
+        this.dispatchEvent(new ReporterEvent(this.event, this.data));
     }
 }
 window.customElements.define(CPXReporter.tag, CPXReporter);

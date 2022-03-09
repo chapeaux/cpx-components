@@ -1,7 +1,7 @@
 import { ReporterEvent } from "./reporter.ts";
 /*
     Based off documentation for EDDL found here:
-    https://docs.google.com/document/d/18xVOJX8lJDv-5UzyHpioay9ysbivWNQ51Sbis4_0nLk/edit#
+    https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md
 */
 
 class CPXReporter extends HTMLElement {
@@ -26,24 +26,43 @@ class CPXReporter extends HTMLElement {
         this.setAttribute('event', this._event);
     }
 
-    _data:string;
+    _data = {};
     get data() { return this._data; }
     set data(val) {
         if (this._data === val) return;
         this._data = val;
-        this.setAttribute('data', this._data);
+        //this.setAttribute('data', this._data);
     }
-    ready = new Set(['beat','event','data']);
+    tasks = new Set(['beat','event','data']);
     constructor() {
         super();
     }
-
+    _ready = false;
+    get ready() { return this._ready; }
+    set ready(val) {
+        if (this._ready === !!val) return;
+        this._ready = !!val;
+        if(this._ready) {
+            this.report();
+        }
+    }
     connectedCallback() {
-        this.ready.forEach(r => {
-            if ([...this.attributes].map(a=>a.name).indexOf(r) < 0) {
-                this.ready.delete(r);
+        const dataEle = this.querySelector('script[type="data"]');
+        if (dataEle) {
+            this.data = JSON.parse(dataEle.textContent);
+        }
+
+        const attrs = new Set();
+        for (let i=0; i < this.attributes.length; i++) {
+            attrs.add(this.attributes[i]);
+        }
+
+        this.tasks.forEach(r => {
+            if (!attrs.has(r)) {
+                this.tasks.delete(r);
             }
         });
+        
     }
 
     static get observedAttributes() {
@@ -56,10 +75,15 @@ class CPXReporter extends HTMLElement {
 
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
         this[name] = newVal;
-        if (this.ready.has(name)) { this.ready.delete(name); }
-        if(this.ready.size === 0 && this.getAttribute('auto') === '') {
-            this.dispatchEvent(new ReporterEvent(this.event));
+        if (this.tasks.has(name)) { this.tasks.delete(name); }
+        if (this.getAttribute('auto') === '' && this.tasks.size === 0) {
+            this.ready = true;
         }
+
+    }
+
+    report() {
+        this.dispatchEvent(new ReporterEvent(this.event, this.data));
     }
 
     /* Reporter Beats */

@@ -1,19 +1,24 @@
 let eventMap = new Map([
-  ['Page Load Started', {obj:'page',page:{"custKey": "{custKey}"}}],
+  ['Page Load Started', {payload:'page',data:{page:{"custKey": "{custKey}"}}}],
   ['Page Load Completed', {}],
-  ['User Signed In', {obj:'user',user:{"custKey": "{custKey}"}}],
-  ['User Detected', {obj:'user',user:{"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}],
-  ['Content Listing Displayed',{obj:'listingDisplayed',listingDisplayed:{"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}],
-  ['Content Listing Item Clicked', {obj:'listingClicked',listingClicked:{"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}],
-  
-])
+  ['User Signed In', {payload:'user',data:{user:{"custKey": "{custKey}"}}}],
+  ['User Detected', {payload:'user',data:{user:{"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}],
+  ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:{"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}],
+  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:{"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}],
+  ['Form Viewed', {payload:'form',data:{form:{}}}],
+  ['Form Submission Succeeded', {payload:'form',data:{form:{}}}],
+  ['Form Submission Failed', {payload:'form',data:{form:{}}}]
+]);
 
 export class ReporterEvent extends Event {
     constructor(name, data?) {
         super('cpx-report', { bubbles:true, composed:true });
         this.name = name;
-        this.obj = eventMap.get(name) ?? {obj:{},data: {}};
-        this.data = Object.assign(data ?? {}, this.obj[this.obj.obj]);
+        this.obj = eventMap.get(name);
+        if (this.obj && this.obj.payload && this.obj.data) {
+          this.obj.data[this.obj.payload] = Object.assign(this.obj.data[this.obj.payload], data ?? {});
+          this.data = this.obj.data;
+        }
     }
     obj:any;
     data?:any;
@@ -31,243 +36,19 @@ if (reporter instanceof HTMLElement) {
     globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data));
 }
 
+/*
 
-/* Reporter Beats */
-    
-    /*
+Event Types: 
+    Page, User, Content, 
+    Search, Campaign, Video,
+    CTA, Download, Form
 
-    Event Types: 
-        Page, User, Content, 
-        Search, Campaign, Video,
-        CTA, Download, Form
+Event Payloads: page, user, 
+  listingDisplayed, listingClicked, 
+  onsiteSearch, internalCampaign,
+  video, linkInfo, form
 
-    Page Load Completed
-     'event': 'Page Load Completed'
+ADDITIONAL PAGE OBJECT DATA
+https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js
 
-    
-    Page Load Started
-     'event': 'Page Load Started',
-    "page": {
-        "pageCategory": "technologies",
-        "pageName": "<pageName>",
-        "pageTitle": "Red Hat Enterprise Linux operating system",
-        "analyticsTitle": "<Drupal analyticsTitle field>",        
-        "pageType": "pattern_template",
-        "pageSubType": "Product",
-        "siteExperience": "mobile",
-        "siteLanguage": "<siteLanguage>",
-        "subsection": "linux-platforms",
-        "subsection2": "enterprise-linux2",
-        "subsection3": "try-it",
-        "cms": "RH CMS 2020.14.0",
-        "analyticsTitle": "<Analytics Title field in Drupal>",
-        "blogAuthor": "<captures author of blog articles>",
-        "contentID": "545121",
-        "contentType": "E-book",
-        "destinationURL": "https://www.redhat.com/en/home-page",
-        "errorType": "404",
-        "gated": true,
-        "taxonomyMetaHreflang": ["29051"],
-        "taxonomyRegion": ["4521"],
-        "taxonomyBlogPostCategory": ["4261"],
-        "taxonomyBusinessChallenge":["161"],
-        "taxonomyProduct":["781"],
-        "taxonomyProductLine":["831"],
-        "taxonomySolution":["1071"],
-        "taxonomyTopic":["9011", "27061"],
-        "taxonomyAuthor":["1111"],
-        "taxonomyStage":["111"], 
-        "dataObject":"digitalData"
-        }
-
-
-    ADDITIONAL PAGE OBJECT DATA
-    https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js
-    previousPage
-
-    User Signed In
-    "event": "User Signed In",
-    "user": {
-        "custKey": "<custKey>"
-    }
-
-    User Detected
-     'event': 'User Detected',
-    "user": {
-        "custKey": "<custKey>",
-        "accountID": "<accountID>", //Customer Portal
-        "accountIDType": "External",
-        "userID": "<userID>",
-        "lastLoginDate": "",
-        "loggedIn": "false",
-        "registered":"true",
-        "socialAccountsLinked":"",
-        "subscriptionFrequency": "",
-        "subscriptionLevel": "",
-        "hashedEmail": ""
-    }
-
-
-    Content Listing Displayed
-     'event': 'Content Listing Displayed',
-    "listingDisplayed": {
-        "displayCount": "<displayCount>",
-        "listingDriver": "<listingDriver>", 
-        "filterList": "<filterList>",
-        "resultsCount": "<resultsCount>"
-    }
-
-    Content Listing Item Clicked
-    'event': 'Content Listing Item Clicked',
-    "listingClicked": {
-            "displayPosition": "<displayPosition>", 
-  	"linkType": "<linkType>", 
-  	"contentTitle": "<contentTitle>"
-                }
-
-
-    Onsite Search Performed
-     "event": "Onsite Search Performed",
-  "onsiteSearch": {
-    "keyword": {
-      "searchType": "global_search",
-      "searchTerm": "<searchTerm>",
-      “searchMethod”: “<searchMethod>”
-    }
-  }
-
-    Internal Campaign Clicked
-     'event': 'Internal Campaign Clicked',
-    "internalCampaign": {
-        "campaignList": [
-            {
-                "internalCampaignCreative": "<internalCampaignCreative>",
-                "internalCampaignID": "<internalCampaignID>",
-                "internalCampaignName": "<internalCampaignName>",
-                "internalCampaignObjective": "<internalCampaignObjective>",
-                "internalCampaignPosition": "<internalCampaignPosition>"
-            }
-        ],
-        "internalCampaignID": "<internalCampaignID>"
-    }
-
-    Internal Campaign Displayed
-     'event': 'Internal Campaigns Displayed',
-    "internalCampaign": {
-        "campaignList": [
-            {
-                "internalCampaignCreative": "<internalCampaignCreative>",
-                "internalCampaignID": "<internalCampaignID>",
-                "internalCampaignName": "<internalCampaignName>",
-                "internalCampaignObjective": "<internalCampaignObjective>",
-                "internalCampaignPosition": "<internalCampaignPosition>"
-            }
-        ]
-    }
-
-    Video Started
-     "event": "Video Started",
-  "video": {
-    "videoID": "<videoID>",
-    "videoName": "<videoName>",
-    "secondsLength": "<secondsLength>",
-    "videoPlayerType": "<videoPlayerType>",
-    "categoryName": "<categoryName>"
-  }
-
-
-  Video Milestone Reached
-  "event": "Video Milestone Reached",
-  "video": {
-    "milestone": "<milestone>",
-    "videoID": "<videoID>",
-    "videoName": "<videoName>",
-    "secondsLength": "<secondsLength>",
-    "videoPlayerType": "<videoPlayerType>",
-    "categoryName": "<categoryName>"
-  }
-
-  Video Completed
-   "event": "Video Completed",
-  "video": {
-    "categoryName": "<categoryName>",
-    "videoPlayerType": "<videoPlayerType>",
-    "secondsLength": "<secondsLength>",
-    "videoName": "<videoName>",
-    "videoID": "<videoID>"
-  }
-
-
-
-    CTA Link Clicked
-    "event": "CTA Link Clicked",
-  "linkInfo": {
-    "linkId": "<linkId>",
-    "linkContainer": "<linkContainer>",
-    "linkRegion": "<linkRegion>"
-  }
-
-    Download Complete
-    "event": "Download Complete",
-  "linkInfo": {
-    "linkId": "<linkId>",
-    "linkContainer": "<linkContainer>",
-    "linkRegion": "<linkRegion>",
-    "fileName": "<fileName>",
-    "fileType": "<fileType>"
-  }
-
-
-
-    Form Viewed
-     'event': 'Form Viewed',
-    "form": {
-        "formField": [
-            {
-                "fieldID": "<fieldID>",
-                "fieldPosition": "<fieldPosition>"
-            }
-        ],
-        "formID": "<formID>",
-        "formName": "<formName>",
-        "formType": "<formType>",
-        "formTemplate": "<formTemplate>",
-        "offerID": "<offerID>",
-        "formField": [
-          {
-            "fieldID": "<fieldID>",
-            "fieldPosition": "<fieldPosition>"
-          }
-        ]
-    }
-
-
-    Form Submission Success
-      'event': 'Form Submission Succeeded',
-    "form": {
-        "formID": "<formID>",
-        "formName": "<formName>",
-        "formType": "<formType>",
-        "formTemplate": "<formTemplate>",
-        "offerID": "<offerID>"
-    }
-
-
-    Form Submission Failed    
-     'event': 'Form Submission Failed',
-    "form": {
-        "formError": "<formError>",
-        "formField": [
-            {
-                "fieldID": "<fieldID>",
-                "fieldPosition": "<fieldPosition>",
-                "formFieldError": "<formFieldError>"
-            }
-        ],
-        "formName": "<formName>",
-        "formTemplate": "<formTemplate>",
-        "offerID": "<offerID>",
-        "formType": "<formType>"
-    }
-
-    */
+*/
