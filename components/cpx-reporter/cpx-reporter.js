@@ -20,6 +20,12 @@ class CPXReporter extends HTMLElement {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "ready", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: new Set(['beat', 'event', 'data'])
+        });
     }
     static get tag() { return 'cpx-reporter'; }
     get beat() { return this._beat; }
@@ -47,6 +53,11 @@ class CPXReporter extends HTMLElement {
         this.setAttribute('data', this._data);
     }
     connectedCallback() {
+        this.ready.forEach(r => {
+            if ([...this.attributes].map(a => a.name).indexOf(r) < 0) {
+                this.ready.delete(r);
+            }
+        });
     }
     static get observedAttributes() {
         return [
@@ -57,6 +68,12 @@ class CPXReporter extends HTMLElement {
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[name] = newVal;
+        if (this.ready.has(name)) {
+            this.ready.delete(name);
+        }
+        if (this.ready.size === 0 && this.getAttribute('auto') === '') {
+            this.dispatchEvent(new ReporterEvent(this.event));
+        }
     }
 }
 window.customElements.define(CPXReporter.tag, CPXReporter);

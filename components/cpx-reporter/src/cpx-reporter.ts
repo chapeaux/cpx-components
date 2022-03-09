@@ -33,13 +33,17 @@ class CPXReporter extends HTMLElement {
         this._data = val;
         this.setAttribute('data', this._data);
     }
-
+    ready = new Set(['beat','event','data']);
     constructor() {
         super();
     }
 
     connectedCallback() {
-        
+        this.ready.forEach(r => {
+            if ([...this.attributes].map(a=>a.name).indexOf(r) < 0) {
+                this.ready.delete(r);
+            }
+        });
     }
 
     static get observedAttributes() {
@@ -52,6 +56,10 @@ class CPXReporter extends HTMLElement {
 
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
         this[name] = newVal;
+        if (this.ready.has(name)) { this.ready.delete(name); }
+        if(this.ready.size === 0 && this.getAttribute('auto') === '') {
+            this.dispatchEvent(new ReporterEvent(this.event));
+        }
     }
 
     /* Reporter Beats */
