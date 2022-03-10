@@ -138,8 +138,12 @@
                     <form></form>
                 </cpx-reporter>
             </li>
-            <li>Form Submission Succeeded
-                <!-- <cpx-reporter auto event="Form Submission Succeeded">
+            <li>
+                <details>
+                    <summary>Form Submission Succeeded</summary>
+                    <pre data-event="Form Submission Succeeded"></pre>
+                </details>
+                <cpx-reporter auto event="Form Submission Succeeded">
                     <script type="data">
                     {
                         "formID": "{formID}",
@@ -149,10 +153,14 @@
                         "offerID": "{offerID}"
                     }
                     </script>
-                </cpx-reporter> -->
+                </cpx-reporter>
             </li>
-            <li>Form Submission Failed
-                <!-- <cpx-reporter auto event="Form Submission Failed">
+            <li>
+                <details>
+                    <summary>Form Submission Failed</summary>
+                    <pre data-event="Form Submission Failed"></pre>
+                </details>
+                <cpx-reporter auto event="Form Submission Failed">
                     <script type="data">
                     {
                         "formError": "{formError}",
@@ -169,8 +177,11 @@
                         "formType": "{formType}"
                     }
                     </script>
-                </cpx-reporter> -->
+                </cpx-reporter>
             </li>
+        </fieldset>
+        <fieldset>
+            <legend>Click Events</legend>
         </fieldset>
     <!-- <cpx-reporter beat="click" event="Content Listing Item Clicked">
         <ul>
