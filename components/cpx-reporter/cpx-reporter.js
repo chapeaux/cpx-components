@@ -34,6 +34,9 @@ class CPXReporter extends HTMLElement {
         });
     }
     static get tag() { return 'cpx-reporter'; }
+    get debug() {
+        return this.getAttribute('debug');
+    }
     get beat() { return this._beat; }
     set beat(val) {
         if (this._beat === val)
@@ -98,6 +101,14 @@ class CPXReporter extends HTMLElement {
         }
     }
     report() {
+        if (this.debug !== null) {
+            if (this.debug !== 'verbose') {
+                console.log('DEBUG ON');
+            }
+            else {
+                console.log('VERBOSE DEBUG ON');
+            }
+        }
         this.dispatchEvent(new ReporterEvent(this.event, this.data));
     }
 }
