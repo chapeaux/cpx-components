@@ -2,6 +2,8 @@ import { ReporterEvent } from "./reporter.ts";
 /*
     Based off documentation for EDDL found here:
     https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md
+
+    Parse data points up the DOM ala Click To EDDL
 */
 
 class CPXReporter extends HTMLElement {

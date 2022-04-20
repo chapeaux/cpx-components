@@ -1,5 +1,5 @@
 let eventMap = new Map([
-  ['Page Load Started', {payload:'page',data:{page:{"custKey": "{custKey}"}}}],
+  ['Page Load Started', {payload:'page',data:{page:{"pageName":"foo","custKey": "{custKey}"}}}],
   ['Page Load Completed', {}],
   ['User Signed In', {payload:'user',data:{user:{"custKey": "{custKey}"}}}],
   ['User Detected', {payload:'user',data:{user:{"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}],
