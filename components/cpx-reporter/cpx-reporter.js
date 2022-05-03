@@ -2,6 +2,12 @@ import { ReporterEvent } from "./reporter.js";
 class CPXReporter extends HTMLElement {
     constructor() {
         super();
+        Object.defineProperty(this, "_debug", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "_beat", {
             enumerable: true,
             configurable: true,
@@ -35,7 +41,12 @@ class CPXReporter extends HTMLElement {
     }
     static get tag() { return 'cpx-reporter'; }
     get debug() {
-        return this.getAttribute('debug');
+        return this._debug;
+    }
+    set debug(val) {
+        if (this._debug === val)
+            return;
+        this._debug = val;
     }
     get beat() { return this._beat; }
     set beat(val) {
@@ -88,7 +99,8 @@ class CPXReporter extends HTMLElement {
         return [
             "beat",
             "event",
-            "data"
+            "data",
+            "debug"
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {

@@ -8,8 +8,13 @@ import { ReporterEvent } from "./reporter.ts";
 
 class CPXReporter extends HTMLElement {
     static get tag() { return 'cpx-reporter'; }
+    _debug:string;
     get debug() {
-        return this.getAttribute('debug');
+        return this._debug;
+    }
+    set debug(val) {
+        if (this._debug === val) return;
+        this._debug = val;
     }
     
     _beat:string;
@@ -73,7 +78,8 @@ class CPXReporter extends HTMLElement {
         return [
             "beat",
             "event",
-            "data"
+            "data",
+            "debug"
         ];
     }
 

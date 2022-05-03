@@ -1,10 +1,11 @@
 let eventMap = new Map([
   ['Page Load Started', {payload:'page',data:{page:{"pageName":"foo","custKey": "{custKey}"}}}],
   ['Page Load Completed', {}],
-  ['User Signed In', {payload:'user',data:{user:{"custKey": "{custKey}"}}}],
-  ['User Detected', {payload:'user',data:{user:{"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}],
+  ['Download Complete', {}],
   ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:{"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}],
   ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:{"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}],
+  ['User Signed In', {payload:'user',data:{user:{"custKey": "{custKey}"}}}],
+  ['User Detected', {payload:'user',data:{user:{"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}],
   ['Form Viewed', {payload:'form',data:{form:{}}}],
   ['Form Submission Succeeded', {payload:'form',data:{form:{}}}],
   ['Form Submission Failed', {payload:'form',data:{form:{}}}]
