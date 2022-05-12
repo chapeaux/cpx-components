@@ -1,5 +1,5 @@
 let eventMap = new Map([
-  ['Page Load Started', {payload:'page',data:{page:{"pageName":"foo","custKey": "{custKey}"}}}],
+  ['Page Load Started', {payload:'page',data:{page:{"pageName":"","custKey": "","siteExperience":""}}}],
   ['Page Load Completed', {}],
   ['Download Complete', {}],
   ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:{"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}],
@@ -12,8 +12,8 @@ let eventMap = new Map([
 ]);
 
 export class ReporterEvent extends Event {
-    constructor(name, data?) {
-        super('cpx-report', { bubbles:true, composed:true });
+    constructor(name, data?, emitName='cpx-report') {
+        super(emitName, { bubbles:true, composed:true });
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
@@ -33,11 +33,13 @@ const reporter = scripts[scripts.length-1];
 */
 const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
 if (reporter instanceof HTMLElement) {
-    const data = JSON.parse(reporter.textContent ? reporter.textContent : '');
-    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data));
+    const data = JSON.parse(reporter.textContent ?? '');
+    const emitName = reporter.getAttribute('data-emit') ?? 'cpx-report';
+    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data, emitName));
 }
 
 /*
+
 
 Event Types: 
     Page, User, Content, 

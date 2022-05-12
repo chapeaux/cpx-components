@@ -1,5 +1,6 @@
+var _a, _b;
 let eventMap = new Map([
-    ['Page Load Started', { payload: 'page', data: { page: { "pageName": "foo", "custKey": "{custKey}" } } }],
+    ['Page Load Started', { payload: 'page', data: { page: { "pageName": "", "custKey": "", "siteExperience": "" } } }],
     ['Page Load Completed', {}],
     ['Download Complete', {}],
     ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" } } }],
@@ -11,8 +12,8 @@ let eventMap = new Map([
     ['Form Submission Failed', { payload: 'form', data: { form: {} } }]
 ]);
 export class ReporterEvent extends Event {
-    constructor(name, data) {
-        super('cpx-report', { bubbles: true, composed: true });
+    constructor(name, data, emitName = 'cpx-report') {
+        super(emitName, { bubbles: true, composed: true });
         Object.defineProperty(this, "obj", {
             enumerable: true,
             configurable: true,
@@ -47,6 +48,7 @@ export class ReporterEvent extends Event {
 }
 const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
 if (reporter instanceof HTMLElement) {
-    const data = JSON.parse(reporter.textContent ? reporter.textContent : '');
-    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event, data));
+    const data = JSON.parse((_a = reporter.textContent) !== null && _a !== void 0 ? _a : '');
+    const emitName = (_b = reporter.getAttribute('data-emit')) !== null && _b !== void 0 ? _b : 'cpx-report';
+    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event, data, emitName));
 }

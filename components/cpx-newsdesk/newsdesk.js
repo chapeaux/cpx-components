@@ -1,3 +1,9 @@
+var _a;
+let evtName = 'cpx-report';
+const src = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
+if (src instanceof HTMLElement) {
+    evtName = (_a = src.getAttribute('data-event')) !== null && _a !== void 0 ? _a : evtName;
+}
 globalThis.appEventData = globalThis.appEventData || [];
 export const Newsdesk = {
     handleEvent(event) {
@@ -10,4 +16,4 @@ export const Newsdesk = {
         }));
     }
 };
-globalThis.addEventListener('cpx-report', Newsdesk);
+globalThis.addEventListener(evtName, Newsdesk);

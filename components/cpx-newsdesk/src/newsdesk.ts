@@ -1,3 +1,9 @@
+let evtName = 'cpx-report'
+const src = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
+if (src instanceof HTMLElement) {
+    evtName = src.getAttribute('data-event') ?? evtName;
+}
+
 globalThis.appEventData = globalThis.appEventData || [];
 export const Newsdesk = {
     handleEvent(event) {
@@ -11,4 +17,4 @@ export const Newsdesk = {
     }
 }
 // Test
-globalThis.addEventListener('cpx-report', Newsdesk);
+globalThis.addEventListener(evtName, Newsdesk);

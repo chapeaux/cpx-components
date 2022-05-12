@@ -7,12 +7,13 @@
     <script>
         top.addEventListener('newsflash', e=> {
             const result = document.querySelector(`pre[data-event="${e.detail.event}"]`);
-            result.textContent = JSON.stringify(e.detail,null,2);
+            //result.textContent = JSON.stringify(e.detail,null,2);
             console.log('NEWSFLASH:', e.detail)
         });
     </script>
-    <script type="module" src="/cpx-newsdesk/newsdesk.js"></script>
-    <script type="module" src="/cpx-reporter/reporter.js" data-event="Page Load Started">
+    <!-- <script type="module" src="/cpx-newsdesk/newsdesk.js"></script> -->
+    <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-foo"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-foo" data-event="Page Load Started">
         {
         "analyticsTitle": "Extracting information from Python source code",
         "blogAuthor": "Fridolin Pokorny",
@@ -64,7 +65,7 @@
                     <summary>Page Load Started</summary>
                     <pre data-event="Page Load Started"></pre>
                 </details>
-                <cpx-reporter debug="verbose" auto event="Page Load Started">
+                <cpx-reporter emit="cpx-report" debug="verbose" auto event="Page Load Started">
                     <script type="data">
                     {
                     "pageCategory": "technologies",

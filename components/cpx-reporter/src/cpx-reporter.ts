@@ -56,6 +56,13 @@ class CPXReporter extends HTMLElement {
             this.report();
         }
     }
+
+    _emit = 'cpx-report';
+    get emit() { return this._emit; }
+    set emit(val) {
+        if (this._emit === val) return;
+        this._emit = val;
+    }
     connectedCallback() {
         const dataEle = this.querySelector('script[type="data"]');
         if (dataEle) {
@@ -77,6 +84,7 @@ class CPXReporter extends HTMLElement {
     static get observedAttributes() {
         return [
             "beat",
+            "emit",
             "event",
             "data",
             "debug"
@@ -98,7 +106,7 @@ class CPXReporter extends HTMLElement {
                 console.log('DEBUG ON'); 
             } else { console.log('VERBOSE DEBUG ON'); }
         }
-        this.dispatchEvent(new ReporterEvent(this.event, this.data));
+        this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
     }
 
     /* Reporter Beats */
