@@ -1,5 +1,9 @@
 let evtName = 'cpx-report'
-const src = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
+/*
+const scripts = document.getElementsByTagName('script');
+const src = scripts[scripts.length-1];
+*/ 
+const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
 if (src instanceof HTMLElement) {
     evtName = src.getAttribute('data-event') ?? evtName;
 }

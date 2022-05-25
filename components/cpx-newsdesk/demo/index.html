@@ -7,13 +7,13 @@
     <script>
         top.addEventListener('newsflash', e=> {
             const result = document.querySelector(`pre[data-event="${e.detail.event}"]`);
-            //result.textContent = JSON.stringify(e.detail,null,2);
+            result.textContent = JSON.stringify(e.detail,null,2);
             console.log('NEWSFLASH:', e.detail)
         });
     </script>
     <!-- <script type="module" src="/cpx-newsdesk/newsdesk.js"></script> -->
-    <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-foo"></script>
-    <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-foo" data-event="Page Load Started">
+    <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started">
         {
         "analyticsTitle": "Extracting information from Python source code",
         "blogAuthor": "Fridolin Pokorny",
@@ -44,6 +44,9 @@
        }
     </script>
     <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
+    <script type="module" src="/cpx-user/cpx-user.js"></script>
+    <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
+    <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>
     
     <style>
         fieldset {
@@ -182,8 +185,106 @@
             </li>
         </fieldset>
         <fieldset>
+            <legend>User Events</legend>
+            <ul>
+                <li>
+                    <details>
+                        <summary>User Detected</summary>
+                        <pre data-event="User Detected"></pre>
+                    </details>
+                    <cpx-reporter event="User Detected" beat="user-ready">
+                        <cpx-user>
+                            <script type="data">
+                                {
+                                    "exp": 1603803270,
+                                    "iat": 1603802370,
+                                    "auth_time": 1603802369,
+                                    "jti": "{{GUID}}",
+                                    "iss": "https://sso.redhat.com/auth/realms/redhat-external",
+                                    "aud": "customer-portal",
+                                    "sub": "f:{{GUID}}:{{USERNAME}}",
+                                    "typ": "Bearer",
+                                    "azp": "customer-portal",
+                                    "nonce": "{{GUID}}",
+                                    "session_state": "{{GUID}}",
+                                    "acr": "1",
+                                    "allowed-origins": [
+                                     "https://prod.foo.redhat.com:1337",
+                                     "https://www.redhat.com",
+                                     "https://access.redhat.com"
+                                    ],
+                                    "realm_access": {
+                                     "roles": [
+                                      "authenticated",
+                                      "candlepin_system_access_view_edit_personal",
+                                      "idp_authenticated",
+                                      "portal_manage_subscriptions",
+                                      "errata:notification_status_enabled",
+                                      "errata:notification:enhancement",
+                                      "portal_manage_cases",
+                                      "errata:notification:security",
+                                      "errata:notification_level_system-visible",
+                                      "errata:notification:bugfix",
+                                      "offline_access",
+                                      "uma_authorization",
+                                      "portal_system_management",
+                                      "cloud_access_1",
+                                      "errata:notification_delivery_instant",
+                                      "portal_download"
+                                     ]
+                                    },
+                                    "resource_access": {
+                                     "rhd-dm": {
+                                      "roles": [
+                                       "rhuser"
+                                      ]
+                                     },
+                                     "account": {
+                                      "roles": [
+                                       "manage-account",
+                                       "manage-account-links",
+                                       "view-profile"
+                                      ]
+                                     }
+                                    },
+                                    "scope": "openid Legacy_IDP_OpenID",
+                                    "REDHAT_LOGIN": "{{USERNAME}}",
+                                    "lastName": "User",
+                                    "country": "US",
+                                    "account_number": "{{ACCT_NO}}",
+                                    "preferred_username": "{{USERNAME}}",
+                                    "firstName": "Test",
+                                    "account_id": "{{ACCT_ID}}",
+                                    "user_id": "{{USER_ID}}",
+                                    "organization_id": "00Dm0000000116C",
+                                    "siteId": "redhat",
+                                    "siteID": "redhat",
+                                    "portal_id": "06060000000D0af",
+                                    "lang": "en_US",
+                                    "region": "US",
+                                    "email": "test123@test123.com",
+                                    "RHAT_LOGIN": "{{USERNAME}}",
+                                    "username": "{{USERNAME}}"
+                                   }
+                            </script>
+                        </cpx-user>
+                    </cpx-reporter>
+                </li>
+                <li>
+                    <details>
+                        <summary>User Signed In</summary>
+                        <pre data-event="User Signed In"></pre>
+                    </details>
+                    <cpx-reporter event="User Signed In" beat="token-ready">
+                        <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak>
+                    </cpx-reporter>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
             <legend>Click Events</legend>
         </fieldset>
+
     <!-- <cpx-reporter beat="click" event="Content Listing Item Clicked">
         <ul>
             <li>

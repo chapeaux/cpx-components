@@ -46,7 +46,7 @@ export class ReporterEvent extends Event {
         }
     }
 }
-const reporter = document.querySelector(`script[src='${(new URL(import.meta.url)).pathname}']`);
+const reporter = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
 if (reporter instanceof HTMLElement) {
     const data = JSON.parse((_a = reporter.textContent) !== null && _a !== void 0 ? _a : '');
     const emitName = (_b = reporter.getAttribute('data-emit')) !== null && _b !== void 0 ? _b : 'cpx-report';

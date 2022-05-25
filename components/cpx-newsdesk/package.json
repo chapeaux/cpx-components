@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-newsdesk",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Chapeaux Newsdesk Component",
   "type": "module",
   "main": "cpx-newsdesk.js",
