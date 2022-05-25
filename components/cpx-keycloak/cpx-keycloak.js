@@ -1,102 +1,11 @@
 export class CPXKeycloak extends HTMLElement {
     constructor() {
         super();
-        Object.defineProperty(this, "_cookies", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: new Map()
-        });
-        Object.defineProperty(this, "_links", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_keycloak", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_url", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_config", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_options", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_realm", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_clientId", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_authenticated", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "_ready", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "_jwtCookie", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: ""
-        });
-        Object.defineProperty(this, "_jwtToken", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: ""
-        });
-        Object.defineProperty(this, "_loginElement", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_loginAttr", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_logoutElement", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_logoutAttr", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
+        this._cookies = new Map();
+        this._authenticated = false;
+        this._ready = false;
+        this._jwtCookie = "";
+        this._jwtToken = "";
     }
     get keycloak() {
         return this._keycloak;
@@ -265,7 +174,7 @@ export class CPXKeycloak extends HTMLElement {
             this.keycloak = Keycloak(config
                 ? JSON.parse(config.replaceAll("'", '"'))
                 : { url: this.url, realm: this.realm, clientId: this.clientId });
-            this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'", '"')) : {})
+            this.keycloak.init(this.options && this.options != "" ? JSON.parse(this.options.replaceAll("'", '"')) : {})
                 .then(authenticated => {
                 this.dispatchEvent(new Event('kc-init-success', { composed: true, bubbles: true }));
                 this.authenticated = authenticated;

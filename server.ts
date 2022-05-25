@@ -1,7 +1,7 @@
-//import { serveTLS } from "https://deno.land/std/http/server.ts";
-import { serve } from "https://deno.land/std@0.126.0/http/server.ts";
+import { serveTls } from "https://deno.land/std@0.140.0/http/server.ts";
+//import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 import { Router } from "https://deno.land/x/nativerouter/mod.ts";
-import { walk } from "https://deno.land/std@0.126.0/fs/mod.ts";
+import { walk } from "https://deno.land/std@0.140.0/fs/mod.ts";
 
 const ContentTypes = new Map<string,string>([
   ['js', 'text/javascript'],
@@ -70,7 +70,8 @@ async function handler(request: Request) {
 
 }
 
-serve(handler, {port: 8080});
+// serve(handler, {port: 8080});
+serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem'})
 /*
 import {
   Application,
