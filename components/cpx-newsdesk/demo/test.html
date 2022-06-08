@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox for "User Detected"</title>
+    <script>
+        top.addEventListener('newsflash', e=> {
+            console.log('NEWSFLASH:', e.detail)
+        });
+    </script>
+    <!-- <script type="module" src="/cpx-newsdesk/newsdesk.js"></script> -->
+    <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
+    <script type="module" src="/cpx-user/cpx-user.js"></script>
+    <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
+
+    <script type="text/javascript">
+      // The timeout simulates an async event, like waiting for JWT to load.
+      window.setTimeout(() => {
+        var data = {
+          user: {
+            email: 'chhill@redhat.com',
+            hashedEmail: '166bd8f77e0cdce3317ad34f530acfe3',
+            username: "rhn-support-chhill",
+          },
+        };
+        dataSerialized = JSON.stringify(data);
+        console.log(dataSerialized);
+
+        var reporter = document.createElement('cpx-reporter');
+        reporter.setAttribute('debug', 'verbose');
+        reporter.setAttribute('event', 'User Detected');
+        reporter.setAttribute('beat', 'user-ready');
+
+        var cpxUser = document.createElement('cpx-user');
+        var scriptData = document.createElement('script');
+        scriptData.innerText = dataSerialized;
+        scriptData.setAttribute('type', 'data');
+
+        cpxUser.appendChild(scriptData);
+        reporter.appendChild(cpxUser);
+        document.body.appendChild(reporter);
+      }, 2000);
+    </script>
+</head>
+<body>
+    <h1>Chapeaux "User Detected" sandbox</h1>
+    <p>See console for "User Detected" event debug.</p>
+</body>
+</html>
