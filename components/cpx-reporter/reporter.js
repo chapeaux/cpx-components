@@ -1,13 +1,17 @@
+function CombineEventData(payload, target, data) {
+    let combination = Object.assign(payload(target), data !== null && data !== void 0 ? data : {});
+    return combination;
+}
 let eventMap = new Map([
-    ['Page Load Started', { payload: 'page', data: { page: { "custKey": "{custKey}" } } }],
+    ['Page Load Started', { payload: 'page', data: { page: (tgt) => { return { "pageName": "foo", "custKey": "{custKey}" }; } } }],
     ['Page Load Completed', {}],
-    ['User Signed In', { payload: 'user', data: { user: { "custKey": "{custKey}" } } }],
-    ['User Detected', { payload: 'user', data: { user: { "custKey": "{custKey}", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" } } }],
-    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" } } }],
-    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" } } }],
-    ['Form Viewed', { payload: 'form', data: { form: {} } }],
-    ['Form Submission Succeeded', { payload: 'form', data: { form: {} } }],
-    ['Form Submission Failed', { payload: 'form', data: { form: {} } }]
+    ['User Signed In', { payload: 'user', data: { user: (tgt) => { return { "custKey": "{custKey}" }; } } }],
+    ['User Detected', { payload: 'user', data: { user: (tgt) => { return { "custKey": "{custKey}", "accountID": "<accountID>", "accountIDType": "External", "userID": "<userID>", "lastLoginDate": "", "loggedIn": "false", "registered": "true", "socialAccountsLinked": "", "subscriptionFrequency": "", "subscriptionLevel": "", "hashedEmail": "" }; } } }],
+    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: (tgt) => { return { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" }; } } }],
+    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: (tgt) => { return { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" }; } } }],
+    ['Form Viewed', { payload: 'form', data: { form: (tgt) => { return {}; } } }],
+    ['Form Submission Succeeded', { payload: 'form', data: { form: (tgt) => { return {}; } } }],
+    ['Form Submission Failed', { payload: 'form', data: { form: (tgt) => { return {}; } } }]
 ]);
 export class ReporterEvent extends Event {
     constructor(name, data) {
@@ -39,7 +43,8 @@ export class ReporterEvent extends Event {
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
-            this.obj.data[this.obj.payload] = Object.assign(this.obj.data[this.obj.payload], data !== null && data !== void 0 ? data : {});
+            console.log('EVENT:', this.name, 'OBJECT:', this.obj);
+            this.obj.data[this.obj.payload](this.currentTarget, data !== null && data !== void 0 ? data : {});
             this.data = this.obj.data;
         }
     }
