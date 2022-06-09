@@ -18,11 +18,9 @@
       // The timeout simulates an async event, like waiting for JWT to load.
       window.setTimeout(() => {
         var data = {
-          user: {
-            email: 'chhill@redhat.com',
-            hashedEmail: '166bd8f77e0cdce3317ad34f530acfe3',
-            username: "rhn-support-chhill",
-          },
+          email: 'chhill@redhat.com',
+          hashedEmail: '166bd8f77e0cdce3317ad34f530acfe3',
+          username: "rhn-support-chhill",
         };
         dataSerialized = JSON.stringify(data);
         console.log(dataSerialized);
@@ -31,6 +29,7 @@
         reporter.setAttribute('debug', 'verbose');
         reporter.setAttribute('event', 'User Detected');
         reporter.setAttribute('beat', 'user-ready');
+        reporter.setAttribute('option','user');
 
         var cpxUser = document.createElement('cpx-user');
         var scriptData = document.createElement('script');

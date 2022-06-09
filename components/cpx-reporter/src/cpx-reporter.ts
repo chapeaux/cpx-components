@@ -1,4 +1,4 @@
-import { ReporterEvent } from "./reporter.ts";
+import { ReporterEvent } from "./reporter";
 
 /**
  *  Based off documentation for EDDL found here:
@@ -29,7 +29,13 @@ export class CPXReporter extends HTMLElement {
         if (this._beat === val) return;
         this._beat = val;
         this.addEventListener(this._beat, e => {
-            this.dispatchEvent(new ReporterEvent(this.event));
+            const detail = e['detail'];
+            if (this.option) {
+                this.data = Object.assign(this.data,detail[this.option]??{})
+            } else {
+                this.data = Object.assign(this.data,detail??{});
+            }
+            this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
         });
         this.setAttribute('beat',this._beat);
     }
@@ -40,6 +46,14 @@ export class CPXReporter extends HTMLElement {
         if (this._event === val) return;
         this._event = val;
         this.setAttribute('event', this._event);
+    }
+
+    _option:string;
+    get option() { return this._option; }
+    set option(val) {
+        if (this._option === val) return;
+        this._option = val;
+        this.setAttribute('option', this._option);
     }
 
     _data = {};
@@ -70,7 +84,7 @@ export class CPXReporter extends HTMLElement {
         this._emit = val;
     }
     connectedCallback() {
-        const dataEle = this.querySelector('script[type="data"]');
+        const dataEle = this.querySelector(':scope > script[type="data"]');
         if (dataEle) {
             this.data = JSON.parse(dataEle.textContent);
         }
@@ -93,7 +107,8 @@ export class CPXReporter extends HTMLElement {
             "emit",
             "event",
             "data",
-            "debug"
+            "debug",
+            "option"
         ];
     }
 

@@ -1,1 +1,30 @@
-/// <amd-module name="file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts" />
+export declare class CPXReporter extends HTMLElement {
+    static get tag(): string;
+    _debug: string;
+    get debug(): string;
+    set debug(val: string);
+    _beat: string;
+    get beat(): string;
+    set beat(val: string);
+    _event: string;
+    get event(): string;
+    set event(val: string);
+    _option: string;
+    get option(): string;
+    set option(val: string);
+    _data: {};
+    get data(): {};
+    set data(val: {});
+    tasks: Set<string>;
+    constructor();
+    _ready: boolean;
+    get ready(): boolean;
+    set ready(val: boolean);
+    _emit: string;
+    get emit(): string;
+    set emit(val: string);
+    connectedCallback(): void;
+    static get observedAttributes(): string[];
+    attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
+    report(): void;
+}
