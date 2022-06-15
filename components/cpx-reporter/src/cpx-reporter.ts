@@ -1,8 +1,8 @@
-import { ReporterEvent } from "./reporter";
+import { ReporterEvent } from "./reporter.ts";
 
 /**
  *  Based off documentation for EDDL found here:
- *  https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md
+ *  <a href="https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md">Global Data Layer</a>
  *  @todo Parse data points up the DOM ala Click To EDDL
  *  @summary CPXReporter class for the cpx-reporter web component
  *  @attr {string} beat - optional event listener (e.g. - user-ready, token-ready, click)

@@ -14,8 +14,7 @@ let eventMap = new Map([
 /**
  * Event Types: Page, User, Content, Search, Campaign, Video, CTA, Download, Form
  * Event Payloads: page, user, listingDisplayed, listingClicked, onsiteSearch, internalCampaign, video, linkInfo, form
- * ADDITIONAL PAGE OBJECT DATA
- * https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js
+ * <a href="https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js">ADDITIONAL PAGE OBJECT DATA</a> 
  * 
  * @summary ReporterEvent class for use with the cpx-reporter element or standalone
  * @fires {CustomEvent} cpx-report - customizable through the emitName parameter
