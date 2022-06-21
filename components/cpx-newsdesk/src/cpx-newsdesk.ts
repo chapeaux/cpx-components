@@ -1,4 +1,4 @@
-class CPXNewsdesk extends HTMLElement {
+export class CPXNewsdesk extends window.HTMLElement {
     static get tag() { return 'cpx-newsdesk'; }
     constructor() {
         super();

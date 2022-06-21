@@ -35,11 +35,11 @@
         </nav>
         <rh-account-dropdown slot="account"></rh-account-dropdown>
       </pfe-navigation> -->
-    <cpx-keycloak jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}">
+    <!-- <cpx-keycloak jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}">
       <script type="data" id="options"></script>
       <script type="data" id="config"></script>
-    </cpx-keycloak>
-    <!-- <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak> -->
+    </cpx-keycloak> -->
+    <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak>
     <!-- <script type="module" src="/node/@cpelements/pfe-navigation/dist/pfe-navigation.min.js"></script>
     <script type="module" src="/node/@cpelements/rh-account-dropdown/dist/rh-account-dropdown.min.js"></script> -->
     <script>

@@ -1,0 +1,625 @@
+[
+  {
+    "kind": "class",
+    "name": "CPXReporter",
+    "location": {
+      "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+      "line": 15,
+      "col": 0
+    },
+    "declarationKind": "export",
+    "jsDoc": {
+      "doc": "Based off documentation for EDDL found here:\n https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md",
+      "tags": [
+        {
+          "kind": "unsupported",
+          "value": "@todo Parse data points up the DOM ala Click To EDDL"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@summary CPXReporter class for the cpx-reporter web component"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@attr {string} beat - optional event listener (e.g. - user-ready, token-ready, click)"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@attr {string} emit - optional event name to fire"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@attr {string} event - which EDDL event to reference"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@attr {string} data - supplementary data to use in the report"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@attr {string} debug - attribute-only or \"verbose\" for different variations"
+        },
+        {
+          "kind": "unsupported",
+          "value": "@fires {ReporterEvent} cpx-report - customizable through the emit attribute"
+        }
+      ]
+    },
+    "classDef": {
+      "isAbstract": false,
+      "constructors": [
+        {
+          "accessibility": null,
+          "name": "constructor",
+          "params": [],
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 53,
+            "col": 4
+          }
+        }
+      ],
+      "properties": [
+        {
+          "tsType": {
+            "repr": "string",
+            "kind": "keyword",
+            "keyword": "string"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_debug",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 17,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "string",
+            "kind": "keyword",
+            "keyword": "string"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_beat",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 26,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "string",
+            "kind": "keyword",
+            "keyword": "string"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_event",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 37,
+            "col": 4
+          }
+        },
+        {
+          "tsType": null,
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_data",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 45,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "Set",
+            "kind": "typeRef",
+            "typeRef": {
+              "typeParams": null,
+              "typeName": "Set"
+            }
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "tasks",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 52,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "boolean",
+            "kind": "keyword",
+            "keyword": "boolean"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_ready",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 56,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "string",
+            "kind": "keyword",
+            "keyword": "string"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_emit",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 66,
+            "col": 4
+          }
+        }
+      ],
+      "indexSignatures": [],
+      "methods": [
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": true,
+          "name": "tag",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 16,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "debug",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 18,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "debug",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 21,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "beat",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 27,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "beat",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 28,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "event",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 38,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "event",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 39,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "data",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 46,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "data",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 47,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "ready",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 57,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "ready",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 58,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "emit",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 67,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "emit",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 68,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "connectedCallback",
+          "kind": "method",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 72,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": true,
+          "name": "observedAttributes",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 90,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "attributeChangedCallback",
+          "kind": "method",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "name",
+                "optional": false,
+                "tsType": {
+                  "repr": "string",
+                  "kind": "keyword",
+                  "keyword": "string"
+                }
+              },
+              {
+                "kind": "identifier",
+                "name": "oldVal",
+                "optional": false,
+                "tsType": {
+                  "repr": "string",
+                  "kind": "keyword",
+                  "keyword": "string"
+                }
+              },
+              {
+                "kind": "identifier",
+                "name": "newVal",
+                "optional": false,
+                "tsType": {
+                  "repr": "string",
+                  "kind": "keyword",
+                  "keyword": "string"
+                }
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 100,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "report",
+          "kind": "method",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 109,
+            "col": 4
+          }
+        }
+      ],
+      "extends": "HTMLElement",
+      "implements": [],
+      "typeParams": [],
+      "superTypeParams": []
+    }
+  },
+  {
+    "kind": "import",
+    "name": "ReporterEvent",
+    "location": {
+      "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+      "line": 1,
+      "col": 0
+    },
+    "declarationKind": "private",
+    "importDef": {
+      "src": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/reporter.ts",
+      "imported": "ReporterEvent"
+    }
+  }
+]

@@ -215,7 +215,7 @@ export class CPXKeycloak extends HTMLElement {
           : { url: this.url, realm: this.realm, clientId: this.clientId },
       );
       //console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
-      this.keycloak.init(this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {})
+      this.keycloak.init(this.options && this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {})
         .then(authenticated => {
           this.dispatchEvent(new Event('kc-init-success',{composed:true,bubbles:true}));
           this.authenticated = authenticated;

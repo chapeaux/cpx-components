@@ -1,3 +1,5 @@
+import {emit, bundle} from "https://deno.land/x/emit@0.0.1/mod.ts";
+
 const mapFilter = /\.map$/;
 const fileFilter = /^http/;
 const jsFilter = /\.js$/;

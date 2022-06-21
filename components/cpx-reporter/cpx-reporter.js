@@ -2,6 +2,12 @@ import { ReporterEvent } from "./reporter.js";
 class CPXReporter extends HTMLElement {
     constructor() {
         super();
+        Object.defineProperty(this, "_debug", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "_beat", {
             enumerable: true,
             configurable: true,
@@ -32,10 +38,21 @@ class CPXReporter extends HTMLElement {
             writable: true,
             value: false
         });
+        Object.defineProperty(this, "_emit", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 'cpx-report'
+        });
     }
     static get tag() { return 'cpx-reporter'; }
     get debug() {
-        return this.getAttribute('debug');
+        return this._debug;
+    }
+    set debug(val) {
+        if (this._debug === val)
+            return;
+        this._debug = val;
     }
     get beat() { return this._beat; }
     set beat(val) {
@@ -69,6 +86,12 @@ class CPXReporter extends HTMLElement {
             this.report();
         }
     }
+    get emit() { return this._emit; }
+    set emit(val) {
+        if (this._emit === val)
+            return;
+        this._emit = val;
+    }
     connectedCallback() {
         const dataEle = this.querySelector('script[type="data"]');
         if (dataEle) {
@@ -87,8 +110,10 @@ class CPXReporter extends HTMLElement {
     static get observedAttributes() {
         return [
             "beat",
+            "emit",
             "event",
-            "data"
+            "data",
+            "debug"
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
@@ -109,7 +134,7 @@ class CPXReporter extends HTMLElement {
                 console.log('VERBOSE DEBUG ON');
             }
         }
-        this.dispatchEvent(new ReporterEvent(this.event, this.data));
+        this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
     }
 }
 window.customElements.define(CPXReporter.tag, CPXReporter);
