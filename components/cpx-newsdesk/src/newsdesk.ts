@@ -1,13 +1,4 @@
-let evtName = 'cpx-report'
-/*
-const scripts = document.getElementsByTagName('script');
-const src = scripts[scripts.length-1];
-*/ 
-// const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
-// if (src instanceof HTMLElement) {
-//     evtName = src.getAttribute('data-event') ?? evtName;
-// }
-
+let evtName = 'cpx-report';
 globalThis.appEventData = globalThis.appEventData || [];
 
 /**
@@ -30,3 +21,12 @@ export const Newsdesk = {
 }
 // Test
 globalThis.addEventListener(evtName, Newsdesk);
+
+/*
+const scripts = document.getElementsByTagName('script');
+const src = scripts[scripts.length-1];
+*/ 
+// const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
+// if (src instanceof HTMLElement) {
+//     evtName = src.getAttribute('data-event') ?? evtName;
+// }

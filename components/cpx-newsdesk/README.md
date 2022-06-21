@@ -9,7 +9,10 @@ The `newsdesk` is meant to forward communication between various events and an e
 * `npm install @chapeaux/cpx-newsdesk` or consume from a CDN via `@chapeaux/cpx-newsdesk`
 * include the `newsdesk.js` file on a page prior to any event tracking that should occur
 
-## 
+## Testing
+
+* `deno test` runner and assertions: https://deno.land/manual/testing/assertions
+
 
 
 

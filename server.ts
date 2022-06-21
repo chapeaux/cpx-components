@@ -2,6 +2,8 @@ import { serveTls } from "https://deno.land/std@0.140.0/http/server.ts";
 //import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 import { Router } from "https://deno.land/x/nativerouter/mod.ts";
 import { walk } from "https://deno.land/std@0.140.0/fs/mod.ts";
+import { doc } from "https://deno.land/x/deno_doc@v0.34.0/mod.ts";
+
 
 const ContentTypes = new Map<string,string>([
   ['js', 'text/javascript'],
@@ -25,12 +27,15 @@ const router = new Router();
 /* Route Handlers */
 const getIndex = async (req:Request, params:Record<string,string>):Promise<Response> => {
   const components = await walk('./components/', {maxDepth:1,includeFiles:false});
-  let list = '<!doctype html><html><head></head><body><ul>';
+  let list = '';
   for await(const cpx of components) { 
     list += cpx.name !== 'components' ? `<li><a href="${cpx.name}/demo">${cpx.name}</a></li>` : ''; 
   }
-  list += '</ul></body>';
-  //const index = await Deno.open('./components/index.html');
+  const body = `<!doctype html>
+  <html><head></head>
+  <body>
+  <ul>${list}</ul>
+  </body>`;
   return new Response(await list, {
     headers: {"Content-Type": "text/html"}
   });
@@ -54,8 +59,42 @@ const getData = async (req:Request, params:Record<string,string>):Promise<Respon
   });
 }
 
+const getDocs = async (req:Request, params:Record<string,string>):Promise<Response> => {
+  const srcFiles = await walk(`./components/${params.component}/src`, {maxDepth:1,includeDirs:false,includeFiles:true});
+  let docs = new Map<string,any>();
+  for await (const srcFile of srcFiles) { 
+    const docNode = await doc(`file://${Deno.cwd()}/components/${params.component}/src/${srcFile.name}`);
+    docs.set(srcFile.name, docNode);
+  }
+  let list = '';
+  docs.forEach((v,k) => {
+    list += `<pfe-card>
+    <h2 slot="header">${k}</h2>
+    <p>${v[0].jsDoc.doc.replace("\n","<p>")}</p>
+    </pfe-card>`
+  })
+  const tmpl = `
+    <!doctype html>
+    <html>
+    <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700&amp;family=Red+Hat+Text&amp;family=Overpass+Mono&amp;display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@patternfly/pfe-card@next?module"></script>
+    <style>body { display: grid; grid-template-columns: repeat(3,1fr); grid-gap:30px;}</style>
+    </head>
+    <body>
+    ${list}
+    </body>
+    </html>
+  `
+  return new Response(tmpl, {
+    headers: {"Content-Type": "text/html"}
+  });
+}
+
 router.get('/', getIndex);
 router.get('/data/:file', getData);
+router.get('/:component/docs{/}?', getDocs);
 router.get('/:component/{:demo/}?:file?{/}?', getComponent);
 
 async function handler(request: Request) {

@@ -1,49 +1,11 @@
 import { ReporterEvent } from "./reporter.js";
-class CPXReporter extends HTMLElement {
+export class CPXReporter extends HTMLElement {
     constructor() {
         super();
-        Object.defineProperty(this, "_debug", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_beat", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_event", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "_data", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: {}
-        });
-        Object.defineProperty(this, "tasks", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: new Set(['beat', 'event', 'data'])
-        });
-        Object.defineProperty(this, "_ready", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: false
-        });
-        Object.defineProperty(this, "_emit", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'cpx-report'
-        });
+        this._data = {};
+        this.tasks = new Set(['beat', 'event', 'data']);
+        this._ready = false;
+        this._emit = 'cpx-report';
     }
     static get tag() { return 'cpx-reporter'; }
     get debug() {
@@ -60,7 +22,15 @@ class CPXReporter extends HTMLElement {
             return;
         this._beat = val;
         this.addEventListener(this._beat, e => {
-            this.dispatchEvent(new ReporterEvent(this.event));
+            var _a;
+            const detail = e['detail'];
+            if (this.option) {
+                this.data = Object.assign(this.data, (_a = detail[this.option]) !== null && _a !== void 0 ? _a : {});
+            }
+            else {
+                this.data = Object.assign(this.data, detail !== null && detail !== void 0 ? detail : {});
+            }
+            this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
         });
         this.setAttribute('beat', this._beat);
     }
@@ -70,6 +40,13 @@ class CPXReporter extends HTMLElement {
             return;
         this._event = val;
         this.setAttribute('event', this._event);
+    }
+    get option() { return this._option; }
+    set option(val) {
+        if (this._option === val)
+            return;
+        this._option = val;
+        this.setAttribute('option', this._option);
     }
     get data() { return this._data; }
     set data(val) {
@@ -93,7 +70,7 @@ class CPXReporter extends HTMLElement {
         this._emit = val;
     }
     connectedCallback() {
-        const dataEle = this.querySelector('script[type="data"]');
+        const dataEle = this.querySelector(':scope > script[type="data"]');
         if (dataEle) {
             this.data = JSON.parse(dataEle.textContent);
         }
@@ -113,7 +90,8 @@ class CPXReporter extends HTMLElement {
             "emit",
             "event",
             "data",
-            "debug"
+            "debug",
+            "option"
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {

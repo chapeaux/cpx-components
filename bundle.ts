@@ -24,51 +24,19 @@ async function browserEmit(path: string) {
   if (diagnostics.length) {
     console.warn(Deno.formatDiagnostics(diagnostics));
   }
-  //console.log(Object.keys(files));
+  
   Object.keys(files).map((file) => {
-    //console.info('Browser Emit:',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
     if (
       !fileFilter.test(file) && (mapFilter.test(file) || jsFilter.test(file))
     ) {
       const newFileName = file.replace("file://", "").replace("/src", "")
         .replace(".ts", "");
-      //console.log('Browser',newFileName);
       Deno.writeTextFile(
         newFileName,
         files[file],
       );
     }
   });
-
-  // ({ files, diagnostics } = await Deno.emit(path, {
-  //   check: true,
-  //   //importMapPath: importMapPath,
-  //   compilerOptions: {
-  //     lib: ["es6", "esnext", "dom"],
-  //     strict: false,
-  //     module: "commonjs",
-  //     target: "es6",
-  //   },
-  // }));
-
-  // if (diagnostics.length) {
-  //   console.warn(Deno.formatDiagnostics(diagnostics));
-  // }
-
-  // Object.keys(files).map((file) => {
-  //   //console.info('CJS file',file, 'Map:',!mapFilter.test(file), 'File:', !fileFilter.test(file), 'JS:',!jsFilter.test(file));
-  //   if (
-  //     !mapFilter.test(file) && !fileFilter.test(file) && jsFilter.test(file)
-  //   ) {
-  //     const newFileName = file.replace("file://", "").replace("/src", "")
-  //       .replace(".ts", ".cjs");
-  //     //console.log('CJS',newFileName);
-  //     Deno.writeTextFile(
-  //       newFileName,
-  //       files[file],
-  //     );
-  //   }
-  // });
 
   return path;
 }

@@ -18,8 +18,7 @@ let eventMap = new Map([
 /**
  * Event Types: Page, User, Content, Search, Campaign, Video, CTA, Download, Form
  * Event Payloads: page, user, listingDisplayed, listingClicked, onsiteSearch, internalCampaign, video, linkInfo, form
- * ADDITIONAL PAGE OBJECT DATA
- * https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js
+ * <a href="https://gitlab.cee.redhat.com/chhill/red_hat_analytics/-/blob/main/libraries/src/js/red_hat_analytics_eddl_top.es6.js">ADDITIONAL PAGE OBJECT DATA</a> 
  * 
  * @summary ReporterEvent class for use with the cpx-reporter element or standalone
  * @fires {CustomEvent} cpx-report - customizable through the emitName parameter
@@ -47,9 +46,12 @@ const reporter = scripts[scripts.length-1];
 */
 const reporter = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
 if (reporter instanceof HTMLElement) {
+  if (reporter.getAttribute('reported') == null) {
     const data = JSON.parse(reporter.textContent ?? '');
     const emitName = reporter.getAttribute('data-emit') ?? 'cpx-report';
     globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data, emitName));
+    reporter.setAttribute('reported','');
+  } 
 }
 
    
