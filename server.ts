@@ -1,8 +1,8 @@
-import { serveTls } from "https://deno.land/std@0.140.0/http/server.ts";
+import { serveTls } from "https://deno.land/std@0.144.0/http/server.ts";
 //import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
-import { Router } from "https://deno.land/x/nativerouter/mod.ts";
-import { walk } from "https://deno.land/std@0.140.0/fs/mod.ts";
-import { doc } from "https://deno.land/x/deno_doc@v0.34.0/mod.ts";
+import { Router } from "https://deno.land/x/nativerouter@1.0.0/mod.ts";
+import { walk } from "https://deno.land/std@0.144.0/fs/mod.ts";
+import { doc } from "https://deno.land/x/deno_doc@v0.36.0/mod.ts";
 
 
 const ContentTypes = new Map<string,string>([
@@ -42,9 +42,8 @@ const getIndex = async (req:Request, params:Record<string,string>):Promise<Respo
 }
 
 const getComponent = async (req:Request, params:Record<string,string>):Promise<Response> => {
-  //console.log('REQUEST:',`./components/${params.component}/${params.file !== 'demo'? params.file : 'demo/index.html'}`);
-
-  const path = `./components/${params.component}/${params.file !== 'demo'? `${params.demo}/${params.file}` : 'demo/index.html'}`;
+  console.log(JSON.stringify(req.url));
+  const path = `./components/${params.component}/${params.file.endsWith('demo') || params.file.endsWith('demo/') ? 'demo/index.html' : params.file}`;
   const ext = path.slice(path.search(/\.\w+/)+1);
   const file = await Deno.open(path);
   return new Response(file.readable, {
@@ -67,11 +66,16 @@ const getDocs = async (req:Request, params:Record<string,string>):Promise<Respon
     docs.set(srcFile.name, docNode);
   }
   let list = '';
-  docs.forEach((v,k) => {
+  docs.forEach((fileDoc,fileName) => {
     list += `<pfe-card>
-    <h2 slot="header">${k}</h2>
-    <p>${v[0].jsDoc.doc.replace("\n","<p>")}</p>
-    </pfe-card>`
+    <h2 slot="header">${fileName}</h2>
+    <ul>
+    ${ fileDoc.map(docStr => {
+     return `<li>${docStr.name} - ${docStr.kind}</li>`;
+    })}
+    </ul>
+    <p>${fileDoc[0].jsDoc.doc.replace("\n","<p>")}</p>
+    </pfe-card>`;
   })
   const tmpl = `
     <!doctype html>
@@ -95,7 +99,8 @@ const getDocs = async (req:Request, params:Record<string,string>):Promise<Respon
 router.get('/', getIndex);
 router.get('/data/:file', getData);
 router.get('/:component/docs{/}?', getDocs);
-router.get('/:component/{:demo/}?:file?{/}?', getComponent);
+router.get('/:component/:file?{/}?', getComponent);
+
 
 async function handler(request: Request) {
   try {

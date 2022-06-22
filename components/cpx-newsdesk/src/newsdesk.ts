@@ -19,7 +19,7 @@ export const Newsdesk = {
         }));
     }
 }
-// Test
+
 globalThis.addEventListener(evtName, Newsdesk);
 
 /*
