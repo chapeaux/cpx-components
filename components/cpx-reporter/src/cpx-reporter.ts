@@ -3,14 +3,15 @@ import { ReporterEvent } from "./reporter.ts";
 /**
  *  Based off documentation for EDDL found here:
  *  <a href="https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md">Global Data Layer</a>
+ *  @author Luke Dary <ldary@redhat.com>
  *  @todo Parse data points up the DOM ala Click To EDDL
  *  @summary CPXReporter class for the cpx-reporter web component
- *  @attr {string} beat - optional event listener (e.g. - user-ready, token-ready, click)
- *  @attr {string} emit - optional event name to fire 
- *  @attr {string} event - which EDDL event to reference
- *  @attr {string} data - supplementary data to use in the report
- *  @attr {string} debug - attribute-only or "verbose" for different variations
- *  @fires {ReporterEvent} cpx-report - customizable through the emit attribute
+ *  @prop {string} beat optional event listener (e.g. - user-ready, token-ready, click)
+ *  @prop {string} emit optional event name to fire 
+ *  @prop {string} event  which EDDL event to reference
+ *  @prop {string} data supplementary data to use in the report
+ *  @prop {string} debug attribute-only or "verbose" for different variations
+ *  @emits {ReporterEvent} cpx-report - customizable through the emit attribute
  */
 export class CPXReporter extends HTMLElement {
     static get tag() { return 'cpx-reporter'; }
