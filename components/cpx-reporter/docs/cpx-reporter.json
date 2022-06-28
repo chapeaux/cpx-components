@@ -4,13 +4,17 @@
     "name": "CPXReporter",
     "location": {
       "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-      "line": 15,
+      "line": 16,
       "col": 0
     },
     "declarationKind": "export",
     "jsDoc": {
-      "doc": "Based off documentation for EDDL found here:\n https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md",
+      "doc": "Based off documentation for EDDL found here:\n <a href=\"https://github.com/searchdiscovery/redhat-datalayer/blob/main/EDDL/global-datalayer.md\">Global Data Layer</a>",
       "tags": [
+        {
+          "kind": "unsupported",
+          "value": "@author Luke Dary <ldary@redhat.com>"
+        },
         {
           "kind": "unsupported",
           "value": "@todo Parse data points up the DOM ala Click To EDDL"
@@ -20,28 +24,38 @@
           "value": "@summary CPXReporter class for the cpx-reporter web component"
         },
         {
-          "kind": "unsupported",
-          "value": "@attr {string} beat - optional event listener (e.g. - user-ready, token-ready, click)"
+          "kind": "property",
+          "name": "beat",
+          "type": "string",
+          "doc": "optional event listener (e.g. - user-ready, token-ready, click)"
+        },
+        {
+          "kind": "property",
+          "name": "emit",
+          "type": "string",
+          "doc": "optional event name to fire"
+        },
+        {
+          "kind": "property",
+          "name": "event",
+          "type": "string",
+          "doc": "which EDDL event to reference"
+        },
+        {
+          "kind": "property",
+          "name": "data",
+          "type": "string",
+          "doc": "supplementary data to use in the report"
+        },
+        {
+          "kind": "property",
+          "name": "debug",
+          "type": "string",
+          "doc": "attribute-only or \"verbose\" for different variations"
         },
         {
           "kind": "unsupported",
-          "value": "@attr {string} emit - optional event name to fire"
-        },
-        {
-          "kind": "unsupported",
-          "value": "@attr {string} event - which EDDL event to reference"
-        },
-        {
-          "kind": "unsupported",
-          "value": "@attr {string} data - supplementary data to use in the report"
-        },
-        {
-          "kind": "unsupported",
-          "value": "@attr {string} debug - attribute-only or \"verbose\" for different variations"
-        },
-        {
-          "kind": "unsupported",
-          "value": "@fires {ReporterEvent} cpx-report - customizable through the emit attribute"
+          "value": "@emits {ReporterEvent} cpx-report - customizable through the emit attribute"
         }
       ]
     },
@@ -54,7 +68,7 @@
           "params": [],
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 53,
+            "line": 68,
             "col": 4
           }
         }
@@ -74,7 +88,7 @@
           "name": "_debug",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 17,
+            "line": 18,
             "col": 4
           }
         },
@@ -92,7 +106,7 @@
           "name": "_beat",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 26,
+            "line": 27,
             "col": 4
           }
         },
@@ -110,7 +124,25 @@
           "name": "_event",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 37,
+            "line": 44,
+            "col": 4
+          }
+        },
+        {
+          "tsType": {
+            "repr": "string",
+            "kind": "keyword",
+            "keyword": "string"
+          },
+          "readonly": false,
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "_option",
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 52,
             "col": 4
           }
         },
@@ -124,7 +156,7 @@
           "name": "_data",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 45,
+            "line": 60,
             "col": 4
           }
         },
@@ -145,7 +177,7 @@
           "name": "tasks",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 52,
+            "line": 67,
             "col": 4
           }
         },
@@ -163,7 +195,7 @@
           "name": "_ready",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 56,
+            "line": 71,
             "col": 4
           }
         },
@@ -181,7 +213,7 @@
           "name": "_emit",
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 66,
+            "line": 81,
             "col": 4
           }
         }
@@ -204,7 +236,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 16,
+            "line": 17,
             "col": 4
           }
         },
@@ -224,7 +256,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 18,
+            "line": 19,
             "col": 4
           }
         },
@@ -251,7 +283,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 21,
+            "line": 22,
             "col": 4
           }
         },
@@ -264,33 +296,6 @@
           "kind": "getter",
           "functionDef": {
             "params": [],
-            "returnType": null,
-            "isAsync": false,
-            "isGenerator": false,
-            "typeParams": []
-          },
-          "location": {
-            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 27,
-            "col": 4
-          }
-        },
-        {
-          "accessibility": null,
-          "optional": false,
-          "isAbstract": false,
-          "isStatic": false,
-          "name": "beat",
-          "kind": "setter",
-          "functionDef": {
-            "params": [
-              {
-                "kind": "identifier",
-                "name": "val",
-                "optional": false,
-                "tsType": null
-              }
-            ],
             "returnType": null,
             "isAsync": false,
             "isGenerator": false,
@@ -307,6 +312,33 @@
           "optional": false,
           "isAbstract": false,
           "isStatic": false,
+          "name": "beat",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 29,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
           "name": "event",
           "kind": "getter",
           "functionDef": {
@@ -318,7 +350,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 38,
+            "line": 45,
             "col": 4
           }
         },
@@ -338,26 +370,6 @@
                 "tsType": null
               }
             ],
-            "returnType": null,
-            "isAsync": false,
-            "isGenerator": false,
-            "typeParams": []
-          },
-          "location": {
-            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 39,
-            "col": 4
-          }
-        },
-        {
-          "accessibility": null,
-          "optional": false,
-          "isAbstract": false,
-          "isStatic": false,
-          "name": "data",
-          "kind": "getter",
-          "functionDef": {
-            "params": [],
             "returnType": null,
             "isAsync": false,
             "isGenerator": false,
@@ -374,6 +386,73 @@
           "optional": false,
           "isAbstract": false,
           "isStatic": false,
+          "name": "option",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 53,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "option",
+          "kind": "setter",
+          "functionDef": {
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "val",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 54,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
+          "name": "data",
+          "kind": "getter",
+          "functionDef": {
+            "params": [],
+            "returnType": null,
+            "isAsync": false,
+            "isGenerator": false,
+            "typeParams": []
+          },
+          "location": {
+            "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
+            "line": 61,
+            "col": 4
+          }
+        },
+        {
+          "accessibility": null,
+          "optional": false,
+          "isAbstract": false,
+          "isStatic": false,
           "name": "data",
           "kind": "setter",
           "functionDef": {
@@ -392,7 +471,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 47,
+            "line": 62,
             "col": 4
           }
         },
@@ -412,7 +491,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 57,
+            "line": 72,
             "col": 4
           }
         },
@@ -439,7 +518,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 58,
+            "line": 73,
             "col": 4
           }
         },
@@ -459,7 +538,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 67,
+            "line": 82,
             "col": 4
           }
         },
@@ -486,7 +565,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 68,
+            "line": 83,
             "col": 4
           }
         },
@@ -506,7 +585,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 72,
+            "line": 87,
             "col": 4
           }
         },
@@ -526,7 +605,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 90,
+            "line": 105,
             "col": 4
           }
         },
@@ -577,7 +656,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 100,
+            "line": 116,
             "col": 4
           }
         },
@@ -597,7 +676,7 @@
           },
           "location": {
             "filename": "file:///home/ldary/rh/chapeaux/cpx-components/components/cpx-reporter/src/cpx-reporter.ts",
-            "line": 109,
+            "line": 125,
             "col": 4
           }
         }
