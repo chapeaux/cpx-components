@@ -1,7 +1,7 @@
 declare var Keycloak: any;
 /**
  * Creates a Keycloak web component heavily mapping to the
- * API and functionality here: https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter
+ * Keycloak <a href="https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter">API and functionality</a>
  *
  * @element cpx-keycloak
  *

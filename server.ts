@@ -1,5 +1,4 @@
-import { serveTls } from "https://deno.land/std@0.144.0/http/server.ts";
-//import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
+import { serveTls, serve } from "https://deno.land/std@0.144.0/http/server.ts";
 import { Router } from "https://deno.land/x/nativerouter@1.0.0/mod.ts";
 import { walk } from "https://deno.land/std@0.144.0/fs/mod.ts";
 import { doc } from "https://deno.land/x/deno_doc@v0.36.0/mod.ts";
@@ -42,7 +41,6 @@ const getIndex = async (req:Request, params:Record<string,string>):Promise<Respo
 }
 
 const getComponent = async (req:Request, params:Record<string,string>):Promise<Response> => {
-  console.log(JSON.stringify(req.url));
   const path = `./components/${params.component}/${params.file.endsWith('demo') || params.file.endsWith('demo/') ? 'demo/index.html' : params.file}`;
   const ext = path.slice(path.search(/\.\w+/)+1);
   const file = await Deno.open(path);
@@ -114,8 +112,8 @@ async function handler(request: Request) {
 
 }
 
-// serve(handler, {port: 8080});
-serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem'})
+serve(handler, {port: 8080});
+// serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem', port: 8443 })
 /*
 import {
   Application,

@@ -1,4 +1,13 @@
-# Chapeaux User Component
+# CPX-USER
+
+## PURPOSE
+
+The `cpx-user` component is meant to be a centralized location for user-related information and functionality.
+
+## Installation
+
+* `npm install @chapeaux/cpx-user` or consume from a CDN via `@chapeaux/cpx-user`
+* include the `cpx-user.js` file on a page prior to any event tracking that should occur
 
 ## Events
 
@@ -42,31 +51,31 @@ User data is always stored on the `.user` property once it is available.
       <cpx-user jwt-token="SOMEJWTENCODEDSTRING"></cpx-user>
       ```
 
-- ### Keycloak
+## Usage
+* `<script type="module" src="path/to/@chapeaux/cpx-websocket/cpx-websocket.js"></script>`
+* `import { CPXWebSocket } from "path/to/@chapeaux/cpx-websocket/cpx-websocket.js";`
+*  ```html
+    <cpx-websocket id="leaderboard" url="ws://localhost:8080/leaderboard">
+        <template>
+        <h1 data-key="length">Top ${data.length}</h1>
+        <ol>
+        <li data-repeat="data"><a href="/${gameId}" onclick="return false;">${userName}</a>.....${score}</li>
+        </ol>
+        </template>
+    </cpx-websocket>
 
-  Requires `keycloak.js` to be available, and the following attributes to be set
-  with the appropriate values:
+## Testing
 
-  - `kc-url` - the Keycloak server url
-  - `kc-realm` - the Keycloak realm
-  - `kc-client-id` - the Keycloak client ID
+* `deno test` runner and assertions: https://deno.land/manual/testing/assertions
 
-  #### Available component methods:
 
-  - `login()`: log in using the Keycloak config
-  - `logout()`: log out using the Keycloak config
-  - `register()`: send user to registration screen based on Keycloak config
-  - `account()`: send user to account management screen based on Keycloak config
-  - `token.createLoginUrl()`: creates URL to direct user to login screen
-  - `token.createLogoutUrl()`: creates URL to log user out
+## Contributing
+1. Provide feedback on usage
+2. Submit an issue or PR
+3. Feature requests flow through [CPCORE Jira Project](https://issues.redhat.com/projects/CPCORE/)
+    * Use "chapeaux" component
+    * Priority will be reviewed against all other requests
+    * No timeframe promised upon submission
 
-  #### Available component properties:
-
-  - `token`: the Keycloak object for authenticated users
-
-  #### Example:
-      ```html
-      <cpx-user kc-url="https://test123.com/auth" kc-realm="your-realm" kc-client-id="your-client-id"></cpx-user>
-      ```
-
-## Scripts
+## To-Do
+* Nothing at this time

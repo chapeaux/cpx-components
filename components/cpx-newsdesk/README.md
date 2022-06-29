@@ -9,29 +9,28 @@ The `newsdesk` is meant to forward communication between various events and an e
 * `npm install @chapeaux/cpx-newsdesk` or consume from a CDN via `@chapeaux/cpx-newsdesk`
 * include the `newsdesk.js` file on a page prior to any event tracking that should occur
 
+## Usage
+* `<script type="module" src="path/to/@chapeaux/cpx-newsdesk/newsdesk.js"></script>`
+* `import { Newsdesk } from "path/to/@chapeaux/cpx-newsdesk/newsdesk.js";`
+* `<script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>`
+
 ## Testing
 
 * `deno test` runner and assertions: https://deno.land/manual/testing/assertions
 
 
+## Contributing
+1. Provide feedback on usage
+2. Submit an issue or PR
+3. Feature requests flow through [CPCORE Jira Project](https://issues.redhat.com/projects/CPCORE/)
+    * Use "chapeaux" component
+    * Priority will be reviewed against all other requests
+    * No timeframe promised upon submission
 
+## To-Do
+* Nothing at this time
 
-Create future feature wishlist and document process for how others can contribute. For example, include:
-Things that are left to do on the component in the future
-How someone can contribute
-Also include a process that explains what to do if someone wants to put through a specific feature request for CPCORE to work on (can collaborate with Tia when you get to this part)
-We will want to make sure to note what to expect from turnaround time (ie no timeframe will be promised upon submission and priority will be reviewed against all other requests)
-Installation
-Where to get it
-How to put it on the page
-Technical Spec
-Current parameters to use
-Attributes to manipulate etc etc.
-In page live demo
-Please update this Confluence page with direct documentation, links out to where you put the documentation, etc so that it is easily consumable by anyone reading the page.
-
-
-## Events
+## EDDL Events
 
 - Page Load Start
 - Page Load Complete

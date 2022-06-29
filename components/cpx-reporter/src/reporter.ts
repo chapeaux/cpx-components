@@ -3,7 +3,7 @@ function CombineEventData(payload, target, data) {
   return combination;
 }
 
-let eventMap = new Map([
+const eventMap = new Map([
   ['Page Load Started', {payload:'page',data:{page:(tgt:EventTarget) => {return {"pageName":"foo","custKey": "{custKey}"}}}}],
   ['Page Load Completed', {}],
   ['User Signed In', {payload:'user',data:{user:(tgt:EventTarget) => {return {"custKey": "{custKey}"}}}}],
