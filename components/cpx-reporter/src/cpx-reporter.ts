@@ -1,4 +1,4 @@
-import { ReporterEvent } from "./reporter.ts";
+import { ReporterEvent } from "./reporter.js";
 
 /**
  *  Based off documentation for EDDL found here:
@@ -15,7 +15,7 @@ import { ReporterEvent } from "./reporter.ts";
  */
 export class CPXReporter extends HTMLElement {
     static get tag() { return 'cpx-reporter'; }
-    _debug:string;
+    _debug:string = null;
     get debug() {
         return this._debug;
     }

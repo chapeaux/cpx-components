@@ -2,6 +2,7 @@ import { ReporterEvent } from "./reporter.js";
 export class CPXReporter extends HTMLElement {
     constructor() {
         super();
+        this._debug = null;
         this._data = {};
         this.tasks = new Set(['beat', 'event', 'data']);
         this._ready = false;
