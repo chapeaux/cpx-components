@@ -112,8 +112,8 @@ async function handler(request: Request) {
 
 }
 
-serve(handler, {port: 8080});
-// serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem', port: 8443 })
+// serve(handler, {port: 8080});
+serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem', port: 8443 })
 /*
 import {
   Application,
