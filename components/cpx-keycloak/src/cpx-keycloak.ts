@@ -155,6 +155,13 @@ export class CPXKeycloak extends HTMLElement {
     this._logoutAttr = val;
   }
   
+  onReady = (a) => {};
+  onAuthSuccess = () => {};
+  onAuthError = () => {};
+  onAuthRefreshSuccess = () => {};
+  onAuthRefreshError = () => {};
+  onAuthLogout = () => {};
+  onTokenExpired = () => {};
 
   constructor() {
     super();
@@ -214,7 +221,14 @@ export class CPXKeycloak extends HTMLElement {
           ? JSON.parse(config.replaceAll("'", '"'))
           : { url: this.url, realm: this.realm, clientId: this.clientId },
       );
-      //console.log("Options", JSON.parse(this.options.replaceAll("'", '"')));
+      this.keycloak.onReady = this.onReady;
+      this.keycloak.onAuthSuccess = this.onAuthSuccess;
+      this.keycloak.onAuthError = this.onAuthError;
+      this.keycloak.onAuthRefreshSuccess = this.onAuthRefreshSuccess;
+      this.keycloak.onAuthRefreshError = this.onAuthRefreshError;
+      this.keycloak.onAuthLogout = this.onAuthLogout;
+      this.keycloak.onTokenExpired = this.onTokenExpired;
+
       this.keycloak.init(this.options && this.options != "" ? JSON.parse(this.options.replaceAll("'",'"')) : {})
         .then(authenticated => {
           this.dispatchEvent(new Event('kc-init-success',{composed:true,bubbles:true}));
