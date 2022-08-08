@@ -6,6 +6,13 @@ export class CPXKeycloak extends HTMLElement {
         this._ready = false;
         this._jwtCookie = "";
         this._jwtToken = "";
+        this.onReady = (a) => { };
+        this.onAuthSuccess = () => { };
+        this.onAuthError = () => { };
+        this.onAuthRefreshSuccess = () => { };
+        this.onAuthRefreshError = () => { };
+        this.onAuthLogout = () => { };
+        this.onTokenExpired = () => { };
     }
     get keycloak() {
         return this._keycloak;
@@ -174,6 +181,13 @@ export class CPXKeycloak extends HTMLElement {
             this.keycloak = Keycloak(config
                 ? JSON.parse(config.replaceAll("'", '"'))
                 : { url: this.url, realm: this.realm, clientId: this.clientId });
+            this.keycloak.onReady = this.onReady;
+            this.keycloak.onAuthSuccess = this.onAuthSuccess;
+            this.keycloak.onAuthError = this.onAuthError;
+            this.keycloak.onAuthRefreshSuccess = this.onAuthRefreshSuccess;
+            this.keycloak.onAuthRefreshError = this.onAuthRefreshError;
+            this.keycloak.onAuthLogout = this.onAuthLogout;
+            this.keycloak.onTokenExpired = this.onTokenExpired;
             this.keycloak.init(this.options && this.options != "" ? JSON.parse(this.options.replaceAll("'", '"')) : {})
                 .then(authenticated => {
                 this.dispatchEvent(new Event('kc-init-success', { composed: true, bubbles: true }));

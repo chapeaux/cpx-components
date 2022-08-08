@@ -47,6 +47,13 @@ export declare class CPXKeycloak extends HTMLElement {
     _logoutAttr: any;
     get logoutAttr(): any;
     set logoutAttr(val: any);
+    onReady: (a: any) => void;
+    onAuthSuccess: () => void;
+    onAuthError: () => void;
+    onAuthRefreshSuccess: () => void;
+    onAuthRefreshError: () => void;
+    onAuthLogout: () => void;
+    onTokenExpired: () => void;
     constructor();
     connectedCallback(): void;
     static get observedAttributes(): string[];

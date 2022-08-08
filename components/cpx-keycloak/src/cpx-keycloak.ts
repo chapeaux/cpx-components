@@ -221,6 +221,7 @@ export class CPXKeycloak extends HTMLElement {
           ? JSON.parse(config.replaceAll("'", '"'))
           : { url: this.url, realm: this.realm, clientId: this.clientId },
       );
+      
       this.keycloak.onReady = this.onReady;
       this.keycloak.onAuthSuccess = this.onAuthSuccess;
       this.keycloak.onAuthError = this.onAuthError;

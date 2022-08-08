@@ -20,6 +20,7 @@ const eventMap = new Map([
             }
           })(document.referrer),
           siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
+        }
       }
     }
   }],

@@ -7,13 +7,18 @@ const eventMap = new Map([
     ['Page Load Started', {
             payload: 'page',
             data: {
-                page: (tgt) => {
+                page: (tgt, data) => {
                     return {
-                        pageName: "foo",
-                        custKey: "{custKey}"
-                    },
-                        siteExperience;
-                    (() => [[992, 'desktop'][768, 'tablet'], [0, 'mobile']].);
+                        pageName: data ? [data.siteName, data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v => (typeof v !== 'undefined' && v !== null)) : '',
+                        previousPage: ((r) => {
+                            if (r) {
+                                let a = document.createElement("a");
+                                a.href = r;
+                                return a.href;
+                            }
+                        })(document.referrer),
+                        siteExperience: ((w) => (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
+                    };
                 }
             }
         }],
@@ -34,7 +39,6 @@ export class ReporterEvent extends Event {
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
-            console.log('EVENT:', this.name, 'OBJECT:', this.obj);
             this.obj.data[this.obj.payload](this.currentTarget, data !== null && data !== void 0 ? data : {});
             this.data = this.obj.data;
         }
