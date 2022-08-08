@@ -3,12 +3,29 @@ function CombineEventData(payload, target, data) {
   return combination;
 }
 
+
+
 const eventMap = new Map([
   ['Page Load Started', {
     payload:'page',
-    data:{
-      page: (tgt:EventTarget, data?) => { 
+    data: {
+      page: (tgt:EventTarget, data?) => {
         return {
+        // Build pageName to match format:
+        // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
+        pageName: data ? [data.siteName,data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v=>(typeof v !== 'undefined' && v !== null)): '',
+        previousPage: ((r) => { 
+          if (r) {
+            let a = document.createElement("a");
+            a.href = r;
+            return a.href;
+          }
+        })(document.referrer),
+        siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
+        }
+      }
+      /*
+return {
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
           pageName: data ? [data.siteName,data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v=>(typeof v !== 'undefined' && v !== null)): '',
@@ -21,11 +38,12 @@ const eventMap = new Map([
           })(document.referrer),
           siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
         }
-      }
+      
+      */
     }
   }],
   ['Page Load Completed', {}],
-  ['User Signed In', {payload:'user',data:{user:(tgt:EventTarget) => {return {"custKey": "{custKey}"}}}}],
+  ['User Signed In', {payload:'user',data:{user:(tgt:EventTarget, data?) => {return {"custKey": "{custKey}"}}}}],
   ['User Detected', {payload:'user',data:{user:(tgt:EventTarget) => {return {"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}}],
   ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:(tgt:EventTarget) => {return {"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}}],
   ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget) => {return {"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}}],
@@ -50,7 +68,7 @@ export class ReporterEvent extends Event {
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
           //console.log('EVENT:',this.name,'OBJECT:',this.obj);
-          this.obj.data[this.obj.payload](this.currentTarget,data ?? {})
+          this.obj.data[this.obj.payload](this.currentTarget, data ?? {})
           this.data = this.obj.data;
         }
     }
@@ -69,7 +87,7 @@ if (reporter instanceof HTMLElement) {
   if (reporter.getAttribute('reported') == null) {
     const data = JSON.parse(reporter.textContent ?? '');
     const emitName = reporter.getAttribute('data-emit') ?? 'cpx-report';
-    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event,data, emitName));
+    globalThis.dispatchEvent(new ReporterEvent(reporter.dataset.event, data, emitName));
     reporter.setAttribute('reported','');
   } 
 }
