@@ -13,7 +13,18 @@ export class CPXCookie extends HTMLElement {
         this.key = this.getAttribute('key');
         this.value = this.getAttribute('value');
         this.emit = this.getAttribute('emit');
-        this.worker.postMessage({ action: this.action, payload: { key: this.key, data: this.value } });
+        if (this.action === 'set') {
+            this.worker.postMessage({
+                action: this.action,
+                payload: { key: this.key, data: this.value }
+            });
+        }
+        else {
+            this.worker.postMessage({
+                action: this.action,
+                payload: { key: this.key, parse: this.parse, data: this.cookie }
+            });
+        }
     }
     static get tag() { return 'cpx-cookie'; }
     get debug() { return this._debug; }

@@ -1,7 +1,8 @@
-import { serveTls, serve } from "https://deno.land/std@0.144.0/http/server.ts";
+import { serveTls, serve } from "https://deno.land/std@0.152.0/http/server.ts";
 import { Router } from "https://deno.land/x/nativerouter@1.0.0/mod.ts";
-import { walk } from "https://deno.land/std@0.144.0/fs/mod.ts";
-import { doc } from "https://deno.land/x/deno_doc@v0.36.0/mod.ts";
+import { walk } from "https://deno.land/std@0.152.0/fs/mod.ts";
+import * as denoDoc from "https://deno.land/x/deno_doc@0.41.0/mod.ts";
+
 
 
 const ContentTypes = new Map<string,string>([
@@ -112,8 +113,8 @@ async function handler(request: Request) {
 
 }
 
-// serve(handler, {port: 8080});
-serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem', port: 8443 })
+serve(handler, {port: 8080});
+// serveTls(handler, {certFile:'./localhost.pem', keyFile:'./localhost-key.pem', port: 8443 })
 /*
 import {
   Application,

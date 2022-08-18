@@ -79,8 +79,19 @@ export class CPXCookie extends HTMLElement {
         this.key = this.getAttribute('key');
         this.value = this.getAttribute('value');
         this.emit = this.getAttribute('emit');
-        // SET SIGNATURE
-        this.worker.postMessage({action:this.action,payload:{key:this.key,data:this.value}});
+        if (this.action === 'set') {
+            // SET SIGNATURE
+            this.worker.postMessage({
+                action:this.action,
+                payload:{key:this.key,data:this.value}
+            });
+        } else {
+            // GET SIGNATURE
+            this.worker.postMessage({
+                action:this.action,
+                payload:{key:this.key,parse:this.parse,data:this.cookie}
+            });
+        }
     }
 
     connectedCallback() {
