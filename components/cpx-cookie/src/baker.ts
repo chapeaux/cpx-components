@@ -11,10 +11,8 @@ onmessage = function(e) {
             postMessage(setCookie(payload));
         break;
         case 'get':
-            postMessage(getCookie(payload));
-        break;
         default:
-            postMessage(new Map(payload.data.split(';')?.map(v=>v.trim().split('='))));
+            postMessage(getCookie(payload));
         break;
     }
 }
@@ -27,17 +25,33 @@ function getCookie(payload:CookiePayload) {
         break;
         case 'json':
             try {
-                const cookieMap = payload.data !== undefined ? new Map(payload.data.split(';').map(v=>v.trim().split('='))) : ;
-                parsed = JSON.parse(cookieMap.get(payload.key));
+                const cookieMap = new Map();
+                if (typeof payload.data === 'string') {
+                    payload.data.split(';').map(v=> {
+                        const rec = v.trim().split('=');
+                        cookieMap.set(rec[0],rec[1]);
+                    });
+                }
+                const cookieVal = cookieMap.get(payload.key);
+                parsed = JSON.parse(cookieVal || '{}');
             } catch(e) {
                 console.error("Unable to parse value as JSON. Detail:",e);
                 parsed = {};
             }
         break;
         default:
-            parsed = (new Map(payload.data.split(';')?.map(v=>v.trim().split('=')))).get(payload.key);
+            const cookieMap = new Map();
+            if (typeof payload.data === 'string') {
+                payload.data.split(';').map(v=> {
+                    const rec = v.trim().split('=');
+                    cookieMap.set(rec[0],rec[1]);
+                });
+            }
+            parsed = JSON.parse(cookieMap.get(payload.key));
+            //parsed = (new Map(payload.data.split(';')?.map(v=>v.trim().split('=')))).get(payload.key);
         break;
     }
+    return parsed;
 }
 
 function setCookie(payload:CookiePayload) {
@@ -47,7 +61,10 @@ function setCookie(payload:CookiePayload) {
             parsed = `${payload.key}=${payload.data};`
         break;
         case 'json':
-            parsed = `${payload.key}=${JSON.stringify(payload.data)};`
+            if (typeof payload.data === 'string') {
+                eval(`payload.data = JSON.stringify(${payload.data})`)
+            }
+            parsed = `${payload.key}=${payload.data};`
         break;
         default:
             parsed = `${payload.key}=${payload.data};`

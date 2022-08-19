@@ -1,4 +1,3 @@
-const baker = new Worker('baker.js');
 /**
  *  A simple web component for getting and setting cookie
  *  values and leveraging some specialized string parsing.
@@ -15,7 +14,7 @@ const baker = new Worker('baker.js');
 export class CPXCookie extends HTMLElement {
     static get tag() { return 'cpx-cookie'; }
     
-    worker = baker;
+    worker = new Worker('baker.js');
     ready = false;
 
     _debug = false;
@@ -25,7 +24,7 @@ export class CPXCookie extends HTMLElement {
         this._debug = val;
     }
 
-    _cookie = document.cookie;
+    _cookie;
     get cookie() { return this._cookie; }
     set cookie(val) {
         this._cookie = val;
@@ -36,6 +35,7 @@ export class CPXCookie extends HTMLElement {
     set action(val) {
         if (this._action === val) return;
         this._action = val;
+        this.setAttribute('action',this._action);
     }
 
     _parse;
@@ -43,6 +43,7 @@ export class CPXCookie extends HTMLElement {
     set parse(val) {
         if (this._parse === val) return;
         this._parse = val;
+        this.setAttribute('parse',this._parse);
     }
 
     _emit = 'cookie-ready';
@@ -50,6 +51,7 @@ export class CPXCookie extends HTMLElement {
     set emit(val) {
         if (this._emit === val) return;
         this._emit = val;
+        this.setAttribute('emit',this._emit);
     }
 
     _key:string;
@@ -57,6 +59,7 @@ export class CPXCookie extends HTMLElement {
     set key(val) {
         if (this._key === val) return;
         this._key = val;
+        this.setAttribute('key',this._key);
     }
 
     _value:string;
@@ -64,6 +67,7 @@ export class CPXCookie extends HTMLElement {
     set value(val) {
         if (this._value === val) return;
         this._value = val;
+        this.setAttribute('value',this._value);
     }
 
     // reqs = new Map([
@@ -73,31 +77,18 @@ export class CPXCookie extends HTMLElement {
     
     constructor() {
         super();
-        this.worker.onmessage = (e) => console.log(e.data);
-        this.action = this.getAttribute('action');
-        this.parse = this.getAttribute('parse');
-        this.key = this.getAttribute('key');
-        this.value = this.getAttribute('value');
-        this.emit = this.getAttribute('emit');
-        if (this.action === 'set') {
-            // SET SIGNATURE
-            this.worker.postMessage({
-                action:this.action,
-                payload:{key:this.key,data:this.value}
-            });
-        } else {
-            // GET SIGNATURE
-            this.worker.postMessage({
-                action:this.action,
-                payload:{key:this.key,parse:this.parse,data:this.cookie}
-            });
-        }
+        this.onMessage = this.onMessage.bind(this);
     }
 
     connectedCallback() {
-        
+        this.worker.postMessage({
+            action:this.action,
+            payload:{key:this.key,data:this.action ==='set'?this.value:document.cookie,parse:this.parse}
+        });
+
+        this.worker.onmessage = this.onMessage;
     }
-/*
+
     static get observedAttributes() {
         return [
             "action", // find/set
@@ -110,14 +101,20 @@ export class CPXCookie extends HTMLElement {
     }
 
     attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-        console.log('Change:',name,'old:',oldVal,'new:',newVal);
         this[name] = newVal;
-        if (this.tasks.has(name)) { this.tasks.delete(name); }
-        if (this.getAttribute('auto') === '' && this.tasks.size === 0) {
-            this.ready = true;
-        }
     }
-*/
+
+    onMessage(e) {
+        if (this.action === 'set') {
+            document.cookie = e.data;
+        }
+        this.dispatchEvent(new CustomEvent(this.emit, {
+            bubbles: true,
+            composed: true,
+            detail: e.data
+        }));
+    }
+
 }
 
 window.customElements.define(CPXCookie.tag,CPXCookie);

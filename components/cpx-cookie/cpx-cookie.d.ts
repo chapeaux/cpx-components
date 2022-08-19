@@ -5,9 +5,9 @@ export declare class CPXCookie extends HTMLElement {
     _debug: boolean;
     get debug(): boolean;
     set debug(val: boolean);
-    _cookie: string;
-    get cookie(): string;
-    set cookie(val: string);
+    _cookie: any;
+    get cookie(): any;
+    set cookie(val: any);
     _action: any;
     get action(): any;
     set action(val: any);
@@ -25,4 +25,7 @@ export declare class CPXCookie extends HTMLElement {
     set value(val: string);
     constructor();
     connectedCallback(): void;
+    static get observedAttributes(): string[];
+    attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
+    onMessage(e: any): void;
 }

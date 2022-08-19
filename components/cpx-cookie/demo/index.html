@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>CPX-COOKIE Demo</h1>
+    <cpx-cookie action="set" key="user_data" parse="json" value="{name:'shadowman',account_id:'rh1234'}"></cpx-cookie>
     <cpx-cookie action="set" key="username" value="shadowman"></cpx-cookie>
     <cpx-cookie action="get" key="user_data" parse="json" emit="token-ready"></cpx-cookie>
     <!-- <cpx-cookie action="set" key="user_data">
@@ -19,5 +20,13 @@
             }
         </script>
     </cpx-cookie> -->
+    <script>
+        document.addEventListener('cookie-ready', e => {
+            console.log("SET:", e.detail);
+        })
+        document.addEventListener('token-ready', e => {
+            console.log("GET:", e.detail);
+        })
+    </script>
 </body>
 </html>
