@@ -5,3 +5,4 @@ interface CookiePayload {
 }
 declare function getCookie(payload: CookiePayload): any;
 declare function setCookie(payload: CookiePayload): any;
+declare function parseJwt(token: any): any;

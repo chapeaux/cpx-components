@@ -10,12 +10,11 @@
     "disableSizeLimit": false,
     "declaration": true,
     "declarationDir": ".",
-    "downlevelIteration": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "module": "UMD",
+    "lib": ["ES6", "ESNext", "DOM"],
+    "module": "ESNext",
     "moduleResolution": "Node",
-    "outDir": "./demo",
+    "outDir": ".",
     "rootDir": "./src",
     "noFallthroughCasesInSwitch": false,
     "noImplicitAny": false,
@@ -35,8 +34,8 @@
     "strictPropertyInitialization": false,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
-    "target": "es6"
+    "target": "ES6"
   },
-  "include": ["src/**/*"],
-  "exclude": []
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"]
 }

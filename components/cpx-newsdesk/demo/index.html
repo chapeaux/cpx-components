@@ -45,6 +45,7 @@
     </script>
     <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
     <script type="module" src="/cpx-user/cpx-user.js"></script>
+    <script type="module" src="/cpx-cookie/cpx-cookie.js"></script>
     <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
     <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>
     
@@ -194,6 +195,11 @@
                     </details>
                     <cpx-reporter event="User Detected" beat="user-ready">
                         <cpx-user>
+                        <cpx-cookie action="get" key="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
+                        </cpx-user>
+                    </cpx-reporter>
+                    <!-- <cpx-reporter event="User Detected" beat="user-ready">
+                        <cpx-user>
                             <script type="data">
                                 {
                                     "exp": 1603803270,
@@ -268,7 +274,7 @@
                                    }
                             </script>
                         </cpx-user>
-                    </cpx-reporter>
+                    </cpx-reporter> -->
                 </li>
                 <li>
                     <details>
@@ -276,7 +282,10 @@
                         <pre data-event="User Signed In"></pre>
                     </details>
                     <cpx-reporter event="User Signed In" beat="kc-token-ready">
-                        <cpx-keycloak url="https://sso.stage.redhat.com/auth" realm="redhat-external" client-id="rhd-web" logout-element="rh-account-dropdown" logout-attr="logout-link" login-element="rh-account-dropdown" login-attr="login-link"></cpx-keycloak>
+                        <cpx-keycloak jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}">
+                            <script type="data" id="options"></script>
+                            <script type="data" id="config"></script>
+                          </cpx-keycloak>
                     </cpx-reporter>
                 </li>
             </ul>

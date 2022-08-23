@@ -14,7 +14,7 @@
 export class CPXCookie extends HTMLElement {
     static get tag() { return 'cpx-cookie'; }
     
-    worker = new Worker('baker.js');
+    worker = new Worker(new URL(import.meta.url).pathname.replace('cpx-cookie.js','baker.js'));
     ready = false;
 
     _debug = false;

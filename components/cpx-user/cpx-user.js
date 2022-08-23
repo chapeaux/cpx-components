@@ -66,6 +66,9 @@ export class CPXUser extends HTMLElement {
         if (data && data.innerText) {
             this.user = JSON.parse(data.innerText);
         }
+        this.addEventListener('token-ready', e => {
+            this.user = e['detail'];
+        });
     }
     static get observedAttributes() {
         return [
