@@ -70,6 +70,13 @@ export class CPXCookie extends HTMLElement {
         this.setAttribute('value',this._value);
     }
 
+    _data:any;
+    get data() { return this._data; }
+    set data(val) {
+        if (this._data === val) return;
+        this._data = val;
+    }
+
     // reqs = new Map([
     //     ['get', new Set(['action','key'])]
     // ])
@@ -107,7 +114,10 @@ export class CPXCookie extends HTMLElement {
     onMessage(e) {
         if (this.action === 'set') {
             document.cookie = e.data;
-        }
+        } 
+        
+        this.data = e.data;
+        
         this.dispatchEvent(new CustomEvent(this.emit, {
             bubbles: true,
             composed: true,

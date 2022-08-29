@@ -1,7 +1,72 @@
-
-<cpx-reporter event="Page Load Completed" beat="user-eddl-ready">
-    <cpx-reporter event="User Detected" beat="user-eddl-ready">
-        <cpx-user></cpx-user>
-        <cpx-cookie find="rh-user" parse="jwt" dispatch="token-ready"></cpx-cookie>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDDL Auth Flow Test</title>
+    <script>
+        top.addEventListener('newsflash', e=> {
+            const result = document.querySelector(`pre[data-event="${e.detail.event}"]`);
+            result.textContent = JSON.stringify(e.detail,null,2);
+            console.log('NEWSFLASH:', e.detail)
+        });
+    </script>
+    <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started">
+        {
+        "analyticsTitle": "Extracting information from Python source code",
+        "blogAuthor": "Fridolin Pokorny",
+        "breadCrumbs": "xxx",
+        "pageCategory": "articles",
+        "cms": "RHD CMS 8",
+        "contentId": "269391",
+        "contentType": "article",
+        "dataObject": "digitalData",
+        "destinationUrl": "https://dxp-developer.docksal/articles/2022/01/05/extracting-information-python-source-code",
+        "errorType": "1234",
+        "gated": "False",
+        "pageName": "xxxx",
+        "queryParameters": "xxxx",
+        "severityLevel": "xxx",
+        "siteLanguage": "xx",
+        "pageStatus": "xxx",
+        "pageSubType": "xxx",
+        "pageTitle": "Extracting information from Python source code | Red Hat Developer",
+        "pageType": "xxx",
+        "productCategory": "xxx",
+        "productCertifiedVendor": "xx",
+        "productComponents": "xxx",
+        "productPublicationStatus": "xxx",
+        "productSBR": "xxx",
+        "productTags": "xxx",
+        "products": "OpenShift, RHEL"
+       }
+    </script>
+    <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
+    <script type="module" src="/cpx-user/cpx-user.js"></script>
+    <script type="module" src="/cpx-cookie/cpx-cookie.js"></script>
+    <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
+    <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>
+    
+    <style>
+        fieldset {
+            margin-bottom: 1em;
+        }
+        ul {
+            list-style: none;
+        }
+        pre { overflow:hidden; }
+    </style>
+</head>
+<body>
+    <h1>Chapeaux Newsdesk Auth Demo</h1>
+    <cpx-reporter event="Page Load Completed" beat="eddl-user-ready">
+        <cpx-reporter event="User Detected" beat="eddl-user-ready">
+            <cpx-user>
+                <cpx-cookie find="rh-user" parse="jwt" dispatch="token-ready"></cpx-cookie>
+            </cpx-user>
+        </cpx-reporter>
     </cpx-reporter>
-</cpx-reporter>
+    <cpx-keycloak auto jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}"></cpx-keycloak>
+</body>
+</html>

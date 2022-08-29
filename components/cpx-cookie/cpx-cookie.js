@@ -53,6 +53,12 @@ export class CPXCookie extends HTMLElement {
         this._value = val;
         this.setAttribute('value', this._value);
     }
+    get data() { return this._data; }
+    set data(val) {
+        if (this._data === val)
+            return;
+        this._data = val;
+    }
     connectedCallback() {
         this.worker.postMessage({
             action: this.action,
@@ -77,6 +83,7 @@ export class CPXCookie extends HTMLElement {
         if (this.action === 'set') {
             document.cookie = e.data;
         }
+        this.data = e.data;
         this.dispatchEvent(new CustomEvent(this.emit, {
             bubbles: true,
             composed: true,

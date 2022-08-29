@@ -59,6 +59,11 @@ export class CPXUser extends HTMLElement {
             composed: true,
             bubbles: true,
         }));
+        this.dispatchEvent(new CustomEvent("eddl-user-ready", {
+            detail: this,
+            composed: true,
+            bubbles: true,
+        }));
         this.ready = true;
     }
     connectedCallback() {

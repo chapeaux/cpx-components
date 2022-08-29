@@ -23,6 +23,9 @@ export declare class CPXCookie extends HTMLElement {
     _value: string;
     get value(): string;
     set value(val: string);
+    _data: any;
+    get data(): any;
+    set data(val: any);
     constructor();
     connectedCallback(): void;
     static get observedAttributes(): string[];
