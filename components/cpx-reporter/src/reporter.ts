@@ -44,13 +44,30 @@ return {
   }],
   ['Page Load Completed', {}],
   ['User Signed In', {payload:'user',data:{user:(tgt:EventTarget, data?) => {return {"custKey": "{custKey}"}}}}],
-  ['User Detected', {payload:'user',data:{user:(tgt:EventTarget) => {return {"custKey": "{custKey}","accountID": "<accountID>", "accountIDType": "External","userID": "<userID>","lastLoginDate": "","loggedIn": "false","registered":"true","socialAccountsLinked":"","subscriptionFrequency": "","subscriptionLevel": "","hashedEmail": ""}}}}],
-  ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:(tgt:EventTarget) => {return {"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}}],
-  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget) => {return {"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}}],
-  ['Form Viewed', {payload:'form',data:{form:(tgt:EventTarget) => {return {}}}}],
-  ['Form Submission Succeeded', {payload:'form',data:{form:(tgt:EventTarget) => {return {}}}}],
-  ['Form Submission Failed', {payload:'form',data:{form:(tgt:EventTarget) => {return {}}}}],
-  ['Error Message Presented', {payload:'error',data:{error: (tgt:EventTarget) => {return {errorCode:'',errorType:''}}}}]
+  ['User Detected', {payload:'user',data:{
+    user:(tgt:EventTarget, data?) => {
+        return Object.assign({
+          "custKey": "{custKey}",
+          "accountID": "<accountID>", 
+          "accountIDType": "External",
+          "userID": "<userID>",
+          "lastLoginDate": "",
+          "loggedIn": "false",
+          "registered":"true",
+          "socialAccountsLinked":"",
+          "subscriptionFrequency": "",
+          "subscriptionLevel": "","hashedEmail": ""
+          },data);
+        }
+      }
+    }
+  ],
+  ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:(tgt:EventTarget, data?) => {return {"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}}],
+  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget, data?) => {return {"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}}],
+  ['Form Viewed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
+  ['Form Submission Succeeded', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
+  ['Form Submission Failed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
+  ['Error Message Presented', {payload:'error',data:{error: (tgt:EventTarget, data?) => {return {errorCode:'',errorType:''}}}}]
 ]);
 
 /**
@@ -68,8 +85,7 @@ export class ReporterEvent extends Event {
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
           //console.log('EVENT:',this.name,'OBJECT:',this.obj);
-          this.obj.data[this.obj.payload](this.currentTarget, data ?? {})
-          this.data = this.obj.data;
+          this.data = this.obj.data[this.obj.payload](this.currentTarget, data ?? {});
         }
     }
     obj:any;

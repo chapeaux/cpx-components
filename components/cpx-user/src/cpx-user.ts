@@ -80,7 +80,56 @@ export class CPXUser extends HTMLElement {
     );
     this.dispatchEvent(
       new CustomEvent("eddl-user-ready", {
-        detail: this,
+        /*
+        allowed-origins: Array(1)
+        0: "*"
+        length: 1
+        [[Prototype]]: Array(0)
+        aud: "rhd-web"
+        auth_time: 1661792228
+        azp: "rhd-web"
+        email: "ldary+stage@redhat.com"
+        exp: 1661793129
+        family_name: "Dary"
+        given_name: "Luke"
+        iat: 1661792229
+        id: "f:ac4bcdb5-1fb1-41c5-9323-349698b9b757:ldary@redhat.com"
+        iss: "https://sso.stage.redhat.com/auth/realms/redhat-external"
+        jti: "39990d69-983e-4d4c-bb53-3fed9bf9b9b7"
+        name: "Luke Dary"
+        nonce: "0a0c7821-8ebb-4bcd-8d95-05e64af12452"
+        preferred_username: "ldary@redhat.com"
+        realm_access:
+        roles: Array(9)
+        0: "authenticated"
+        1: "portal_manage_subscriptions"
+        2: "offline_access"
+        3: "admin:org:all"
+        4: "uma_authorization"
+        5: "portal_manage_cases"
+        6: "portal_system_management"
+        7: "portal_download"
+        8: "rhd_access_middleware"
+        length: 9
+        [[Prototype]]: Array(0)
+        [[Prototype]]: Object
+        resource_access:
+        account: {roles: Array(3)}
+        rhd-dm: {roles: Array(1)}
+        [[Prototype]]: Object
+        scope: "openid"
+        session_state: "0dcba173-f4ac-4b57-96f0-ab5b5dfde7a9"
+        sid: "0dcba173-f4ac-4b57-96f0-ab5b5dfde7a9"
+        sub: "f:ac4bcdb5-1fb1-41c5-9323-349698b9b757:ldary@redhat.com"
+        typ: "Bearer"
+        user-social-links:
+        [[Prototype]]: Object
+        */
+        detail: {
+         custKey: this.user['sid'],
+         accountID: this.user['id'],
+         accountIDType: this.user['typ']
+        },
         composed: true,
         bubbles: true,
       })

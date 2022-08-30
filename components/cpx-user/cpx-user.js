@@ -60,7 +60,11 @@ export class CPXUser extends HTMLElement {
             bubbles: true,
         }));
         this.dispatchEvent(new CustomEvent("eddl-user-ready", {
-            detail: this,
+            detail: {
+                custKey: this.user['sid'],
+                accountID: this.user['id'],
+                accountIDType: this.user['typ']
+            },
             composed: true,
             bubbles: true,
         }));
