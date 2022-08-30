@@ -3,32 +3,21 @@ function CombineEventData(payload, target, data) {
   return combination;
 }
 
-
-
 const eventMap = new Map([
   ['Page Load Started', {
     payload:'page',
     data: {
       page: (tgt:EventTarget, data?) => {
-        return {
-        // Build pageName to match format:
-        // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
-        pageName: data ? [data.siteName,data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v=>(typeof v !== 'undefined' && v !== null)): '',
-        previousPage: ((r) => { 
-          if (r) {
-            let a = document.createElement("a");
-            a.href = r;
-            return a.href;
-          }
-        })(document.referrer),
-        siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
-        }
-      }
-      /*
-return {
+        return Object.assign({
+          "pageCategory": "<pageCategory>", // technologies
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
-          pageName: data ? [data.siteName,data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v=>(typeof v !== 'undefined' && v !== null)): '',
+          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null)).join('|'): '',
+          "siteName": "<siteName>",
+          "pageTitle": "<pageTitle>", //Red Hat Enterprise Linux operating system
+          "pageType": "<pageType>", // pattern_template
+          "pageSubType": "<pageSubType>", // Product
+          "pageStatus": "<pageStatus>",
           previousPage: ((r) => { 
             if (r) {
               let a = document.createElement("a");
@@ -36,10 +25,32 @@ return {
               return a.href;
             }
           })(document.referrer),
-          siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
-        }
-      
-      */
+          siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
+          "siteLanguage": "<siteLanguage>",
+          "subsection": "<subsection>", // linux-platforms
+          "subsection2": "<subsection2>", // enterprise-linux2
+          "subsection3": "<subsection3>", // try-it
+          "cms": "<cms>", // RH CMS 2020.14.0
+          "analyticsTitle": "<analyticsTitle>", // Analytics Title field in Drupal
+          "blogAuthor": "<blogAuthor>", // captures author of blog articles
+          "contentID": "<contentID>", // 545121
+          "contentType": "<contentType>", // E-book
+          "destinationURL": "<destinationURL>", // https://www.redhat.com/en/home-page
+          "errorType": "<errorType>", // 404
+          "gated": "<gated>", // true
+          "taxonomyMetaHreflang": [""],
+          "taxonomyRegion": [""],
+          "taxonomyBlogPostCategory": [""],
+          "taxonomyBusinessChallenge":[""],
+          "taxonomyProduct":[""],
+          "taxonomyProductLine":[""],
+          "taxonomySolution":[""],
+          "taxonomyTopic":[""],
+          "taxonomyAuthor":[""],
+          "taxonomyStage":[""],
+          "dataObject":"<dataObject>" //appEventData,digitalData,DOM
+        },data)
+      }
     }
   }],
   ['Page Load Completed', {}],
@@ -84,7 +95,6 @@ export class ReporterEvent extends Event {
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
-          //console.log('EVENT:',this.name,'OBJECT:',this.obj);
           this.data = this.obj.data[this.obj.payload](this.currentTarget, data ?? {});
         }
     }
@@ -123,25 +133,26 @@ if (reporter instanceof HTMLElement) {
   Page Load Started
     'event': 'Page Load Started',
   "page": {
-      "pageCategory": "technologies",
-      "pageName": "<pageName>",
-      "pageTitle": "Red Hat Enterprise Linux operating system",
-      "analyticsTitle": "<Drupal analyticsTitle field>",        
-      "pageType": "pattern_template",
-      "pageSubType": "Product",
-      "siteExperience": "mobile",
+      "pageCategory": "<pageCategory>", // technologies
+      "pageName": "<pageName>", //siteName|primary Category|subcategory1|subcategory2|subcategory3|subcategory4|page detail name
+      "siteName": "<siteName>",
+      "pageTitle": "<pageTitle>", //Red Hat Enterprise Linux operating system
+      "pageType": "<pageType>", // pattern_template
+      "pageSubType": "<pageSubType>", // Product
+      "pageStatus": "<pageStatus>",
+      "siteExperience": "<siteExperience>", // mobile
       "siteLanguage": "<siteLanguage>",
-      "subsection": "linux-platforms",
-      "subsection2": "enterprise-linux2",
-      "subsection3": "try-it",
-      "cms": "RH CMS 2020.14.0",
-      "analyticsTitle": "<Analytics Title field in Drupal>",
-      "blogAuthor": "<captures author of blog articles>",
-      "contentID": "545121",
-      "contentType": "E-book",
-      "destinationURL": "https://www.redhat.com/en/home-page",
-      "errorType": "404",
-      "gated": true,
+      "subsection": "<subsection>", // linux-platforms
+      "subsection2": "<subsection2>", // enterprise-linux2
+      "subsection3": "<subsection3>", // try-it
+      "cms": "<cms>", // RH CMS 2020.14.0
+      "analyticsTitle": "<analyticsTitle>", // Analytics Title field in Drupal
+      "blogAuthor": "<blogAuthor>", // captures author of blog articles
+      "contentID": "<contentID>", // 545121
+      "contentType": "<contentType>", // E-book
+      "destinationURL": "<destinationURL>", // https://www.redhat.com/en/home-page
+      "errorType": "<errorType>", // 404
+      "gated": "<gated>", // true
       "taxonomyMetaHreflang": ["29051"],
       "taxonomyRegion": ["4521"],
       "taxonomyBlogPostCategory": ["4261"],
@@ -151,8 +162,8 @@ if (reporter instanceof HTMLElement) {
       "taxonomySolution":["1071"],
       "taxonomyTopic":["9011", "27061"],
       "taxonomyAuthor":["1111"],
-      "taxonomyStage":["111"], 
-      "dataObject":"digitalData"
+      "taxonomyStage":["111"],
+      "dataObject":"<dataObject>" //appEventData,digitalData,DOM
       }
 
 

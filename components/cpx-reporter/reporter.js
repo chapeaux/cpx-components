@@ -8,8 +8,14 @@ const eventMap = new Map([
             payload: 'page',
             data: {
                 page: (tgt, data) => {
-                    return {
-                        pageName: data ? [data.siteName, data.pageCategory, data.subsection, data.subsection2, data.subsection3, data.lastUrlItem].filter(v => (typeof v !== 'undefined' && v !== null)) : '',
+                    return Object.assign({
+                        "pageCategory": "<pageCategory>",
+                        pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null)).join('|') : '',
+                        "siteName": "<siteName>",
+                        "pageTitle": "<pageTitle>",
+                        "pageType": "<pageType>",
+                        "pageSubType": "<pageSubType>",
+                        "pageStatus": "<pageStatus>",
                         previousPage: ((r) => {
                             if (r) {
                                 let a = document.createElement("a");
@@ -17,8 +23,31 @@ const eventMap = new Map([
                                 return a.href;
                             }
                         })(document.referrer),
-                        siteExperience: ((w) => (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth)
-                    };
+                        siteExperience: ((w) => (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
+                        "siteLanguage": "<siteLanguage>",
+                        "subsection": "<subsection>",
+                        "subsection2": "<subsection2>",
+                        "subsection3": "<subsection3>",
+                        "cms": "<cms>",
+                        "analyticsTitle": "<analyticsTitle>",
+                        "blogAuthor": "<blogAuthor>",
+                        "contentID": "<contentID>",
+                        "contentType": "<contentType>",
+                        "destinationURL": "<destinationURL>",
+                        "errorType": "<errorType>",
+                        "gated": "<gated>",
+                        "taxonomyMetaHreflang": [""],
+                        "taxonomyRegion": [""],
+                        "taxonomyBlogPostCategory": [""],
+                        "taxonomyBusinessChallenge": [""],
+                        "taxonomyProduct": [""],
+                        "taxonomyProductLine": [""],
+                        "taxonomySolution": [""],
+                        "taxonomyTopic": [""],
+                        "taxonomyAuthor": [""],
+                        "taxonomyStage": [""],
+                        "dataObject": "<dataObject>"
+                    }, data);
                 }
             }
         }],

@@ -126,9 +126,12 @@ export class CPXUser extends HTMLElement {
         [[Prototype]]: Object
         */
         detail: {
-         custKey: this.user['sid'],
-         accountID: this.user['id'],
-         accountIDType: this.user['typ']
+          // custKey: this.user['sid'],
+          accountID: this.user['account_number'] || '',
+          // accountIDType: this.user['typ'],
+          userID: this.user['preferred_username'],
+          lastLoginDate: this.user['auth_time'],
+
         },
         composed: true,
         bubbles: true,
