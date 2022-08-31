@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 export class CPXUser extends HTMLElement {
     constructor() {
         super();
@@ -5,6 +14,7 @@ export class CPXUser extends HTMLElement {
         this._userId = "";
         this._givenname = "";
         this._email = "";
+        this._eddl = false;
         this._ready = false;
     }
     get userId() {
@@ -34,6 +44,29 @@ export class CPXUser extends HTMLElement {
         this._email = val;
         this.setAttribute("email", this._email);
     }
+    get eddl() {
+        return this._eddl;
+    }
+    set eddl(val) {
+        if (typeof val === "string") {
+            val = true;
+        }
+        if (val === null) {
+            val = false;
+        }
+        if (this._eddl === val) {
+            return;
+        }
+        else {
+            this._eddl = val;
+            if (this._eddl) {
+                this.setAttribute("eddl", "");
+            }
+            else {
+                this.removeAttribute("eddl");
+            }
+        }
+    }
     get ready() {
         return this._ready;
     }
@@ -59,15 +92,9 @@ export class CPXUser extends HTMLElement {
             composed: true,
             bubbles: true,
         }));
-        this.dispatchEvent(new CustomEvent("eddl-user-ready", {
-            detail: {
-                custKey: this.user['sid'],
-                accountID: this.user['id'],
-                accountIDType: this.user['typ']
-            },
-            composed: true,
-            bubbles: true,
-        }));
+        if (this.eddl) {
+            this.dispatchEDDL();
+        }
         this.ready = true;
     }
     connectedCallback() {
@@ -86,15 +113,40 @@ export class CPXUser extends HTMLElement {
             "email",
             "username",
             "user-id",
+            "eddl"
         ];
     }
     attributeChangedCallback(name, oldVal, newVal) {
         this[this.camelCase(name)] = newVal;
     }
+    generateHash(txt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const encoder = new TextEncoder();
+            const hash = yield crypto.subtle.digest('SHA-256', encoder.encode(txt));
+            const hashArray = Array.from(new Uint8Array(hash));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        });
+    }
     camelCase(str, to = true) {
         return to
             ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
             : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
+    }
+    dispatchEDDL() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const hashedEmail = yield this.generateHash(this.user['email']);
+            this.dispatchEvent(new CustomEvent("eddl-user-ready", {
+                detail: {
+                    accountID: this.user['account_number'] || '',
+                    userID: this.user['preferred_username'],
+                    lastLoginDate: this.user['auth_time'],
+                    hashedEmail: hashedEmail
+                },
+                composed: true,
+                bubbles: true,
+            }));
+        });
     }
 }
 window.customElements.define("cpx-user", CPXUser);

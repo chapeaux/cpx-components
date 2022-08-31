@@ -9,6 +9,14 @@ const eventMap = new Map([
             data: {
                 page: (tgt, data) => {
                     return Object.assign({
+                        "analyticsTitle": "<analyticsTitle>",
+                        "blogAuthor": "<blogAuthor>",
+                        "contentID": "<contentID>",
+                        "contentType": "<contentType>",
+                        "dataObject": "<dataObject>",
+                        "destinationURL": "<destinationURL>",
+                        "errorType": "<errorType>",
+                        "gated": "<gated>",
                         "pageCategory": "<pageCategory>",
                         pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null)).join('|') : '',
                         "siteName": "<siteName>",
@@ -23,30 +31,12 @@ const eventMap = new Map([
                                 return a.href;
                             }
                         })(document.referrer),
+                        queryParameters: ((url) => Object.fromEntries(url.searchParams))(new URL(window.location.href)),
                         siteExperience: ((w) => (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
                         "siteLanguage": "<siteLanguage>",
                         "subsection": "<subsection>",
                         "subsection2": "<subsection2>",
-                        "subsection3": "<subsection3>",
-                        "cms": "<cms>",
-                        "analyticsTitle": "<analyticsTitle>",
-                        "blogAuthor": "<blogAuthor>",
-                        "contentID": "<contentID>",
-                        "contentType": "<contentType>",
-                        "destinationURL": "<destinationURL>",
-                        "errorType": "<errorType>",
-                        "gated": "<gated>",
-                        "taxonomyMetaHreflang": [""],
-                        "taxonomyRegion": [""],
-                        "taxonomyBlogPostCategory": [""],
-                        "taxonomyBusinessChallenge": [""],
-                        "taxonomyProduct": [""],
-                        "taxonomyProductLine": [""],
-                        "taxonomySolution": [""],
-                        "taxonomyTopic": [""],
-                        "taxonomyAuthor": [""],
-                        "taxonomyStage": [""],
-                        "dataObject": "<dataObject>"
+                        "subsection3": "<subsection3>"
                     }, data);
                 }
             }
@@ -56,16 +46,16 @@ const eventMap = new Map([
     ['User Detected', { payload: 'user', data: {
                 user: (tgt, data) => {
                     return Object.assign({
-                        "custKey": "{custKey}",
-                        "accountID": "<accountID>",
-                        "accountIDType": "External",
-                        "userID": "<userID>",
+                        "custKey": "",
+                        "accountID": "",
+                        "accountIDType": "",
+                        "userID": "",
                         "lastLoginDate": "",
                         "loggedIn": "false",
-                        "registered": "true",
                         "socialAccountsLinked": "",
                         "subscriptionFrequency": "",
-                        "subscriptionLevel": "", "hashedEmail": ""
+                        "subscriptionLevel": "",
+                        "hashedEmail": ""
                     }, data);
                 }
             }
@@ -85,7 +75,11 @@ export class ReporterEvent extends Event {
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
-            this.data = this.obj.data[this.obj.payload](this.currentTarget, data !== null && data !== void 0 ? data : {});
+            const objEntries = new Map([[
+                    this.obj.payload,
+                    this.obj.data[this.obj.payload](this.currentTarget, data !== null && data !== void 0 ? data : {})
+                ]]);
+            this.data = Object.fromEntries(objEntries);
         }
     }
 }

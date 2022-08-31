@@ -9,6 +9,14 @@ const eventMap = new Map([
     data: {
       page: (tgt:EventTarget, data?) => {
         return Object.assign({
+          "analyticsTitle": "<analyticsTitle>", // Analytics Title field in Drupal
+          "blogAuthor": "<blogAuthor>", // captures author of blog articles
+          "contentID": "<contentID>", // 545121
+          "contentType": "<contentType>", // E-book
+          "dataObject":"<dataObject>", //appEventData,digitalData,DOM
+          "destinationURL": "<destinationURL>", // https://www.redhat.com/en/home-page
+          "errorType": "<errorType>", // 404
+          "gated": "<gated>", // true
           "pageCategory": "<pageCategory>", // technologies
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
@@ -25,30 +33,22 @@ const eventMap = new Map([
               return a.href;
             }
           })(document.referrer),
+          queryParameters: ((url) => Object.fromEntries(url.searchParams))(new URL(window.location.href)),
           siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
           "siteLanguage": "<siteLanguage>",
           "subsection": "<subsection>", // linux-platforms
           "subsection2": "<subsection2>", // enterprise-linux2
-          "subsection3": "<subsection3>", // try-it
-          "cms": "<cms>", // RH CMS 2020.14.0
-          "analyticsTitle": "<analyticsTitle>", // Analytics Title field in Drupal
-          "blogAuthor": "<blogAuthor>", // captures author of blog articles
-          "contentID": "<contentID>", // 545121
-          "contentType": "<contentType>", // E-book
-          "destinationURL": "<destinationURL>", // https://www.redhat.com/en/home-page
-          "errorType": "<errorType>", // 404
-          "gated": "<gated>", // true
-          "taxonomyMetaHreflang": [""],
-          "taxonomyRegion": [""],
-          "taxonomyBlogPostCategory": [""],
-          "taxonomyBusinessChallenge":[""],
-          "taxonomyProduct":[""],
-          "taxonomyProductLine":[""],
-          "taxonomySolution":[""],
-          "taxonomyTopic":[""],
-          "taxonomyAuthor":[""],
-          "taxonomyStage":[""],
-          "dataObject":"<dataObject>" //appEventData,digitalData,DOM
+          "subsection3": "<subsection3>" // try-it
+          // "taxonomyMetaHreflang": [""],
+          // "taxonomyRegion": [""],
+          // "taxonomyBlogPostCategory": [""],
+          // "taxonomyBusinessChallenge":[""],
+          // "taxonomyProduct":[""],
+          // "taxonomyProductLine":[""],
+          // "taxonomySolution":[""],
+          // "taxonomyTopic":[""],
+          // "taxonomyAuthor":[""],
+          // "taxonomyStage":[""],
         },data)
       }
     }
@@ -58,17 +58,18 @@ const eventMap = new Map([
   ['User Detected', {payload:'user',data:{
     user:(tgt:EventTarget, data?) => {
         return Object.assign({
-          "custKey": "{custKey}",
-          "accountID": "<accountID>", 
-          "accountIDType": "External",
-          "userID": "<userID>",
+          "custKey": "",
+          "accountID": "", 
+          "accountIDType": "",
+          "userID": "",
           "lastLoginDate": "",
           "loggedIn": "false",
-          "registered":"true",
+          // "registered":"true",
           "socialAccountsLinked":"",
           "subscriptionFrequency": "",
-          "subscriptionLevel": "","hashedEmail": ""
-          },data);
+          "subscriptionLevel": "",
+          "hashedEmail": ""
+          },data)
         }
       }
     }
@@ -95,7 +96,11 @@ export class ReporterEvent extends Event {
         this.name = name;
         this.obj = eventMap.get(name);
         if (this.obj && this.obj.payload && this.obj.data) {
-          this.data = this.obj.data[this.obj.payload](this.currentTarget, data ?? {});
+          const objEntries = new Map([[
+            this.obj.payload,
+            this.obj.data[this.obj.payload](this.currentTarget, data ?? {})
+          ]]);
+          this.data = Object.fromEntries(objEntries);
         }
     }
     obj:any;

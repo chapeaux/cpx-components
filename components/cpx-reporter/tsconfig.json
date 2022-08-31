@@ -11,7 +11,7 @@
     "declaration": true,
     "declarationDir": ".",
     "esModuleInterop": true,
-    "lib": ["ES6", "ESNext", "DOM"],
+    "lib": ["ES6", "ESNext", "DOM","DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": ".",

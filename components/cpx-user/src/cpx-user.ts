@@ -52,6 +52,29 @@ export class CPXUser extends HTMLElement {
     this.setAttribute("email", this._email);
   }
 
+  _eddl = false;
+  get eddl() {
+    return this._eddl;
+  }
+  set eddl(val) {
+    if (typeof val === "string") {
+      val = true;
+    }
+    if (val === null) {
+      val = false;
+    }
+    if (this._eddl === val) {
+      return;
+    } else {
+      this._eddl = val;
+      if (this._eddl) {
+        this.setAttribute("eddl", "");
+      } else {
+        this.removeAttribute("eddl");
+      }
+    }
+  }
+
   _ready = false;
   get ready() {
     return this._ready;
@@ -78,6 +101,58 @@ export class CPXUser extends HTMLElement {
         bubbles: true,
       })
     );
+
+    if (this.eddl) { this.dispatchEDDL(); }
+    
+    this.ready = true;
+  }
+
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    let data = this.querySelector("script");
+    if (data && data.innerText) {
+      this.user = JSON.parse(data.innerText); // should dispatch ready event
+    }
+    this.addEventListener('token-ready',e=>{
+      this.user = e['detail'];
+    })
+  }
+
+  static get observedAttributes() {
+    return [
+      "givenname",
+      "surname",
+      "email",
+      "username",
+      "user-id",
+      "eddl"
+    ];
+  }
+
+  attributeChangedCallback(name: string, oldVal: string, newVal: string) {
+    this[this.camelCase(name)] = newVal;
+  }
+
+  async generateHash(txt) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+    const encoder = new TextEncoder();
+    const hash = await crypto.subtle.digest('SHA-256', encoder.encode(txt));
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+    return hashHex;
+  }
+
+  camelCase(str: String, to: boolean = true) {
+    return to
+      ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
+      : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
+  }
+
+  async dispatchEDDL() {
+    const hashedEmail = await this.generateHash(this.user['email']);
     this.dispatchEvent(
       new CustomEvent("eddl-user-ready", {
         /*
@@ -131,47 +206,12 @@ export class CPXUser extends HTMLElement {
           // accountIDType: this.user['typ'],
           userID: this.user['preferred_username'],
           lastLoginDate: this.user['auth_time'],
-
+          hashedEmail: hashedEmail
         },
         composed: true,
         bubbles: true,
       })
     );
-    this.ready = true;
-  }
-
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    let data = this.querySelector("script");
-    if (data && data.innerText) {
-      this.user = JSON.parse(data.innerText); // should dispatch ready event
-    }
-    this.addEventListener('token-ready',e=>{
-      this.user = e['detail'];
-    })
-  }
-
-  static get observedAttributes() {
-    return [
-      "givenname",
-      "surname",
-      "email",
-      "username",
-      "user-id",
-    ];
-  }
-
-  attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-    this[this.camelCase(name)] = newVal;
-  }
-
-  camelCase(str: String, to: boolean = true) {
-    return to
-      ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
-      : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
   }
 }
 
