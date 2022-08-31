@@ -1,6 +1,6 @@
 {
   "name": "@chapeaux/cpx-user",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Chapeaux User Component",
   "type": "module",
   "main": "cpx-user.js",
@@ -29,8 +29,5 @@
     "access": "public"
   },
   "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-user",
-  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d",
-  "dependencies": {
-    "jwt-decode": "^3.0.0"
-  }
+  "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
 }

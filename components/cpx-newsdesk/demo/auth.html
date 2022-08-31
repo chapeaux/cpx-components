@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDDL Auth Flow Test</title>
-    <script>
-        top.addEventListener('newsflash', e=> {
-            const result = document.querySelector(`pre[data-event="${e.detail.event}"]`);
-            result.textContent = JSON.stringify(e.detail,null,2);
-            console.log('NEWSFLASH:', e.detail)
-        });
-    </script>
     <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
     <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started">
         {
@@ -52,21 +45,32 @@
         fieldset {
             margin-bottom: 1em;
         }
-        ul {
-            list-style: none;
+        ol {
+            /* list-style: none; */
         }
         pre { overflow:hidden; }
     </style>
 </head>
 <body>
     <h1>Chapeaux Newsdesk Auth Demo</h1>
+    <ol id="results"></ol>
     <cpx-reporter event="Page Load Completed" beat="eddl-user-ready">
         <cpx-reporter event="User Detected" beat="eddl-user-ready">
-            <cpx-user>
-                <cpx-cookie find="rh-user" parse="jwt" dispatch="token-ready"></cpx-cookie>
+            <cpx-user eddl>
+                <cpx-cookie find="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
             </cpx-user>
         </cpx-reporter>
     </cpx-reporter>
     <cpx-keycloak auto jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}"></cpx-keycloak>
+    <script>
+        const results = document.getElementById('results');
+        top.addEventListener('newsflash', e => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${e.detail.event}</strong>
+<pre>${JSON.stringify(e.detail,null,2)}</pre>`;
+            results.appendChild(li);
+            console.log('NEWSFLASH:', e.detail)
+        });
+    </script>
 </body>
 </html>
