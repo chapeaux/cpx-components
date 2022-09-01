@@ -62,8 +62,8 @@
     <h1>Chapeaux Newsdesk Auth Demo</h1>
     <cpx-reporter event="Page Load Completed" beat="eddl-user-ready">
         <cpx-reporter event="User Detected" beat="eddl-user-ready">
-            <cpx-user>
-                <cpx-cookie find="rh-user" parse="jwt" dispatch="token-ready"></cpx-cookie>
+            <cpx-user eddl>
+                <cpx-cookie find="rhc_sso" parse="jwt" dispatch="token-ready"></cpx-cookie>
             </cpx-user>
         </cpx-reporter>
     </cpx-reporter>
