@@ -63,7 +63,7 @@
     <cpx-reporter event="Page Load Completed" beat="eddl-user-ready">
         <cpx-reporter event="User Detected" beat="eddl-user-ready">
             <cpx-user eddl>
-                <cpx-cookie find="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
+                <cpx-cookie key="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
             </cpx-user>
         </cpx-reporter>
     </cpx-reporter>
