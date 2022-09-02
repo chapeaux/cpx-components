@@ -2,15 +2,9 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "@cpelements/pfe-navigation": "^1.0.85",
-    "@cpelements/rh-account-dropdown": "^1.0.51",
-    "@cpelements/rh-site-switcher": "^0.0.4",
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@web/test-runner": "^0.14.0",
     "lerna": "^3.22.1",
     "typescript": "^4.0.2"
-  },
-  "dependencies": {
-    "@chapeaux/cpx-auth": "file:components/cpx-auth",
-    "@chapeaux/cpx-query": "file:components/cpx-query",
-    "@chapeaux/cpx-user": "file:components/cpx-user"
   }
 }

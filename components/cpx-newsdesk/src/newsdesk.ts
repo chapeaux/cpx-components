@@ -1,4 +1,11 @@
 let evtName = 'cpx-report';
+const seed = new Uint32Array(8);
+const rng = crypto.getRandomValues(seed).join('');
+const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']:not([${rng}])`);
+if (src instanceof HTMLElement) {
+    evtName = src.getAttribute('data-event') ?? evtName;
+    src.setAttribute(rng,'');
+}
 globalThis.appEventData = globalThis.appEventData || [];
 
 /**
@@ -21,12 +28,3 @@ export const Newsdesk = {
 }
 
 globalThis.addEventListener(evtName, Newsdesk);
-
-/*
-const scripts = document.getElementsByTagName('script');
-const src = scripts[scripts.length-1];
-*/ 
-// const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']`);
-// if (src instanceof HTMLElement) {
-//     evtName = src.getAttribute('data-event') ?? evtName;
-// }

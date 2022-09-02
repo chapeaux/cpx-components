@@ -20,6 +20,14 @@
   directory of `src`
 - Run `deno run --unstable --allow-all bundle.ts`
 
+## Testing 
+
+- Leverages https://modern-web.dev/guides/test-runner/getting-started/
+- Prerequisites: `npm i`
+- `deno task test`
+- Test files for WTR in `test/*_spec.js` naming format under each component
+- Test files for Deno in `test/*_test.js` naming format under each component
+
 ## Running the local server
 
 - Make sure you've run `mkcert -install` to install the local CA
