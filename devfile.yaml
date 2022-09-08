@@ -5,12 +5,6 @@ projects:
   - name: cpx-components
     git: 'https://github.com/chapeaux/cpx-components.git'
 components:
-  - id: redhat/vscode-openshift-connector/latest
-    type: chePlugin
-    alias: openshift-connector
-  - alias: deno-che
-    type: chePlugin
-    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
   - name: deno-www
     container:
       image: quay.io/chapeaux/deno-che:latest
