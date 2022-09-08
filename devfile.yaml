@@ -1,7 +1,7 @@
 schemaVersion: 2.1.0
 metadata:
-  name: deno-che
-  displayName: Chapeaux Components
+  name: chapeaux-project
+  displayName: Chapeaux Web Components
   language: 'javascript'
 projects:
   - name: cpx-components
@@ -28,8 +28,7 @@ components:
     volume:
       size: 1G
 commands:
-  - id: serve-app
-    exec:
+  - exec:
       label: "RUN the web server"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
@@ -37,16 +36,17 @@ commands:
       group:
         kind: run
         isDefault: true
-  - id: test-cpx
-    exec:
+    id: serve-app
+    
+  - exec:
       label: "TEST the components"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task test"
       group:
         kind: test
-  - id: test-watch
-    exec:
+    id: test-cpx
+  - exec:
       label: "TEST the components and WATCH for changes"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
@@ -54,16 +54,16 @@ commands:
       hotReloadCapable: true
       group:
         kind: test
-  - id: build-scripts
-    exec:
+    id: test-watch
+  - exec:
       label: "BUILD changed component scripts"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task build"
       group:
         kind: build
-  - id: build-watch
-    exec:
+    id: build-scripts
+  - exec:
       label: "BUILD component scripts and WATCH for changes"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
@@ -71,19 +71,20 @@ commands:
       hotReloadCapable: true
       group:
         kind: build
-  - id: fmt-cpx
-    exec:
+    id: build-watch
+  - exec:
       label: "FORMAT component scripts"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task format"
       group:
         kind: build
-  - id: stop-app
-    exec:
+    id: fmt-cpx
+  - exec:
       label: "STOP the web server"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno_server_pids=$(pgrep -fx ''.*deno (--inspect ) --allow-net --allow-read ?server.ts'' | tr "\\n" " ") && echo "Stopping deno server with PIDs: ${deno_server_pids}" &&  kill -15 ${deno_server_pids} &>/dev/null && echo ''Done.''"
       group:
         kind: run
+    id: stop-app
