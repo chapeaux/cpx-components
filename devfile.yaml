@@ -80,11 +80,3 @@ commands:
       group:
         kind: build
     id: fmt-cpx
-  - exec:
-      label: "STOP the web server"
-      component: deno-www
-      workingDir: ${PROJECTS_ROOT}/cpx-components
-      commandLine: "deno_server_pids=$(pgrep -fx ''.*deno (--inspect ) --allow-net --allow-read ?server.ts'' | tr "\\n" " ") && echo "Stopping deno server with PIDs: ${deno_server_pids}" &&  kill -15 ${deno_server_pids} &>/dev/null && echo ''Done.''"
-      group:
-        kind: run
-    id: stop-app
