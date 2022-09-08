@@ -7,7 +7,7 @@ projects:
   - name: cpx-components
     git: 
       remotes: 
-        origin: 'https://github.com/chapeaux/cpx-components.git'
+        origin: "https://github.com/chapeaux/cpx-components.git"
 components:
   - name: deno-www
     container:
