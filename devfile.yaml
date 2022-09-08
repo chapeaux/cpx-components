@@ -1,6 +1,8 @@
 schemaVersion: 2.1.0
 metadata:
   name: deno-che
+  displayName: Chapeaux Components
+  language: 'javascript'
 projects:
   - name: cpx-components
     git: 
@@ -13,15 +15,15 @@ components:
       env:
         - name: DENO_DIR
           value: .deno
-      endpoints:
-        - exposure: public
-          name: deno-svc
-          targetPort: 8080
       memoryLimit: 1G
       mountSources: true
       volumeMounts:
         - name: deno-cache
           path: .deno
+      endpoints:
+        - name: deno-svc
+          exposure: public
+          targetPort: 8080
   - name: deno-cache
     volume:
       size: 1G
@@ -34,6 +36,7 @@ commands:
       commandLine: "deno task serve"
       group:
         kind: run
+        isDefault: true
   - id: test-cpx
     exec:
       label: "TEST the components"
@@ -41,15 +44,16 @@ commands:
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task test"
       group:
-        kind: run
-  - id: test-watch-app
+        kind: test
+  - id: test-watch
     exec:
       label: "TEST the components and WATCH for changes"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task test:watch"
+      hotReloadCapable: true
       group:
-        kind: run
+        kind: test
   - id: build-scripts
     exec:
       label: "BUILD changed component scripts"
@@ -57,23 +61,24 @@ commands:
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task build"
       group:
-        kind: run
-  - id: build-watch-scripts
+        kind: build
+  - id: build-watch
     exec:
       label: "BUILD component scripts and WATCH for changes"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task build:watch"
+      hotReloadCapable: true
       group:
-        kind: run
-  - id: format-scripts
+        kind: build
+  - id: fmt-cpx
     exec:
       label: "FORMAT component scripts"
       component: deno-www
       workingDir: ${PROJECTS_ROOT}/cpx-components
       commandLine: "deno task format"
       group:
-        kind: run
+        kind: build
   - id: stop-app
     exec:
       label: "STOP the web server"
