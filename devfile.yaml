@@ -3,7 +3,9 @@ metadata:
   name: deno-che
 projects:
   - name: cpx-components
-    git: 'https://github.com/chapeaux/cpx-components.git'
+    git: 
+      remotes: 
+        origin: 'https://github.com/chapeaux/cpx-components.git'
 components:
   - name: deno-www
     container:
