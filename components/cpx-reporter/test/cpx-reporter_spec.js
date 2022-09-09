@@ -6,9 +6,4 @@ describe('CPX Reporter', () => {
         const ele = new CPXReporter();
         expect(ele.emit).to.equal('cpx-report');
     });
-
-    // it('Emits default value "cpx-report" 2', () => {
-    //     const ele = new CPXReporter();
-    //     expect(ele.emit).to.equal('cpx-report');
-    // });
 });
