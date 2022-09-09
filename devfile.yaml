@@ -22,6 +22,7 @@ components:
           path: .deno
       endpoints:
         - name: deno-svc
+          protocol: https
           exposure: public
           targetPort: 8080
   - name: deno-cache
