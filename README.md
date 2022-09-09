@@ -20,13 +20,19 @@
   directory of `src`
 - Run `deno run --unstable --allow-all bundle.ts`
 
-## Testing 
+## Testing
 
 - Leverages https://modern-web.dev/guides/test-runner/getting-started/
 - Prerequisites: `npm i`
 - `deno task test`
 - Test files for WTR in `test/*_spec.js` naming format under each component
 - Test files for Deno in `test/*_test.js` naming format under each component
+
+### Testing with podman
+- Prerequisites: `podman`
+- Build the image: `podman -t localhost/cpx-components -f Containerfile.test .`
+- Run one off test `podman run -it --rm localhost/cpx-components:latest deno task test`
+- Run and watch test `podman run -it --rm localhost/cpx-components:latest deno task test:watch`
 
 ## Running the local server
 

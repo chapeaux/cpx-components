@@ -1,7 +1,14 @@
 import { expect } from '@esm-bundle/chai';
 import { CPXReporter } from '../cpx-reporter.js';
 
-it('sums up 2 number', () => {
-    const ele = new CPXReporter();
-    expect(ele.emit).to.equal('cpx-report');
+describe('CPX Reporter', () => {
+    it('Emits default value "cpx-report"', () => {
+        const ele = new CPXReporter();
+        expect(ele.emit).to.equal('cpx-report');
+    });
+
+    // it('Emits default value "cpx-report" 2', () => {
+    //     const ele = new CPXReporter();
+    //     expect(ele.emit).to.equal('cpx-report');
+    // });
 });
