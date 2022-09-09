@@ -27,9 +27,10 @@
 
 ### Testing with podman
 - Prerequisites: `podman`
-- Build the image: `podman -t localhost/cpx-components -f Containerfile.test .`
-- Run one off test `podman run -it --rm localhost/cpx-components:latest deno task test`
-- Run and watch test `podman run -it --rm localhost/cpx-components:latest deno task test:watch`
+- Build the image: `podman -t localhost/cpx-components:dev -f Containerfile.test .`
+- Run one off test `podman run -it --rm localhost/cpx-components:dev deno task test`
+- Run and watch test `podman run -it --rm -v ./:/usr/src/app localhost/cpx-components:latest deno task test:watch`
+TODO: Remove node dependency and run from deno image.
 
 ## Running the local server
 
