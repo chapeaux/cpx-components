@@ -1,5 +1,11 @@
 {
     "tasks": {
+        "build": "deno run -A tasks/build.js",
+        "build:watch": "deno task build --watch",
+        "doc": "deno run -A tasks/docs.js",
+        "format": "deno fmt",
+        "serve": "deno run -A tasks/serve.js",
+        "serve:https": "deno run -A tasks/serve.js https",
         "test": "deno run -A tasks/test.js",
         "test:watch": "deno task test --watch"
     }

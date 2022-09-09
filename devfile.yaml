@@ -1,80 +1,77 @@
-apiVersion: 1.0.0
+schemaVersion: 2.1.0
 metadata:
-  generateName: chapeaux-
-projects:
-  - name: cpx-components
-    source:
-      location: 'https://github.com/chapeaux/cpx-components.git'
-      type: github
+  name: chapeaux-project
+  displayName: Chapeaux Web Components
+  language: 'javascript'
 components:
-  - type: cheEditor
-    reference: 'https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/theia.yaml'
-    alias: che-theia
-  - alias: vscode-typescript
-    id: vscode/typescript-language-features/latest
-    type: chePlugin
-  - id: redhat/vscode-yaml/latest
-    type: chePlugin
-    alias: vscode-yaml
-  - id: redhat/vscode-openshift-connector/latest
-    type: chePlugin
-    alias: openshift-connector
-  - alias: deno-che
-    type: chePlugin
-    reference: "https://raw.githubusercontent.com/chapeaux/cpx-components/main/plugins/deno.yaml"
-  - mountSources: true
-    endpoints:
-      - name: deno-svc
-        port: 8000
-    memoryLimit: 1Gi
-    type: dockerimage
-    alias: deno
-    image: 'quay.io/ldary/deno-crw'
+  - name: deno-www
+    container:
+      image: quay.io/chapeaux/deno-che:latest
+      env:
+        - name: DENO_DIR
+          value: .deno
+      memoryLimit: 1G
+      mountSources: true
+      volumeMounts:
+        - name: deno-cache
+          path: .deno
+      endpoints:
+        - name: deno-svc
+          protocol: https
+          exposure: public
+          targetPort: 8080
+  - name: deno-cache
+    volume:
+      size: 1G
 commands:
-  - name: RUN the component server
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno run --unstable --allow-net --allow-read server.ts
-        component: deno
-  - name: TEST the components
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno test --allow-net --allow-read
-        component: deno
-  - name: LINT the components
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno lint --json > data/lint.json
-        component: deno
-  - name: FORMAT scripts
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno fmt
-        component: deno
-  - name: DOCUMENT components
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno doc --json > data/docs.json
-        component: deno
-  - name: DEBUG the component server
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno run --inspect --unstable --allow-net --allow-read server.ts
-        component: deno
-  - name: BUILD the components
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/cpx-components/'
-        type: exec
-        command: deno run --unstable --allow-net --allow-read --allow-write bundle.ts
-        component: deno
-  - name: STOP the component server
-    actions:
-      - type: exec
-        command: 'deno_server_pids=$(pgrep -fx ''.*deno (--inspect ) --allow-net --allow-read ?server.ts'' | tr "\\n" " ") && echo "Stopping deno server with PIDs: ${deno_server_pids}" &&  kill -15 ${deno_server_pids} &>/dev/null && echo ''Done.'''
-        component: deno
+  - exec:
+      label: "RUN the web server"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task serve"
+      group:
+        kind: run
+        isDefault: true
+    id: serve-app
+  - exec:
+      label: "TEST the components"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task test"
+      group:
+        kind: test
+    id: test-cpx
+  - exec:
+      label: "TEST the components and WATCH for changes"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task test:watch"
+      hotReloadCapable: true
+      group:
+        kind: test
+    id: test-watch
+  - exec:
+      label: "BUILD changed component scripts"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task build"
+      group:
+        kind: build
+    id: build-scripts
+  - exec:
+      label: "BUILD component scripts and WATCH for changes"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task build:watch"
+      hotReloadCapable: true
+      group:
+        kind: build
+    id: build-watch
+  - exec:
+      label: "FORMAT component scripts"
+      component: deno-www
+      workingDir: ${PROJECTS_ROOT}/cpx-components
+      commandLine: "deno task format"
+      group:
+        kind: build
+    id: fmt-cpx

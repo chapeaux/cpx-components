@@ -1,10 +1,10 @@
 let evtName = 'cpx-report';
-const seed = new Uint32Array(8);
+const seed = new Uint32Array(1);
 const rng = crypto.getRandomValues(seed).join('');
-const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']:not([${rng}])`);
+const src = document.querySelector(`script[src*='${(new URL(import.meta.url)).pathname}']:not(#_${rng})`);
 if (src instanceof HTMLElement) {
     evtName = src.getAttribute('data-event') ?? evtName;
-    src.setAttribute(rng,'');
+    src.id = `_${rng}`;
 }
 globalThis.appEventData = globalThis.appEventData || [];
 
