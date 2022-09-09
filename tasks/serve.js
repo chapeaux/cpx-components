@@ -37,5 +37,8 @@ app.use(async (ctx) => {
   });
 });
 
-await app.listen({ port: 8080, hostname: '0.0.0.0' });
-// await app.listen({ port: 8443, secure: true, certFile:'./localhost.pem', keyFile:'./localhost-key.pem'});
+if (Deno.args.indexOf('https') >= 0) {
+  await app.listen({ port: 8443, secure: true, certFile:'./localhost.pem', keyFile:'./localhost-key.pem'});
+} else {
+  await app.listen({ port: 8080, hostname: '0.0.0.0' });
+}

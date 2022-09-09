@@ -3,11 +3,6 @@ metadata:
   name: chapeaux-project
   displayName: Chapeaux Web Components
   language: 'javascript'
-projects:
-  - name: cpx-components
-    git: 
-      remotes: 
-        origin: "https://github.com/chapeaux/cpx-components.git"
 components:
   - name: deno-www
     container:
@@ -38,7 +33,6 @@ commands:
         kind: run
         isDefault: true
     id: serve-app
-    
   - exec:
       label: "TEST the components"
       component: deno-www
