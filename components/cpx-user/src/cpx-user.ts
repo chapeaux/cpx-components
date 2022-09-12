@@ -21,7 +21,7 @@ user object
  */
 export class CPXUser extends HTMLElement {
   _authenticated = false;
-
+  
   _userId = "";
   get userId() {
     return this._userId;
@@ -102,13 +102,26 @@ export class CPXUser extends HTMLElement {
       })
     );
 
-    if (this.eddl) { this.dispatchEDDL(); }
+    if (this.eddl) { 
+      this._worker.postMessage({
+        action:'getCookies',
+        values: new Map([
+          ['rh_common_id', 'custKey'],
+          ['rh_user_id', 'userID'],
+          ['rh_sso_session','loggedIn']
+        ]),
+        payload:document.cookie});
+        this.dispatchEDDL(); 
+      }
     
     this.ready = true;
   }
-
+  _worker;
   constructor() {
     super();
+    
+    this._worker = new Worker(new URL(import.meta.url).pathname.replace('cpx-user.js','user.js'));
+    this.onMessage = this.onMessage.bind(this);
   }
 
   connectedCallback() {
@@ -118,7 +131,8 @@ export class CPXUser extends HTMLElement {
     }
     this.addEventListener('token-ready',e=>{
       this.user = e['detail'];
-    })
+    });
+    this._worker.onmessage = this.onMessage;
   }
 
   static get observedAttributes() {
@@ -151,8 +165,24 @@ export class CPXUser extends HTMLElement {
       : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
   }
 
+  onMessage(e) {
+    const data = e.data;
+    if (data.action) {
+      switch (data.action) {
+        case 'getCookies':
+          if (data.results) {
+            Object.assign(this.user,data.results);
+          }
+        break;
+      }
+    } 
+  }
+
   async dispatchEDDL() {
     const hashedEmail = await this.generateHash(this.user['email']);
+    
+
+    
     this.dispatchEvent(
       new CustomEvent("eddl-user-ready", {
         /*
@@ -199,13 +229,18 @@ export class CPXUser extends HTMLElement {
         typ: "Bearer"
         user-social-links:
         [[Prototype]]: Object
+
+         ['rh_common_id', 'custKey'],
+          ['rh_user_id', 'userID'],
+          ['rh_sso_session','loggedIn']
         */
         detail: {
-          // custKey: this.user['sid'],
+          custKey: this.user['custKey'], // cookie
           accountID: this.user['account_number'] || '',
           // accountIDType: this.user['typ'],
-          userID: this.user['preferred_username'],
+          userID: this.user['userID'], // SSO sets a cookie
           lastLoginDate: this.user['auth_time'],
+          loggedIn: this.user['loggedIn'] ? "true":"false",
           hashedEmail: hashedEmail
         },
         composed: true,

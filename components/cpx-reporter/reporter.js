@@ -66,7 +66,7 @@ const eventMap = new Map([
     ['Form Viewed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Succeeded', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Failed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
-    ['Error Message Presented', { payload: 'error', data: { error: (tgt, data) => { return { errorCode: '', errorType: '' }; } } }]
+    ['Error Message Presented', { payload: 'error', data: { error: (tgt, data) => { return Object.assign({ errorCode: '', errorType: '' }, data); } } }]
 ]);
 export class ReporterEvent extends Event {
     constructor(name, data, emitName = 'cpx-report') {

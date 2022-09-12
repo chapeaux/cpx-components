@@ -16,6 +16,9 @@ export class CPXUser extends HTMLElement {
         this._email = "";
         this._eddl = false;
         this._ready = false;
+        console.log(new URL(import.meta.url).pathname.replace('cpx-user.js', 'user.js'));
+        this._worker = new Worker(new URL(import.meta.url).pathname.replace('cpx-user.js', 'user.js'));
+        this.onMessage = this.onMessage.bind(this);
     }
     get userId() {
         return this._userId;
@@ -93,6 +96,15 @@ export class CPXUser extends HTMLElement {
             bubbles: true,
         }));
         if (this.eddl) {
+            this._worker.postMessage({
+                action: 'getCookies',
+                values: new Map([
+                    ['rh_common_id', 'custKey'],
+                    ['rh_user_id', 'userID'],
+                    ['rh_sso_session', 'loggedIn']
+                ]),
+                payload: document.cookie
+            });
             this.dispatchEDDL();
         }
         this.ready = true;
@@ -105,6 +117,7 @@ export class CPXUser extends HTMLElement {
         this.addEventListener('token-ready', e => {
             this.user = e['detail'];
         });
+        this._worker.onmessage = this.onMessage;
     }
     static get observedAttributes() {
         return [
@@ -133,14 +146,28 @@ export class CPXUser extends HTMLElement {
             ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
             : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
     }
+    onMessage(e) {
+        const data = e.data;
+        if (data.action) {
+            switch (data.action) {
+                case 'getCookies':
+                    if (data.results) {
+                        Object.assign(this.user, data.results);
+                    }
+                    break;
+            }
+        }
+    }
     dispatchEDDL() {
         return __awaiter(this, void 0, void 0, function* () {
             const hashedEmail = yield this.generateHash(this.user['email']);
             this.dispatchEvent(new CustomEvent("eddl-user-ready", {
                 detail: {
+                    custKey: this.user['custKey'],
                     accountID: this.user['account_number'] || '',
-                    userID: this.user['preferred_username'],
+                    userID: this.user['userID'],
                     lastLoginDate: this.user['auth_time'],
+                    loggedIn: this.user['loggedIn'] ? "true" : "false",
                     hashedEmail: hashedEmail
                 },
                 composed: true,

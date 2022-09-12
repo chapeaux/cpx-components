@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDDL Auth Flow Test</title>
+    <title>SKIT SPAship Test</title>
+    <script>
+        top.addEventListener('newsflash', e=> {
+            const result = document.querySelector(`pre[data-event="${e.detail.event}"]`);
+            result.textContent = JSON.stringify(e.detail,null,2);
+            console.log('NEWSFLASH:', e.detail)
+        });
+    </script>
+    <script type="module" src="/cpx-newsdesk/newsdesk.js"></script>
     <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
     <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started">
         {
@@ -18,10 +26,9 @@
         "destinationUrl": "https://dxp-developer.docksal/articles/2022/01/05/extracting-information-python-source-code",
         "errorType": "1234",
         "gated": "False",
-        "pageName": "xxxx",
-        "queryParameters": "xxxx",
         "severityLevel": "xxx",
         "siteLanguage": "xx",
+        "siteName":"cpx-test-site",
         "pageStatus": "xxx",
         "pageSubType": "xxx",
         "pageTitle": "Extracting information from Python source code | Red Hat Developer",
@@ -45,32 +52,257 @@
         fieldset {
             margin-bottom: 1em;
         }
-        ol {
-            /* list-style: none; */
+        ul {
+            list-style: none;
         }
         pre { overflow:hidden; }
     </style>
 </head>
 <body>
-    <h1>Chapeaux Newsdesk Auth Demo</h1>
-    <ol id="results"></ol>
-    <cpx-reporter event="Page Load Completed" beat="eddl-user-ready">
-        <cpx-reporter event="User Detected" beat="eddl-user-ready">
-            <cpx-user eddl>
-                <cpx-cookie key="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
-            </cpx-user>
-        </cpx-reporter>
-    </cpx-reporter>
-    <cpx-keycloak auto jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}"></cpx-keycloak>
-    <script>
-        const results = document.getElementById('results');
-        top.addEventListener('newsflash', e => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${e.detail.event}</strong>
-<pre>${JSON.stringify(e.detail,null,2)}</pre>`;
-            results.appendChild(li);
-            console.log('NEWSFLASH:', e.detail)
-        });
-    </script>
+    <h1>Chapeaux Newsdesk Demo</h1>
+    <fieldset>
+        <legend>Page Events</legend>
+        <ul>
+            <li>
+                <details>
+                    <summary>Error Message Presented</summary>
+                    <pre data-event="Error Message Presented"></pre>
+                </details>
+                <cpx-reporter auto event="Error Message Presented">
+                    <script type="data">{ 
+                        "errorCode": "404", 
+                        "errorType": "Not Found"
+                    }</script>
+                </cpx-reporter>
+            </li>
+            <li>
+                <details>
+                    <summary>Page Load Started</summary>
+                    <pre data-event="Page Load Started"></pre>
+                </details>
+                <!-- <cpx-reporter emit="cpx-report" debug="verbose" auto event="Page Load Started">
+                    <script type="data">
+                    {
+                    "pageCategory": "technologies",
+                    "pageName": "{pageName}",
+                    "pageTitle": "Red Hat Enterprise Linux operating system",
+                    "analyticsTitle": "{Drupal analyticsTitle field}",        
+                    "pageType": "pattern_template",
+                    "pageSubType": "Product",
+                    "siteExperience": "mobile",
+                    "siteLanguage": "{siteLanguage}",
+                    "subsection": "linux-platforms",
+                    "subsection2": "enterprise-linux2",
+                    "subsection3": "try-it",
+                    "cms": "RH CMS 2020.14.0",
+                    "analyticsTitle": "{Analytics Title field in Drupal}",
+                    "blogAuthor": "{captures author of blog articles}",
+                    "contentID": "545121",
+                    "contentType": "E-book",
+                    "destinationURL": "https://www.redhat.com/en/home-page",
+                    "errorType": "404",
+                    "gated": true,
+                    "taxonomyMetaHreflang": ["29051"],
+                    "taxonomyRegion": ["4521"],
+                    "taxonomyBlogPostCategory": ["4261"],
+                    "taxonomyBusinessChallenge":["161"],
+                    "taxonomyProduct":["781"],
+                    "taxonomyProductLine":["831"],
+                    "taxonomySolution":["1071"],
+                    "taxonomyTopic":["9011", "27061"],
+                    "taxonomyAuthor":["1111"],
+                    "taxonomyStage":["111"], 
+                    "dataObject":"digitalData"
+                    }
+                    </script>
+                </cpx-reporter> -->
+            </li>
+            <li>
+                <details>
+                    <summary>Page Load Completed</summary>
+                    <pre data-event="Page Load Completed"></pre>
+                </details>
+                <cpx-reporter debug auto event="Page Load Completed"></cpx-reporter>
+            </li>
+        </ul>
+        </fieldset>
+
+        <fieldset>
+        <legend>Form Events</legend>
+        <ul>
+            <li>
+                <details>
+                    <HTMLElement
+                        "formID": "{formID}",
+                        "formName": "{formName}",
+                        "formType": "{formType}",
+                        "formTemplate": "{formTemplate}",
+                        "offerID": "{offerID}",
+                        "formField": [
+                            {
+                            "fieldID": "{fieldID}",
+                            "fieldPosition": "{fieldPosition}"
+                            }
+                        ]
+                    }
+                    </script>
+                    <form></form>
+                </cpx-reporter>
+            </li>
+            <li>
+                <details>
+                    <summary>Form Submission Succeeded</summary>
+                    <pre data-event="Form Submission Succeeded"></pre>
+                </details>
+                <cpx-reporter auto event="Form Submission Succeeded">
+                    <script type="data">
+                    {
+                        "formID": "{formID}",
+                        "formName": "{formName}",
+                        "formType": "{formType}",
+                        "formTemplate": "{formTemplate}",
+                        "offerID": "{offerID}"
+                    }
+                    </script>
+                </cpx-reporter>
+            </li>
+            <li>
+                <details>
+                    <summary>Form Submission Failed</summary>
+                    <pre data-event="Form Submission Failed"></pre>
+                </details>
+                <cpx-reporter auto event="Form Submission Failed">
+                    <script type="data">
+                    {
+                        "formError": "{formError}",
+                        "formField": [
+                            {
+                                "fieldID": "{fieldID}",
+                                "fieldPosition": "{fieldPosition}",
+                                "formFieldError": "{formFieldError}"
+                            }
+                        ],
+                        "formName": "{formName}",
+                        "formTemplate": "{formTemplate}",
+                        "offerID": "{offerID}",
+                        "formType": "{formType}"
+                    }
+                    </script>
+                </cpx-reporter>
+            </li>
+        </fieldset>
+        <fieldset>
+            <legend>User Events</legend>
+            <ul>
+                <li>
+                    <details>
+                        <summary>User Detected</summary>
+                        <pre data-event="User Detected"></pre>
+                    </details>
+                    <cpx-reporter event="User Detected" beat="eddl-user-ready">
+                        <cpx-user eddl>
+                            <cpx-cookie action="get" key="rhc_sso" parse="jwt" emit="token-ready"></cpx-cookie>
+                        </cpx-user>
+                    </cpx-reporter>
+                    <!-- <cpx-reporter event="User Detected" beat="user-ready">
+                        <cpx-user>
+                            <script type="data">
+                                {
+                                    "exp": 1603803270,
+                                    "iat": 1603802370,
+                                    "auth_time": 1603802369,
+                                    "jti": "{{GUID}}",
+                                    "iss": "https://sso.redhat.com/auth/realms/redhat-external",
+                                    "aud": "customer-portal",
+                                    "sub": "f:{{GUID}}:{{USERNAME}}",
+                                    "typ": "Bearer",
+                                    "azp": "customer-portal",
+                                    "nonce": "{{GUID}}",
+                                    "session_state": "{{GUID}}",
+                                    "acr": "1",
+                                    "allowed-origins": [
+                                     "https://prod.foo.redhat.com:1337",
+                                     "https://www.redhat.com",
+                                     "https://access.redhat.com"
+                                    ],
+                                    "realm_access": {
+                                     "roles": [
+                                      "authenticated",
+                                      "candlepin_system_access_view_edit_personal",
+                                      "idp_authenticated",
+                                      "portal_manage_subscriptions",
+                                      "errata:notification_status_enabled",
+                                      "errata:notification:enhancement",
+                                      "portal_manage_cases",
+                                      "errata:notification:security",
+                                      "errata:notification_level_system-visible",
+                                      "errata:notification:bugfix",
+                                      "offline_access",
+                                      "uma_authorization",
+                                      "portal_system_management",
+                                      "cloud_access_1",
+                                      "errata:notification_delivery_instant",
+                                      "portal_download"
+                                     ]
+                                    },
+                                    "resource_access": {
+                                     "rhd-dm": {
+                                      "roles": [
+                                       "rhuser"
+                                      ]
+                                     },
+                                     "account": {
+                                      "roles": [
+                                       "manage-account",
+                                       "manage-account-links",
+                                       "view-profile"
+                                      ]
+                                     }
+                                    },
+                                    "scope": "openid Legacy_IDP_OpenID",
+                                    "REDHAT_LOGIN": "{{USERNAME}}",
+                                    "lastName": "User",
+                                    "country": "US",
+                                    "account_number": "{{ACCT_NO}}",
+                                    "preferred_username": "{{USERNAME}}",
+                                    "firstName": "Test",
+                                    "account_id": "{{ACCT_ID}}",
+                                    "user_id": "{{USER_ID}}",
+                                    "organization_id": "00Dm0000000116C",
+                                    "siteId": "redhat",
+                                    "siteID": "redhat",
+                                    "portal_id": "06060000000D0af",
+                                    "lang": "en_US",
+                                    "region": "US",
+                                    "email": "test123@test123.com",
+                                    "RHAT_LOGIN": "{{USERNAME}}",
+                                    "username": "{{USERNAME}}"
+                                   }
+                            </script>
+                        </cpx-user>
+                    </cpx-reporter> -->
+                </li>
+                <li>
+                    <details>
+                        <summary>User Signed In</summary>
+                        <pre data-event="User Signed In"></pre>
+                    </details>
+                    <cpx-reporter event="User Signed In" beat="kc-token-ready">
+                        <cpx-keycloak jwt-cookie="rhc_sso" options="{'clientId': 'rhd-web', 'flow': 'standard', 'realm': 'redhat-external', 'responseMode': 'fragment', 'url': 'https://sso.stage.redhat.com/auth', 'timeSkew': 0}" config="{'realm': 'redhat-external', 'ssl-required': 'external', 'public-client': true, 'token-store': 'cookie', 'token-cookie-path':'rhc_sso','clientId': 'rhd-web', 'url': 'https://sso.stage.redhat.com/auth'}"></cpx-keycloak>
+                    </cpx-reporter>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <legend>Click Events</legend>
+        </fieldset>
+
+    <!-- <cpx-reporter beat="click" event="Content Listing Item Clicked">
+        <ul>
+            <li>
+                <a class="unav__link" href="/en/products/open-hybrid-cloud" data-analytics-category="Featured Links" data-analytics-text="Open hybrid cloud">Open hybrid cloud</a>
+            </li>               
+        </ul>
+    </cpx-reporter> -->
 </body>
 </html>
