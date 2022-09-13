@@ -16,7 +16,6 @@ export class CPXUser extends HTMLElement {
         this._email = "";
         this._eddl = false;
         this._ready = false;
-        console.log(new URL(import.meta.url).pathname.replace('cpx-user.js', 'user.js'));
         this._worker = new Worker(new URL(import.meta.url).pathname.replace('cpx-user.js', 'user.js'));
         this.onMessage = this.onMessage.bind(this);
     }
