@@ -192,7 +192,7 @@ export class CPXUser extends HTMLElement {
           // accountIDType: this.user['typ'],
           userID: this.user['userID'], // SSO sets a cookie
           lastLoginDate: this.user['auth_time'],
-          loggedIn: this.user['loggedIn'] ? "true":"false",
+          loggedIn: parseInt(this.user['loggedIn']) ? "true":"false",
           hashedEmail: hashedEmail
         },
         composed: true,

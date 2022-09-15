@@ -169,7 +169,7 @@ export class CPXUser extends HTMLElement {
                     accountID: this.user['account_number'] || '',
                     userID: this.user['userID'],
                     lastLoginDate: this.user['auth_time'],
-                    loggedIn: this.user['loggedIn'] ? "true" : "false",
+                    loggedIn: parseInt(this.user['loggedIn']) ? "true" : "false",
                     hashedEmail: hashedEmail
                 },
                 composed: true,
