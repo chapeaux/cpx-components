@@ -104,7 +104,6 @@ export class CPXUser extends HTMLElement {
                 ]),
                 payload: document.cookie
             });
-            this.dispatchEDDL();
         }
         this.ready = true;
     }
@@ -153,13 +152,17 @@ export class CPXUser extends HTMLElement {
                     if (data.results) {
                         Object.assign(this.user, data.results);
                     }
+                    this.dispatchEDDL();
                     break;
             }
         }
     }
     dispatchEDDL() {
         return __awaiter(this, void 0, void 0, function* () {
-            const hashedEmail = yield this.generateHash(this.user['email']);
+            let hashedEmail = '';
+            if (typeof this.user['email'] !== 'undefined' && this.user['email'].length && this.user['email'].length > 0) {
+                hashedEmail = yield this.generateHash(this.user['email']);
+            }
             this.dispatchEvent(new CustomEvent("eddl-user-ready", {
                 detail: {
                     custKey: this.user['custKey'],
