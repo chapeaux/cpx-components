@@ -9,21 +9,21 @@ const eventMap = new Map([
             data: {
                 page: (tgt, data) => {
                     return Object.assign({
-                        "analyticsTitle": "<analyticsTitle>",
-                        "blogAuthor": "<blogAuthor>",
-                        "contentID": "<contentID>",
-                        "contentType": "<contentType>",
-                        "dataObject": "<dataObject>",
-                        "destinationURL": "<destinationURL>",
-                        "errorType": "<errorType>",
-                        "gated": "<gated>",
-                        "pageCategory": "<pageCategory>",
+                        "analyticsTitle": "",
+                        "blogAuthor": "",
+                        "contentID": "",
+                        "contentType": "<",
+                        "dataObject": "",
+                        "destinationURL": "",
+                        "errorType": "",
+                        "gated": "",
+                        "pageCategory": "",
                         pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null)).join('|') : '',
-                        "siteName": "<siteName>",
-                        "pageTitle": "<pageTitle>",
-                        "pageType": "<pageType>",
-                        "pageSubType": "<pageSubType>",
-                        "pageStatus": "<pageStatus>",
+                        "siteName": "",
+                        "pageTitle": "",
+                        "pageType": "",
+                        "pageSubType": "",
+                        "pageStatus": "",
                         previousPage: ((r) => {
                             if (r) {
                                 let a = document.createElement("a");
@@ -33,10 +33,10 @@ const eventMap = new Map([
                         })(document.referrer),
                         queryParameters: ((url) => Object.fromEntries(url.searchParams))(new URL(window.location.href)),
                         siteExperience: ((w) => (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
-                        "siteLanguage": "<siteLanguage>",
-                        "subsection": "<subsection>",
-                        "subsection2": "<subsection2>",
-                        "subsection3": "<subsection3>"
+                        "siteLanguage": "",
+                        "subsection": "",
+                        "subsection2": "",
+                        "subsection3": ""
                     }, data);
                 }
             }
@@ -61,8 +61,8 @@ const eventMap = new Map([
             }
         }
     ],
-    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: (tgt, data) => { return { "displayCount": "<displayCount>", "listingDriver": "<listingDriver>", "filterList": "<filterList>", "resultsCount": "<resultsCount>" }; } } }],
-    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: (tgt, data) => { return { "displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>" }; } } }],
+    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: (tgt, data) => { return { "displayCount": "", "listingDriver": "", "filterList": "", "resultsCount": "" }; } } }],
+    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: (tgt, data) => { return { "displayPosition": "", "linkType": "", "contentTitle": "" }; } } }],
     ['Form Viewed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Succeeded', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Failed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
