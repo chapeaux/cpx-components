@@ -12,7 +12,7 @@ const eventMap = new Map([
           "analyticsTitle": "", // Analytics Title field in Drupal
           "blogAuthor": "", // captures author of blog articles
           "contentID": "", // 545121
-          "contentType": "<", // E-book
+          "contentType": "", // E-book
           "dataObject":"", //appEventData,digitalData,DOM
           "destinationURL": "", // https://www.redhat.com/en/home-page
           "errorType": "", // 404

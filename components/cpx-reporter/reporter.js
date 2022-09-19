@@ -12,7 +12,7 @@ const eventMap = new Map([
                         "analyticsTitle": "",
                         "blogAuthor": "",
                         "contentID": "",
-                        "contentType": "<",
+                        "contentType": "",
                         "dataObject": "",
                         "destinationURL": "",
                         "errorType": "",
