@@ -61,12 +61,38 @@ const eventMap = new Map([
             }
         }
     ],
-    ['Content Listing Displayed', { payload: 'listingDisplayed', data: { listingDisplayed: (tgt, data) => { return { "displayCount": "", "listingDriver": "", "filterList": "", "resultsCount": "" }; } } }],
+    ['Content Listing Displayed', {
+            payload: 'listingDisplayed',
+            data: {
+                listingDisplayed: (tgt, data) => {
+                    return Object.assign({
+                        "displayCount": "",
+                        "listingDriver": "",
+                        "filterList": "",
+                        "resultsCount": ""
+                    }, data);
+                }
+            }
+        }],
     ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: (tgt, data) => { return { "displayPosition": "", "linkType": "", "contentTitle": "" }; } } }],
     ['Form Viewed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Succeeded', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Failed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
-    ['Error Message Presented', { payload: 'error', data: { error: (tgt, data) => { return Object.assign({ errorCode: '', errorType: '' }, data); } } }]
+    ['Error Message Presented', { payload: 'error', data: { error: (tgt, data) => { return Object.assign({ errorCode: '', errorType: '' }, data); } } }],
+    ['Onsite Search Performed', {
+            payload: 'onsiteSearch',
+            data: {
+                onsiteSearch: (tgt, data) => {
+                    return Object.assign({
+                        "keyword": {
+                            "searchType": "global_search",
+                            "searchTerm": "",
+                            "searchMethod": ""
+                        }
+                    }, data);
+                }
+            }
+        }]
 ]);
 export class ReporterEvent extends Event {
     constructor(name, data, emitName = 'cpx-report') {
@@ -92,3 +118,4 @@ if (reporter instanceof HTMLElement) {
         reporter.setAttribute('reported', '');
     }
 }
+globalThis['ReporterEvent'] = ReporterEvent;

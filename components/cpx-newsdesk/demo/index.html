@@ -294,7 +294,38 @@
             </ul>
         </fieldset>
         <fieldset>
-            <legend>Click Events</legend>
+            <legend>Content Events</legend>
+            <ul>
+            <li>
+                <details>
+                    <summary>Content Listing Displayed</summary>
+                    <pre data-event="Content Listing Displayed"></pre>
+                </details>
+                <cpx-reporter event="Content Listing Displayed"></cpx-reporter>
+            </li>
+        </ul>
+        </fieldset>
+        <fieldset>
+            <legend>Search Events</legend>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Onsite Search Performed</summary>
+                        <pre data-event="Onsite Search Performed"></pre>
+                    </details>
+                    <cpx-reporter auto event="Onsite Search Performed">
+                        <script type="data">
+                            {
+                                "keyword": {
+                                    "searchMethod": "manual",
+                                    "searchTerm": "rhel",
+                                    "searchType": "global_search"
+                                }
+                            }
+                        </script>
+                    </cpx-reporter>
+                </li>
+            </ul>
         </fieldset>
 
     <!-- <cpx-reporter beat="click" event="Content Listing Item Clicked">

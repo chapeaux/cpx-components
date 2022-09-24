@@ -68,7 +68,7 @@ class CPXWebDriver {
 // browser.postMessage({msg:'start'});
 
 async function runTests() {
-    const wd = new CPXWebDriver('http://localhost','firefox');
+    const wd = new CPXWebDriver('http://localhost','chrome');
     await wd.new();
     console.log(wd.session);
     await wd.delete();
