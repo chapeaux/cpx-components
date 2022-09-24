@@ -20,7 +20,7 @@ const eventMap = new Map([
           "pageCategory": "", // technologies
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
-          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null)).join('|'): '',
+          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null && v !== '')).join('|'): '',
           "siteName": "",
           "pageTitle": "", //Red Hat Enterprise Linux operating system
           "pageType": "", // pattern_template

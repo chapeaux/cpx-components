@@ -18,7 +18,7 @@ const eventMap = new Map([
                         "errorType": "",
                         "gated": "",
                         "pageCategory": "",
-                        pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null)).join('|') : '',
+                        pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null && v !== '')).join('|') : '',
                         "siteName": "",
                         "pageTitle": "",
                         "pageType": "",
