@@ -119,7 +119,7 @@ export class CPXUser extends HTMLElement {
   constructor() {
     super();
 
-    this._worker = new Worker(new URL(import.meta.url).pathname.replace('cpx-user.js','user.js'));
+    this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
     this.onMessage = this.onMessage.bind(this);
   }
 
