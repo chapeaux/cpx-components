@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDDL Auth Flow Test</title>
-    <!-- <script type="module" src="/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
-    <script type="module" src="/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started"> -->
-        <script type="module" src="https://unpkg.com/@chapeaux/cpx-newsdesk/newsdesk.js" data-event="cpx-report"></script>
-    <script type="module" src="https://unpkg.com/@chapeaux/cpx-reporter/reporter.js" data-emit="cpx-report" data-event="Page Load Started">
+    <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
+    <script type="module" src="/cpx-keycloak/cpx-keycloak.js"></script>
+    <script type="module" src="/cpx-cookie/cpx-cookie.js"></script>
+    <script type="module" src="/cpx-user/cpx-user.js"></script>
+    <script type="module" src="/cpx-newsdesk/newsdesk.js"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-event="Page Load Started">
         {
         "analyticsTitle": "Extracting information from Python source code",
         "blogAuthor": "Fridolin Pokorny",
@@ -37,14 +39,7 @@
         "products": "OpenShift, RHEL"
        }
     </script>
-    <script src="https://sso.stage.redhat.com/auth/js/keycloak.js"></script>
-    <script type="module">
-        import {CPXReporter} from 'https://unpkg.com/@chapeaux/cpx-reporter/cpx-reporter.js';
-        import {CPXUser} from 'https://unpkg.com/@chapeaux/cpx-user/cpx-user.js';
-        import {CPXCookie} from 'https://unpkg.com/@chapeaux/cpx-cookie/cpx-cookie.js';
-        import {CPXKeycloak} from 'https://unpkg.com/@chapeaux/cpx-keycloak/cpx-keycloak.js';
-    </script>
-   
+    <script type="module" src="/cpx-reporter/cpx-reporter.js"></script>
     <style>
         fieldset {
             margin-bottom: 1em;
@@ -74,6 +69,9 @@
 <pre>${JSON.stringify(e.detail,null,2)}</pre>`;
             results.appendChild(li);
             console.log('NEWSFLASH:', e.detail)
+        });
+        top.addEventListener('eddl-user-ready', e => {
+            console.log('EDDL:', e.detail)
         });
     </script>
 </body>

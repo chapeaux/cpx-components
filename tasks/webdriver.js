@@ -3,7 +3,6 @@ const stdout = 'piped';
 const stderr = 'piped';
 let p;
 onmessage = function(e) {
-    let p;
     switch (e.data.msg) {
         case 'start':
             startDriver();

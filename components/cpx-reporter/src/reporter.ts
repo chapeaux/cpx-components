@@ -59,7 +59,7 @@ const eventMap = new Map([
     user:(tgt:EventTarget, data?) => {
         return Object.assign({
           "custKey": "",
-          "accountID": "", 
+          "ebsAccountNumber": "", 
           "accountIDType": "",
           "userID": "",
           "lastLoginDate": "",
