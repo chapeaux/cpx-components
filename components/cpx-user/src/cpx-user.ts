@@ -188,7 +188,7 @@ export class CPXUser extends HTMLElement {
       new CustomEvent("eddl-user-ready", {
         detail: {
           custKey: this.user['custKey'], // cookie
-          accountID: this.user['account_number'] || '',
+          ebsAccountNumber: this.user['account_number'] || '',
           // accountIDType: this.user['typ'],
           userID: this.user['userID'], // SSO sets a cookie
           lastLoginDate: this.user['auth_time'],

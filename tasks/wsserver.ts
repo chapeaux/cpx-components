@@ -1,62 +1,55 @@
 // Copyright 2018-2021 the Deno authors. All rights reserved. MIT license.
-import { serve } from "https://deno.land/std@0.106.0/http/server.ts";
-import {
-  acceptWebSocket,
-  isWebSocketCloseEvent,
-  isWebSocketPingEvent,
-  WebSocket,
-} from "https://deno.land/std@0.106.0/ws/mod.ts";
+import { serveTls } from "https://deno.land/std@0.155.0/http/server.ts";
 
-async function handleWs(sock: WebSocket) {
-  console.log("socket connected!");
+type PixelPacket = {
+  x:Number
+  y:Number
+  color:String
+}
+
+class PixelBoard {
+  constructor(dimensions=[8,8],pixelSize=10) {
+    this.xMax = dimensions[0];
+    this.yMax = dimensions[1];
+  }
+  xMax:number
+  yMax:number
+
+  update(packet:PixelPacket) {
+    
+  }
+
+}
+
+const USERS = new Map();
+
+function handler(req: Request): Response {
+  const upgrade = req.headers.get("upgrade") || "";
+  let response, socket: WebSocket;
   try {
-    for await (const ev of sock) {
-      if (typeof ev === "string") {
-        // text message.
-        console.log("ws:Text", ev);
-        await sock.send(ev);
-      } else if (ev instanceof Uint8Array) {
-        // binary message.
-        console.log("ws:Binary", ev);
-      } else if (isWebSocketPingEvent(ev)) {
-        const [, body] = ev;
-        // ping.
-        console.log("ws:Ping", body);
-      } else if (isWebSocketCloseEvent(ev)) {
-        // close.
-        const { code, reason } = ev;
-        console.log("ws:Close", code, reason);
-      }
-    }
-  } catch (err) {
-    console.error(`failed to receive frame: ${err}`);
-
-    if (!sock.isClosed) {
-      await sock.close(1000).catch(console.error);
-    }
+    ({ response, socket } = Deno.upgradeWebSocket(req));
+  } catch {
+    return new Response("request isn't trying to upgrade to websocket.");
   }
+  socket.onopen = () => {
+    console.log('socket opened');
+    USERS.set(crypto.randomUUID, socket);
+  }
+  socket.onmessage = (e) => {
+    console.log("socket message:", e.data);
+    
+    socket.send(new Date().toString());
+  };
+  socket.onerror = (e) => console.log("socket errored:", e);
+  socket.onclose = () => console.log("socket closed");
+  return response;
 }
 
-if (import.meta.main) {
-  /** websocket echo server */
-  const port = Deno.args[0] || "8080";
-  console.log(`websocket server is running on :${port}`);
-  for await (const req of serve(`:${port}`)) {
-    const { conn, r: bufReader, w: bufWriter, headers } = req;
-    acceptWebSocket({
-      conn,
-      bufReader,
-      bufWriter,
-      headers,
-    })
-      .then(handleWs)
-      .catch(async (err) => {
-        console.error(`failed to accept websocket: ${err}`);
-        await req.respond({ status: 400 });
-      });
-  }
-}
-
+serveTls(handler, {
+  port:8443, 
+  certFile: `${Deno.cwd()}/localhost.pem`,
+  keyFile: `${Deno.cwd()}/localhost-key.pem`
+})
 /*
 let ws = new WebSocket(ws://localhost:8080);
 ws.send("Test Message!");

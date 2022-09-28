@@ -166,7 +166,7 @@ export class CPXUser extends HTMLElement {
             this.dispatchEvent(new CustomEvent("eddl-user-ready", {
                 detail: {
                     custKey: this.user['custKey'],
-                    accountID: this.user['account_number'] || '',
+                    ebsAccountNumber: this.user['account_number'] || '',
                     userID: this.user['userID'],
                     lastLoginDate: this.user['auth_time'],
                     loggedIn: parseInt(this.user['loggedIn']) ? "true" : "false",

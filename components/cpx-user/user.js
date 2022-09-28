@@ -7,7 +7,7 @@ function getCookies(cookies, values) {
         cookieMap.set(rec[0], rec[1]);
     });
     for (const [key, value] of values) {
-        obj[value] = cookieMap.get(key);
+        obj[value] = cookieMap.get(key) || '';
     }
     return obj;
 }
