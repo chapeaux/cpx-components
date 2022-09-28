@@ -10,7 +10,7 @@ export class Peasant {
         const payload:CookiePayload = e.payload;
         switch (e.action) {
             case 'getCookies':
-                this['onmessage']({data: {action: e.data.action, results: this.getCookies(e.data.payload, e.data.values)}});
+                this['onmessage']({data: {action: e.action, results: this.getCookies(e.payload, e.values)}});
             break;
             default:
                 this['onmessage']({data:{}});

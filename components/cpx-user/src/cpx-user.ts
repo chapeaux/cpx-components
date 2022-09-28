@@ -103,14 +103,7 @@ export class CPXUser extends HTMLElement {
     );
 
     if (this.eddl) { 
-      this._worker.postMessage({
-        action:'getCookies',
-        values: new Map([
-          ['rh_common_id', 'custKey'],
-          ['rh_user_id', 'userID'],
-          ['rh_sso_session','loggedIn']
-        ]),
-        payload:document.cookie});
+      this.initWorker();
       }
     
     this.ready = true;
@@ -131,7 +124,6 @@ export class CPXUser extends HTMLElement {
     this.addEventListener('token-ready',e=>{
       this.user = e['detail'];
     });
-    this.initWorker();
   }
 
   static get observedAttributes() {
@@ -202,15 +194,24 @@ export class CPXUser extends HTMLElement {
   }
 
   async initWorker() {
+  if (!this._worker) {
     try {
-      this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
-      this.worker['onmessage'] = this.onmessage;
-  } catch {
-      const {Peasant} = await import(import.meta.url.replace('cpx-user.js','peasant.js'));
-      this._worker = new Peasant(this);
+        this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
+        this.worker['onmessage'] = this.onmessage;
+    } catch {
+        const {Peasant} = await import(import.meta.url.replace('cpx-user.js','peasant.js'));
+        this._worker = new Peasant(this);
+    }
   }
-    
-    
+
+  this._worker.postMessage({
+    action:'getCookies',
+    values: new Map([
+      ['rh_common_id', 'custKey'],
+      ['rh_user_id', 'userID'],
+      ['rh_sso_session','loggedIn']
+    ]),
+    payload:document.cookie});   
   }
 }
 

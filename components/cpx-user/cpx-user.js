@@ -94,15 +94,7 @@ export class CPXUser extends HTMLElement {
             bubbles: true,
         }));
         if (this.eddl) {
-            this._worker.postMessage({
-                action: 'getCookies',
-                values: new Map([
-                    ['rh_common_id', 'custKey'],
-                    ['rh_user_id', 'userID'],
-                    ['rh_sso_session', 'loggedIn']
-                ]),
-                payload: document.cookie
-            });
+            this.initWorker();
         }
         this.ready = true;
     }
@@ -115,7 +107,6 @@ export class CPXUser extends HTMLElement {
         this.addEventListener('token-ready', e => {
             this.user = e['detail'];
         });
-        this.initWorker();
     }
     static get observedAttributes() {
         return [
@@ -179,14 +170,25 @@ export class CPXUser extends HTMLElement {
     }
     initWorker() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                this._worker = new Worker(import.meta.url.replace('cpx-user.js', 'user.js'));
-                this.worker['onmessage'] = this.onmessage;
+            if (!this._worker) {
+                try {
+                    this._worker = new Worker(import.meta.url.replace('cpx-user.js', 'user.js'));
+                    this.worker['onmessage'] = this.onmessage;
+                }
+                catch (_a) {
+                    const { Peasant } = yield import(import.meta.url.replace('cpx-user.js', 'peasant.js'));
+                    this._worker = new Peasant(this);
+                }
             }
-            catch (_a) {
-                const { Peasant } = yield import(import.meta.url.replace('cpx-user.js', 'peasant.js'));
-                this._worker = new Peasant(this);
-            }
+            this._worker.postMessage({
+                action: 'getCookies',
+                values: new Map([
+                    ['rh_common_id', 'custKey'],
+                    ['rh_user_id', 'userID'],
+                    ['rh_sso_session', 'loggedIn']
+                ]),
+                payload: document.cookie
+            });
         });
     }
 }
