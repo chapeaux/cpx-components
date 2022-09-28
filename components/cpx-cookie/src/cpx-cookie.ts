@@ -14,7 +14,9 @@
 export class CPXCookie extends HTMLElement {
     static get tag() { return 'cpx-cookie'; }
     
-    worker = new Worker(import.meta.url.replace('cpx-cookie.js','baker.js'));
+    _worker;
+    get worker() { return this._worker; }
+    
     ready = false;
 
     _debug = false;
@@ -84,16 +86,12 @@ export class CPXCookie extends HTMLElement {
     
     constructor() {
         super();
-        this.onMessage = this.onMessage.bind(this);
+        this.onmessage = this.onmessage.bind(this);
+        
     }
 
     connectedCallback() {
-        this.worker.postMessage({
-            action:this.action,
-            payload:{key:this.key,data:this.action ==='set'?this.value:document.cookie,parse:this.parse}
-        });
-
-        this.worker.onmessage = this.onMessage;
+        this.initWorker();
     }
 
     static get observedAttributes() {
@@ -111,7 +109,7 @@ export class CPXCookie extends HTMLElement {
         this[name] = newVal;
     }
 
-    onMessage(e) {
+    onmessage(e) {
         if (this.action === 'set') {
             document.cookie = e.data;
         } 
@@ -125,6 +123,20 @@ export class CPXCookie extends HTMLElement {
         }));
     }
 
+    async initWorker() {
+        try {
+            this._worker = new Worker(import.meta.url.replace('cpx-cookie.js','cutter.js'));
+            this.worker['onmessage'] = this.onmessage;
+        } catch {
+            const {Baker} = await import(import.meta.url.replace('cpx-cookie.js','baker.js'));
+            this._worker = new Baker(this);
+        }
+
+        this.worker['postMessage']({
+            action:this.action,
+            payload:{key:this.key,data:this.action ==='set'?this.value:document.cookie,parse:this.parse}
+        });
+    }
 }
 
 window.customElements.define(CPXCookie.tag,CPXCookie);

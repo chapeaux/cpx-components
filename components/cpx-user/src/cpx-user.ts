@@ -90,7 +90,7 @@ export class CPXUser extends HTMLElement {
     return this._user;
   }
   set user(val) {
-    if (this._user === val) return;
+    if (this._user === val || typeof val === 'undefined') return;
     this._user = val;
     if (typeof this._user.email !== "undefined") this.email = this._user.email;
     if (typeof this._user.name !== "undefined") this.givenname = this._user.givenname;
@@ -116,11 +116,11 @@ export class CPXUser extends HTMLElement {
     this.ready = true;
   }
   _worker;
+  get worker() { return this._worker; }
+  
   constructor() {
     super();
-
-    this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
-    this.onMessage = this.onMessage.bind(this);
+    this.onmessage = this.onmessage.bind(this);
   }
 
   connectedCallback() {
@@ -131,7 +131,7 @@ export class CPXUser extends HTMLElement {
     this.addEventListener('token-ready',e=>{
       this.user = e['detail'];
     });
-    this._worker.onmessage = this.onMessage;
+    this.initWorker();
   }
 
   static get observedAttributes() {
@@ -164,7 +164,7 @@ export class CPXUser extends HTMLElement {
       : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
   }
 
-  onMessage(e) {
+  onmessage(e) {
     const data = e.data;
     if (data.action) {
       switch (data.action) {
@@ -199,6 +199,18 @@ export class CPXUser extends HTMLElement {
         bubbles: true,
       })
     );
+  }
+
+  async initWorker() {
+    try {
+      this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
+      this.worker['onmessage'] = this.onmessage;
+  } catch {
+      const {Peasant} = await import(import.meta.url.replace('cpx-user.js','peasant.js'));
+      this._worker = new Peasant(this);
+  }
+    
+    
   }
 }
 

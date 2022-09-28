@@ -16,8 +16,7 @@ export class CPXUser extends HTMLElement {
         this._email = "";
         this._eddl = false;
         this._ready = false;
-        this._worker = new Worker(import.meta.url.replace('cpx-user.js', 'user.js'));
-        this.onMessage = this.onMessage.bind(this);
+        this.onmessage = this.onmessage.bind(this);
     }
     get userId() {
         return this._userId;
@@ -82,7 +81,7 @@ export class CPXUser extends HTMLElement {
         return this._user;
     }
     set user(val) {
-        if (this._user === val)
+        if (this._user === val || typeof val === 'undefined')
             return;
         this._user = val;
         if (typeof this._user.email !== "undefined")
@@ -107,6 +106,7 @@ export class CPXUser extends HTMLElement {
         }
         this.ready = true;
     }
+    get worker() { return this._worker; }
     connectedCallback() {
         let data = this.querySelector("script");
         if (data && data.innerText) {
@@ -115,7 +115,7 @@ export class CPXUser extends HTMLElement {
         this.addEventListener('token-ready', e => {
             this.user = e['detail'];
         });
-        this._worker.onmessage = this.onMessage;
+        this.initWorker();
     }
     static get observedAttributes() {
         return [
@@ -144,7 +144,7 @@ export class CPXUser extends HTMLElement {
             ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
             : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
     }
-    onMessage(e) {
+    onmessage(e) {
         const data = e.data;
         if (data.action) {
             switch (data.action) {
@@ -175,6 +175,18 @@ export class CPXUser extends HTMLElement {
                 composed: true,
                 bubbles: true,
             }));
+        });
+    }
+    initWorker() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                this._worker = new Worker(import.meta.url.replace('cpx-user.js', 'user.js'));
+                this.worker['onmessage'] = this.onmessage;
+            }
+            catch (_a) {
+                const { Peasant } = yield import(import.meta.url.replace('cpx-user.js', 'peasant.js'));
+                this._worker = new Peasant(this);
+            }
         });
     }
 }
