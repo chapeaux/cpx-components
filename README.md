@@ -26,10 +26,11 @@
 - Test files for Deno in `test/*_test.js` naming format under each component
 
 ### Testing with podman
-- Prerequisites: `podman`
-- Build the image: `podman build -t localhost/cpx-components:dev -f Containerfile.test .`
-- Run one off test `podman run -it --rm localhost/cpx-components:dev deno task test`
-- Run and watch test `podman run -it --rm -v ./:/usr/src/app localhost/cpx-components:latest deno task test:watch`
+- Prerequisites: `podman & make`
+- Build the image: `make build`
+- Run the testing image: `make start`
+- Run one off test `make test`
+- Run and watch test `make test:watch`
 TODO: Remove node dependency and run from deno image.
 
 ## Running the local server
