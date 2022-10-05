@@ -54,7 +54,16 @@ const eventMap = new Map([
     }
   }],
   ['Page Load Completed', {}],
-  ['User Signed In', {payload:'user',data:{user:(tgt:EventTarget, data?) => {return {"custKey": "{custKey}"}}}}],
+  ['User Signed In', {
+    payload:'user',
+    data:{
+      user:(tgt:EventTarget, data?) => {
+        return Object.assign({
+          "custKey": ""
+        },data)
+      }
+    }
+  }],
   ['User Detected', {payload:'user',data:{
     user:(tgt:EventTarget, data?) => {
         return Object.assign({
@@ -72,8 +81,34 @@ const eventMap = new Map([
           },data)
         }
       }
+  }],
+  ['Onsite Search Performed', {
+    payload:'onsiteSearch', 
+    data:{ 
+      onsiteSearch: (tgt:EventTarget, data?) => {
+        return Object.assign({
+          "keyword": {
+            "searchType": "",
+            "searchTerm": "",
+            "searchMethod": ""
+          }
+        },data);
+      }
     }
-  ],
+  }],
+  ['Onsite Search Failed', {
+    payload:'onsiteSearch', 
+    data:{ 
+      onsiteSearch: (tgt:EventTarget, data?) => {
+        return Object.assign({
+          "keyword": {
+            "searchType": "",
+            "searchTerm": ""
+          }
+        },data);
+      }
+    }
+  }],
   ['Content Listing Displayed',{
     payload:'listingDisplayed',
     data:{
@@ -83,26 +118,33 @@ const eventMap = new Map([
           "listingDriver": "", 
           "filterList": "",
           "resultsCount": ""
-        },
-      data)}
+        }, data)
+      }
     }
-    }],
-  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget, data?) => {return {"displayPosition": "", "linkType": "", "contentTitle": ""}}}}],
+  }],
+  ['Content Listing Item Clicked', {
+    payload:'listingClicked',
+    data:{
+      listingClicked:(tgt:EventTarget, data?) => {
+        return Object.assign({
+          "displayPosition": "", 
+          "linkType": "", 
+          "contentTitle": ""
+        }, data)
+      }
+    }
+  }],
   ['Form Viewed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
   ['Form Submission Succeeded', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
   ['Form Submission Failed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
-  ['Error Message Presented', {payload:'error',data:{error: (tgt:EventTarget, data?) => {return Object.assign({errorCode:'',errorType:''},data)}}}],
-  ['Onsite Search Performed', {
-    payload:'onsiteSearch', 
-    data:{ 
-      onsiteSearch: (tgt:EventTarget, data?) => {
+  ['Error Message Presented', {
+    payload:'error',
+    data:{
+      error: (tgt:EventTarget, data?) => {
         return Object.assign({
-          "keyword": {
-            "searchType": "global_search",
-            "searchTerm": "",
-            "searchMethod": ""
-          }
-        },data);
+          errorCode:'',
+          errorType:''
+        },data)
       }
     }
   }]
