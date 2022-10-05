@@ -42,7 +42,16 @@ const eventMap = new Map([
             }
         }],
     ['Page Load Completed', {}],
-    ['User Signed In', { payload: 'user', data: { user: (tgt, data) => { return { "custKey": "{custKey}" }; } } }],
+    ['User Signed In', {
+            payload: 'user',
+            data: {
+                user: (tgt, data) => {
+                    return Object.assign({
+                        "custKey": ""
+                    }, data);
+                }
+            }
+        }],
     ['User Detected', { payload: 'user', data: {
                 user: (tgt, data) => {
                     return Object.assign({
@@ -59,8 +68,34 @@ const eventMap = new Map([
                     }, data);
                 }
             }
-        }
-    ],
+        }],
+    ['Onsite Search Performed', {
+            payload: 'onsiteSearch',
+            data: {
+                onsiteSearch: (tgt, data) => {
+                    return Object.assign({
+                        "keyword": {
+                            "searchType": "",
+                            "searchTerm": "",
+                            "searchMethod": ""
+                        }
+                    }, data);
+                }
+            }
+        }],
+    ['Onsite Search Failed', {
+            payload: 'onsiteSearch',
+            data: {
+                onsiteSearch: (tgt, data) => {
+                    return Object.assign({
+                        "keyword": {
+                            "searchType": "",
+                            "searchTerm": ""
+                        }
+                    }, data);
+                }
+            }
+        }],
     ['Content Listing Displayed', {
             payload: 'listingDisplayed',
             data: {
@@ -74,21 +109,28 @@ const eventMap = new Map([
                 }
             }
         }],
-    ['Content Listing Item Clicked', { payload: 'listingClicked', data: { listingClicked: (tgt, data) => { return { "displayPosition": "", "linkType": "", "contentTitle": "" }; } } }],
+    ['Content Listing Item Clicked', {
+            payload: 'listingClicked',
+            data: {
+                listingClicked: (tgt, data) => {
+                    return Object.assign({
+                        "displayPosition": "",
+                        "linkType": "",
+                        "contentTitle": ""
+                    }, data);
+                }
+            }
+        }],
     ['Form Viewed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Succeeded', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
     ['Form Submission Failed', { payload: 'form', data: { form: (tgt, data) => { return {}; } } }],
-    ['Error Message Presented', { payload: 'error', data: { error: (tgt, data) => { return Object.assign({ errorCode: '', errorType: '' }, data); } } }],
-    ['Onsite Search Performed', {
-            payload: 'onsiteSearch',
+    ['Error Message Presented', {
+            payload: 'error',
             data: {
-                onsiteSearch: (tgt, data) => {
+                error: (tgt, data) => {
                     return Object.assign({
-                        "keyword": {
-                            "searchType": "global_search",
-                            "searchTerm": "",
-                            "searchMethod": ""
-                        }
+                        errorCode: '',
+                        errorType: ''
                     }, data);
                 }
             }

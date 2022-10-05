@@ -1,6 +1,6 @@
 //import {PFElement} from '../../@pfelements/pfelement.umd.js';
 //import PFElement from '@patternfly/pfelement/pfelement.umd';
-//import CPXResult from './cpx-result.js';
+import { CPXResult } from './cpx-result.js';
 
 export default class CPXResults extends HTMLElement {
   static tag = "cpx-results";
@@ -166,7 +166,7 @@ export default class CPXResults extends HTMLElement {
   }
 
   addResult(result) {
-    var item = document.createElement("cpx-result");
+    var item = new CPXResult();
     item["result"] = result;
     item["layout"] = this.resultLayout;
     this.appendChild(item);
