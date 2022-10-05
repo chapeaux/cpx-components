@@ -8,7 +8,8 @@ USER 0
 ADD ./docker/etc /etc
 RUN update-crypto-policies --set LEGACY && \
   yum install -y xdg-utils liberation-fonts google-chrome-stable && \
-  update-crypto-policies --set DEFAULT
+  update-crypto-policies --set DEFAULT && \
+  yum clean all
 
 WORKDIR /usr/src/app
 

@@ -26,16 +26,20 @@
 - Test files for Deno in `test/*_test.js` naming format under each component
 
 ### Testing with podman
+
 - Prerequisites: `podman & make`
 - Build the image: `make build`
 - Run the testing image: `make start`
+- Build the cpx components if necessary `make build-components`
 - Run one off test `make test`
 - Run and watch test `make test:watch`
+- Don't forget to stop the testing container when done `make stop`
 TODO: Remove node dependency and run from deno image.
 
 ## Running the local server
 
 ### Local
+
 - Make sure you've run `mkcert -install` to install the local CA
 - Run `mkcert localhost` in the root of the repo
 - Check to make sure `localhost-key.pem` and `localhost.pem` exist in the root of the repo
@@ -45,6 +49,7 @@ TODO: Remove node dependency and run from deno image.
   https://localhost:4430/cpx-keycloak/demo at the moment)
 
 ### Remote
+
 - Same as above, but use the non-SSL-enabled `app.listen` if behind a SSL-forwarded URL
 
 ## Random notes
