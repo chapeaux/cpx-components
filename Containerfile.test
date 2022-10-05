@@ -6,8 +6,7 @@ FROM registry.redhat.io/ubi9/nodejs-16 as builder
 
 USER 0
 ADD ./docker/etc /etc
-RUN dnf update -y && \
-  update-crypto-policies --set LEGACY && \
+RUN update-crypto-policies --set LEGACY && \
   yum install -y xdg-utils liberation-fonts google-chrome-stable && \
   update-crypto-policies --set DEFAULT
 
