@@ -13,15 +13,15 @@
  */
 export class CPXCookie extends HTMLElement {
     static get tag() { return 'cpx-cookie'; }
-    
+
     _worker;
     get worker() { return this._worker; }
-    
+
     ready = false;
 
     _debug = false;
     get debug() { return this._debug; }
-    set debug(val) { 
+    set debug(val) {
         if (this._debug === val) return;
         this._debug = val;
     }
@@ -83,11 +83,10 @@ export class CPXCookie extends HTMLElement {
     //     ['get', new Set(['action','key'])]
     // ])
     // tasks = new Set(['action','key','emit','parse']);
-    
+
     constructor() {
         super();
         this.onmessage = this.onmessage.bind(this);
-        
     }
 
     connectedCallback() {
@@ -112,10 +111,10 @@ export class CPXCookie extends HTMLElement {
     onmessage(e) {
         if (this.action === 'set') {
             document.cookie = e.data;
-        } 
-        
+        }
+
         this.data = e.data;
-        
+
         this.dispatchEvent(new CustomEvent(this.emit, {
             bubbles: true,
             composed: true,
