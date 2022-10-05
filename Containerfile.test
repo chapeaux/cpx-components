@@ -12,11 +12,17 @@ RUN dnf update -y && \
   update-crypto-policies --set DEFAULT
 
 WORKDIR /usr/src/app
+
 COPY --chown=1001:0 ["package*.json", "./"]
 COPY --from=deno /usr/local/bin/deno /usr/local/bin/deno
+
 USER 1001
 
 # Install the dependencies
 RUN npm ci
-ADD . /usr/src/app
+ADD . .
+
+EXPOSE 8080/tcp
+EXPOSE 8443/tcp
+
 CMD [ "deno", "task", "serve" ]
