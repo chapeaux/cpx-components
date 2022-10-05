@@ -9,23 +9,23 @@ const eventMap = new Map([
     data: {
       page: (tgt:EventTarget, data?) => {
         return Object.assign({
-          "analyticsTitle": "<analyticsTitle>", // Analytics Title field in Drupal
-          "blogAuthor": "<blogAuthor>", // captures author of blog articles
-          "contentID": "<contentID>", // 545121
-          "contentType": "<contentType>", // E-book
-          "dataObject":"<dataObject>", //appEventData,digitalData,DOM
-          "destinationURL": "<destinationURL>", // https://www.redhat.com/en/home-page
-          "errorType": "<errorType>", // 404
-          "gated": "<gated>", // true
-          "pageCategory": "<pageCategory>", // technologies
+          "analyticsTitle": "", // Analytics Title field in Drupal
+          "blogAuthor": "", // captures author of blog articles
+          "contentID": "", // 545121
+          "contentType": "", // E-book
+          "dataObject":"", //appEventData,digitalData,DOM
+          "destinationURL": "", // https://www.redhat.com/en/home-page
+          "errorType": "", // 404
+          "gated": "", // true
+          "pageCategory": "", // technologies
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
-          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null)).join('|'): '',
-          "siteName": "<siteName>",
-          "pageTitle": "<pageTitle>", //Red Hat Enterprise Linux operating system
-          "pageType": "<pageType>", // pattern_template
-          "pageSubType": "<pageSubType>", // Product
-          "pageStatus": "<pageStatus>",
+          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null && v !== '')).join('|'): '',
+          "siteName": "",
+          "pageTitle": "", //Red Hat Enterprise Linux operating system
+          "pageType": "", // pattern_template
+          "pageSubType": "", // Product
+          "pageStatus": "",
           previousPage: ((r) => { 
             if (r) {
               let a = document.createElement("a");
@@ -35,10 +35,10 @@ const eventMap = new Map([
           })(document.referrer),
           queryParameters: ((url) => Object.fromEntries(url.searchParams))(new URL(window.location.href)),
           siteExperience: ((w)=> (w > 992) ? 'desktop' : ((w > 768) ? 'tablet' : 'mobile'))(window.innerWidth),
-          "siteLanguage": "<siteLanguage>",
-          "subsection": "<subsection>", // linux-platforms
-          "subsection2": "<subsection2>", // enterprise-linux2
-          "subsection3": "<subsection3>" // try-it
+          "siteLanguage": "",
+          "subsection": "", // linux-platforms
+          "subsection2": "", // enterprise-linux2
+          "subsection3": "" // try-it
           // "taxonomyMetaHreflang": [""],
           // "taxonomyRegion": [""],
           // "taxonomyBlogPostCategory": [""],
@@ -59,7 +59,7 @@ const eventMap = new Map([
     user:(tgt:EventTarget, data?) => {
         return Object.assign({
           "custKey": "",
-          "accountID": "", 
+          "ebsAccountNumber": "", 
           "accountIDType": "",
           "userID": "",
           "lastLoginDate": "",
@@ -74,12 +74,38 @@ const eventMap = new Map([
       }
     }
   ],
-  ['Content Listing Displayed',{payload:'listingDisplayed',data:{listingDisplayed:(tgt:EventTarget, data?) => {return {"displayCount": "<displayCount>","listingDriver": "<listingDriver>", "filterList": "<filterList>","resultsCount": "<resultsCount>"}}}}],
-  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget, data?) => {return {"displayPosition": "<displayPosition>", "linkType": "<linkType>", "contentTitle": "<contentTitle>"}}}}],
+  ['Content Listing Displayed',{
+    payload:'listingDisplayed',
+    data:{
+      listingDisplayed:(tgt:EventTarget, data?) => {
+        return Object.assign({
+          "displayCount": "",
+          "listingDriver": "", 
+          "filterList": "",
+          "resultsCount": ""
+        },
+      data)}
+    }
+    }],
+  ['Content Listing Item Clicked', {payload:'listingClicked',data:{listingClicked:(tgt:EventTarget, data?) => {return {"displayPosition": "", "linkType": "", "contentTitle": ""}}}}],
   ['Form Viewed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
   ['Form Submission Succeeded', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
   ['Form Submission Failed', {payload:'form',data:{form:(tgt:EventTarget, data?) => {return {}}}}],
-  ['Error Message Presented', {payload:'error',data:{error: (tgt:EventTarget, data?) => {return {errorCode:'',errorType:''}}}}]
+  ['Error Message Presented', {payload:'error',data:{error: (tgt:EventTarget, data?) => {return Object.assign({errorCode:'',errorType:''},data)}}}],
+  ['Onsite Search Performed', {
+    payload:'onsiteSearch', 
+    data:{ 
+      onsiteSearch: (tgt:EventTarget, data?) => {
+        return Object.assign({
+          "keyword": {
+            "searchType": "global_search",
+            "searchTerm": "",
+            "searchMethod": ""
+          }
+        },data);
+      }
+    }
+  }]
 ]);
 
 /**
@@ -122,6 +148,8 @@ if (reporter instanceof HTMLElement) {
     reporter.setAttribute('reported','');
   } 
 }
+
+globalThis['ReporterEvent'] = ReporterEvent;
 
    
   /*

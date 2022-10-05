@@ -16,6 +16,7 @@ export class CPXUser extends HTMLElement {
         this._email = "";
         this._eddl = false;
         this._ready = false;
+        this.onmessage = this.onmessage.bind(this);
     }
     get userId() {
         return this._userId;
@@ -80,7 +81,7 @@ export class CPXUser extends HTMLElement {
         return this._user;
     }
     set user(val) {
-        if (this._user === val)
+        if (this._user === val || typeof val === 'undefined')
             return;
         this._user = val;
         if (typeof this._user.email !== "undefined")
@@ -93,10 +94,11 @@ export class CPXUser extends HTMLElement {
             bubbles: true,
         }));
         if (this.eddl) {
-            this.dispatchEDDL();
+            this.initWorker();
         }
         this.ready = true;
     }
+    get worker() { return this._worker; }
     connectedCallback() {
         let data = this.querySelector("script");
         if (data && data.innerText) {
@@ -133,19 +135,60 @@ export class CPXUser extends HTMLElement {
             ? str.replace(/-([a-z])/g, (m, g) => g.toUpperCase())
             : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
     }
+    onmessage(e) {
+        const data = e.data;
+        if (data.action) {
+            switch (data.action) {
+                case 'getCookies':
+                    if (data.results) {
+                        Object.assign(this.user, data.results);
+                    }
+                    this.dispatchEDDL();
+                    break;
+            }
+        }
+    }
     dispatchEDDL() {
         return __awaiter(this, void 0, void 0, function* () {
-            const hashedEmail = yield this.generateHash(this.user['email']);
+            let hashedEmail = '';
+            if (typeof this.user['email'] !== 'undefined' && this.user['email'].length && this.user['email'].length > 0) {
+                hashedEmail = yield this.generateHash(this.user['email']);
+            }
             this.dispatchEvent(new CustomEvent("eddl-user-ready", {
                 detail: {
-                    accountID: this.user['account_number'] || '',
-                    userID: this.user['preferred_username'],
+                    custKey: this.user['custKey'],
+                    ebsAccountNumber: this.user['account_number'] || '',
+                    userID: this.user['userID'],
                     lastLoginDate: this.user['auth_time'],
+                    loggedIn: parseInt(this.user['loggedIn']) ? "true" : "false",
                     hashedEmail: hashedEmail
                 },
                 composed: true,
                 bubbles: true,
             }));
+        });
+    }
+    initWorker() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._worker) {
+                try {
+                    this._worker = new Worker(import.meta.url.replace('cpx-user.js', 'user.js'));
+                    this.worker['onmessage'] = this.onmessage;
+                }
+                catch (_a) {
+                    const { Peasant } = yield import(import.meta.url.replace('cpx-user.js', 'peasant.js'));
+                    this._worker = new Peasant(this);
+                }
+            }
+            this._worker.postMessage({
+                action: 'getCookies',
+                values: new Map([
+                    ['rh_common_id', 'custKey'],
+                    ['rh_user_id', 'userID'],
+                    ['rh_sso_session', 'loggedIn']
+                ]),
+                payload: document.cookie
+            });
         });
     }
 }

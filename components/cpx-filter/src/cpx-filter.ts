@@ -3,7 +3,7 @@ export class CPXFilter extends HTMLElement {
     return "cpx-filter";
   }
   _map = [];
-  _container: Node;
+  _container: Element;
   _containerQuery = "";
   _item = "";
   _condition = "contains";
@@ -12,11 +12,10 @@ export class CPXFilter extends HTMLElement {
   get container() {
     return this._container;
   }
-  set container(val: string) {
-    if (this._container === document.querySelector(val)) return;
-    this._container = document.querySelector(val);
-    this.setAttribute("container", val);
-    this.filter();
+  set container(val) {
+    if (this._container === val) return;
+      this._container = val;
+      this.filter();
   }
 
   get item() {
@@ -66,14 +65,18 @@ export class CPXFilter extends HTMLElement {
   }
 
   attributeChangedCallback(attr, oldVal, newVal) {
-    this[attr] = newVal;
+    if(attr === 'container') {
+      this.container = document.querySelector(newVal);
+    } else {
+      this[attr] = newVal;
+    }
   }
 
   filter() {
-    if (this.criteria.length > 0 && this.container.length) {
-      document.querySelectorAll(`${this.container} ${this.item}`).forEach(
+    if (this.criteria.length > 0 && this.container) {
+      this.container.querySelectorAll(`${this.item}`).forEach(
         (n) => {
-          if (n.innerHTML.indexOf(this.criteria)) {
+          if (n.textContent.toLowerCase().indexOf(this.criteria.toLowerCase()) >= 0) {
             n.setAttribute("style", "display:auto");
           } else {
             n.setAttribute("style", "display:none");

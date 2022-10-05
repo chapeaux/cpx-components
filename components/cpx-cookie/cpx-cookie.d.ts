@@ -1,6 +1,7 @@
 export declare class CPXCookie extends HTMLElement {
     static get tag(): string;
-    worker: Worker;
+    _worker: any;
+    get worker(): any;
     ready: boolean;
     _debug: boolean;
     get debug(): boolean;
@@ -30,5 +31,6 @@ export declare class CPXCookie extends HTMLElement {
     connectedCallback(): void;
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
-    onMessage(e: any): void;
+    onmessage(e: any): void;
+    initWorker(): Promise<void>;
 }

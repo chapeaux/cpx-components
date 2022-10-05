@@ -21,7 +21,7 @@ user object
  */
 export class CPXUser extends HTMLElement {
   _authenticated = false;
-
+  
   _userId = "";
   get userId() {
     return this._userId;
@@ -90,7 +90,7 @@ export class CPXUser extends HTMLElement {
     return this._user;
   }
   set user(val) {
-    if (this._user === val) return;
+    if (this._user === val || typeof val === 'undefined') return;
     this._user = val;
     if (typeof this._user.email !== "undefined") this.email = this._user.email;
     if (typeof this._user.name !== "undefined") this.givenname = this._user.givenname;
@@ -102,13 +102,18 @@ export class CPXUser extends HTMLElement {
       })
     );
 
-    if (this.eddl) { this.dispatchEDDL(); }
+    if (this.eddl) { 
+      this.initWorker();
+      }
     
     this.ready = true;
   }
-
+  _worker;
+  get worker() { return this._worker; }
+  
   constructor() {
     super();
+    this.onmessage = this.onmessage.bind(this);
   }
 
   connectedCallback() {
@@ -118,7 +123,7 @@ export class CPXUser extends HTMLElement {
     }
     this.addEventListener('token-ready',e=>{
       this.user = e['detail'];
-    })
+    });
   }
 
   static get observedAttributes() {
@@ -151,67 +156,62 @@ export class CPXUser extends HTMLElement {
       : str.replace(/([a-z][A-Z])/g, (m, g) => `${g[0]}-${g[1].toLowerCase()}`);
   }
 
+  onmessage(e) {
+    const data = e.data;
+    if (data.action) {
+      switch (data.action) {
+        case 'getCookies':
+          if (data.results) {
+            Object.assign(this.user,data.results);
+          }
+          this.dispatchEDDL(); 
+        break;
+      }
+    } 
+  }
+
   async dispatchEDDL() {
-    const hashedEmail = await this.generateHash(this.user['email']);
+    let hashedEmail = '';
+    if (typeof this.user['email'] !== 'undefined' && this.user['email'].length && this.user['email'].length > 0) {
+      hashedEmail = await this.generateHash(this.user['email']);
+    }
+    
     this.dispatchEvent(
       new CustomEvent("eddl-user-ready", {
-        /*
-        allowed-origins: Array(1)
-        0: "*"
-        length: 1
-        [[Prototype]]: Array(0)
-        aud: "rhd-web"
-        auth_time: 1661792228
-        azp: "rhd-web"
-        email: "ldary+stage@redhat.com"
-        exp: 1661793129
-        family_name: "Dary"
-        given_name: "Luke"
-        iat: 1661792229
-        id: "f:ac4bcdb5-1fb1-41c5-9323-349698b9b757:ldary@redhat.com"
-        iss: "https://sso.stage.redhat.com/auth/realms/redhat-external"
-        jti: "39990d69-983e-4d4c-bb53-3fed9bf9b9b7"
-        name: "Luke Dary"
-        nonce: "0a0c7821-8ebb-4bcd-8d95-05e64af12452"
-        preferred_username: "ldary@redhat.com"
-        realm_access:
-        roles: Array(9)
-        0: "authenticated"
-        1: "portal_manage_subscriptions"
-        2: "offline_access"
-        3: "admin:org:all"
-        4: "uma_authorization"
-        5: "portal_manage_cases"
-        6: "portal_system_management"
-        7: "portal_download"
-        8: "rhd_access_middleware"
-        length: 9
-        [[Prototype]]: Array(0)
-        [[Prototype]]: Object
-        resource_access:
-        account: {roles: Array(3)}
-        rhd-dm: {roles: Array(1)}
-        [[Prototype]]: Object
-        scope: "openid"
-        session_state: "0dcba173-f4ac-4b57-96f0-ab5b5dfde7a9"
-        sid: "0dcba173-f4ac-4b57-96f0-ab5b5dfde7a9"
-        sub: "f:ac4bcdb5-1fb1-41c5-9323-349698b9b757:ldary@redhat.com"
-        typ: "Bearer"
-        user-social-links:
-        [[Prototype]]: Object
-        */
         detail: {
-          // custKey: this.user['sid'],
-          accountID: this.user['account_number'] || '',
+          custKey: this.user['custKey'], // cookie
+          ebsAccountNumber: this.user['account_number'] || '',
           // accountIDType: this.user['typ'],
-          userID: this.user['preferred_username'],
+          userID: this.user['userID'], // SSO sets a cookie
           lastLoginDate: this.user['auth_time'],
+          loggedIn: parseInt(this.user['loggedIn']) ? "true":"false",
           hashedEmail: hashedEmail
         },
         composed: true,
         bubbles: true,
       })
     );
+  }
+
+  async initWorker() {
+  if (!this._worker) {
+    try {
+        this._worker = new Worker(import.meta.url.replace('cpx-user.js','user.js'));
+        this.worker['onmessage'] = this.onmessage;
+    } catch {
+        const {Peasant} = await import(import.meta.url.replace('cpx-user.js','peasant.js'));
+        this._worker = new Peasant(this);
+    }
+  }
+
+  this._worker.postMessage({
+    action:'getCookies',
+    values: new Map([
+      ['rh_common_id', 'custKey'],
+      ['rh_user_id', 'userID'],
+      ['rh_sso_session','loggedIn']
+    ]),
+    payload:document.cookie});   
   }
 }
 

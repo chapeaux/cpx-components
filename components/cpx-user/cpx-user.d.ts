@@ -18,11 +18,15 @@ export declare class CPXUser extends HTMLElement {
     _user: any;
     get user(): any;
     set user(val: any);
+    _worker: any;
+    get worker(): any;
     constructor();
     connectedCallback(): void;
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
     generateHash(txt: any): Promise<string>;
     camelCase(str: String, to?: boolean): string;
+    onmessage(e: any): void;
     dispatchEDDL(): Promise<void>;
+    initWorker(): Promise<void>;
 }
