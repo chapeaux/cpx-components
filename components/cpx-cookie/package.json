@@ -6,29 +6,28 @@
     "main": "cpx-cookie.js",
     "module": "cpx-cookie.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "",
-      "build": "tsc"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "",
+        "build": "tsc"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/chapeaux/cpx-components.git"
+        "type": "git",
+        "url": "https://github.com/chapeaux/cpx-components.git"
     },
     "keywords": [
-      "web",
-      "component",
-      "typescript",
-      "deno"
+        "web",
+        "component",
+        "typescript",
+        "deno"
     ],
     "author": "Luke Dary <ldary@redhat.com> (https://lukedary.com)",
     "license": "SEE LICENSE IN LICENSE",
     "bugs": {
-      "url": "https://github.com/chapeaux/cpx-components/issues"
+        "url": "https://github.com/chapeaux/cpx-components/issues"
     },
     "publishConfig": {
-      "access": "public"
+        "access": "public"
     },
     "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-reporter",
     "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
-  }
-  
+}
