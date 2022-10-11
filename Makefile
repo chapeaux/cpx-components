@@ -31,6 +31,7 @@ stop: ## Stop and remove the service container
 npm: ## Exec `npm install` in the container and copy out files
 	podman exec -u 0 $(CONTAINER_NAME) npm install
 	podman cp $(CONTAINER_NAME):/usr/src/app/node_modules .
+	podman cp $(CONTAINER_NAME):/usr/src/app/package-lock.json .
 
 build-components: ## Build components
 	podman exec -u 0 $(CONTAINER_NAME) deno task build
