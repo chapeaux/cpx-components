@@ -1,10 +1,10 @@
 {
-  "name": "@chapeaux/cpx-user",
-  "version": "0.8.5",
-  "description": "Chapeaux User Component",
+  "name": "@chapeaux/cpx-search",
+  "version": "0.6.0",
+  "description": "Chapeaux Search Components",
   "type": "module",
-  "main": "cpx-user.js",
-  "module": "cpx-user.js",
+  "main": "cpx-search.js",
+  "module": "cpx-search.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "",
@@ -28,6 +28,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-user",
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-search",
   "gitHead": "66ea75b555502ee4b62dad9cd7a2aed8702b4f6d"
 }

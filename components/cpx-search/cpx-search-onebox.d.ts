@@ -1,0 +1,30 @@
+export declare class CPXSearchOneBox extends HTMLElement {
+    get html(): string;
+    static get tag(): string;
+    template: HTMLTemplateElement;
+    _term: string;
+    _url: string;
+    _data: any;
+    _feature: any;
+    _mock: boolean;
+    get term(): string;
+    set term(val: string);
+    get url(): string;
+    set url(val: string);
+    get data(): any;
+    set data(val: any);
+    get feature(): any;
+    set feature(val: any);
+    get mock(): boolean;
+    set mock(val: boolean);
+    slotTemplate: (strings: any, slot: any, id: any) => string;
+    constructor();
+    connectedCallback(): void;
+    static get observedAttributes(): string[];
+    attributeChangedCallback(name: any, oldVal: any, newVal: any): void;
+    _termChange(e: any): void;
+    getData(): any;
+    getFeature(): any;
+    getIcon(name: any): any;
+    render(): void;
+}

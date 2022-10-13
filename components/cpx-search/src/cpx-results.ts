@@ -2,8 +2,8 @@
 //import PFElement from '@patternfly/pfelement/pfelement.umd';
 import { CPXResult } from './cpx-result.js';
 
-export default class CPXResults extends HTMLElement {
-  static tag = "cpx-results";
+export class CPXResults extends HTMLElement {
+  static get tag() { return "cpx-results"; }
   get html() {
     return `
         <style>
@@ -189,14 +189,14 @@ export default class CPXResults extends HTMLElement {
     } else {
       this.more = false;
     }
-    this.shadowRoot.querySelector('[name="loading"]').removeAttribute(
+    this.shadowRoot.querySelector('.loading').removeAttribute(
       "data-hide",
     );
   }
 
   _renderResults(e) {
-    if (this.shadowRoot.querySelector('[name="loading"]')) {
-      this.shadowRoot.querySelector('[name="loading"]').setAttribute(
+    if (this.shadowRoot.querySelector('.loading')) {
+      this.shadowRoot.querySelector('.loading').setAttribute(
         "data-hide",
         "",
       );
@@ -288,4 +288,4 @@ export default class CPXResults extends HTMLElement {
   }
 }
 
-window.customElements.define("cpx-results", CPXResults);
+window.customElements.define(CPXResults.tag, CPXResults);

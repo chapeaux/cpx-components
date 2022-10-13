@@ -183,7 +183,7 @@ export class CPXUser extends HTMLElement {
           ebsAccountNumber: this.user['account_number'] || '',
           // accountIDType: this.user['typ'],
           userID: this.user['userID'], // SSO sets a cookie
-          lastLoginDate: this.user['auth_time'],
+          lastLoginDate: this.user['auth_time'] ? (new Date(this.user['auth_time']*1000)).toISOString() : '',
           loggedIn: parseInt(this.user['loggedIn']) ? "true":"false",
           hashedEmail: hashedEmail
         },
