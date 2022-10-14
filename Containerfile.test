@@ -1,5 +1,5 @@
 # Main Deno Container
-FROM quay.io/chapeaux/deno:1.25.0 as deno
+FROM quay.io/chapeaux/deno:1.26.1 as deno
 
 # Testing container
 FROM registry.redhat.io/ubi9/nodejs-16 as builder
