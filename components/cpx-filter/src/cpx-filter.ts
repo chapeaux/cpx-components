@@ -52,7 +52,7 @@ export class CPXFilter extends HTMLElement {
     super();
     let mapData = this.querySelector("script");
     if (mapData) {
-      this._map = JSON.parse(mapData.innerHTML);
+      this._map = JSON.parse(mapData.textContent);
     }
   }
 

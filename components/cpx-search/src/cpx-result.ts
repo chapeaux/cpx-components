@@ -1,8 +1,5 @@
-//import {PFElement} from '../../@pfelements/pfelement.umd.js';
-//import PFElement from '@patternfly/pfelement/pfelement.umd';
-
-export default class CPXResult extends HTMLElement {
-  static tag = "cpx-result";
+export class CPXResult extends HTMLElement {
+  static get tag() { return "cpx-result"; }
   get html() {
     return `
         <style>
@@ -368,4 +365,4 @@ ${
   }
 }
 
-window.customElements.define("cpx-result", CPXResult);
+window.customElements.define(CPXResult.tag, CPXResult);

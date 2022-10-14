@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPX Search App</title>
+    <style>
+        cpx-search-app {
+            display: grid;
+            grid-template-areas:
+            "box box box"
+            "filters active active"
+            "filters sort sort"
+            "filters count count"
+            "filters onebox onebox"
+            "filters results results"
+            "end . .";
+            grid-template-columns: 25vw auto auto;
+            grid-template-rows: auto auto auto auto auto 1fr auto;
+        }
+        cpx-search-box { grid-area: box; }
+        cpx-filters { grid-area: filters; }
+        cpx-sort-page { grid-area: sort; }
+        cpx-result-count { grid-area: count; }
+        cpx-onebox { grid-area: onebox; }
+        cpx-results { grid-area: results; }
+        cpx-query, cpx-url { grid-area: end;}
+    </style>
+    <script type="module">
+        import { CPXSearchApp } from '/cpx-search/cpx-search-app.js';
+        import { CPXActiveFilters } from '/cpx-search/cpx-active-filters.js';
+        import { CPXFilterActiveItem } from '/cpx-search/cpx-filter-active-item.js';
+        import { CPXFilterGroup } from '/cpx-search/cpx-filter-group.js';
+        import { CPXFilterItem } from '/cpx-search/cpx-filter-item.js';
+        import { CPXFilters } from '/cpx-search/cpx-filters.js';
+        import { CPXModalFilters } from '/cpx-search/cpx-modal-filters.js';
+        import { CPXOneBox } from '/cpx-search/cpx-onebox.js';
+        import { CPXResultCount } from '/cpx-search/cpx-result-count.js';
+        import { CPXResult } from '/cpx-search/cpx-result.js';
+        import { CPXResults } from '/cpx-search/cpx-results.js';
+        import { CPXSearchBox } from '/cpx-search/cpx-search-box.js';
+        import { CPXSortPage } from '/cpx-search/cpx-sort-page.js';
+        import { CPXUrl } from '/cpx-search/cpx-url.js'; 
+        import { CPXQuery } from '/cpx-query/cpx-query.js';
+    </script>
+</head>
+<body>
+    <cpx-search-app url="https://api.developers.redhat.com/search/v1/">
+        <cpx-search-box slot="query"></cpx-search-box>
+        <cpx-filters title="Filter By" slot="filters">
+            <cpx-filter-group name="Topics" key="topic">
+                <cpx-filter-item group="topic" facet="rhd_taxonomy_topic" key=".net" value=".net" name=".NET">.NET</cpx-filter-item>
+                <cpx-filter-item group="topic" facet="rhd_taxonomy_topic" key="compilers" value="compilers" name="Compilers">Compilers</cpx-filter-item>
+                <cpx-filter-item group="topic" facet="rhd_taxonomy_topic" key="data_encapsulation" value="data_encapsulation" name="Data Encapsulation">Data Encapsulation</cpx-filter-item>
+                <cpx-filter-item group="topic" facet="rhd_taxonomy_topic" key="integration" value="integration" name="Integration">Integration</cpx-filter-item>
+                <cpx-filter-item group="topic" facet="rhd_taxonomy_topic" key="internet_of_things" value="internet_of_things" name="Internet of Things">Internet of Things</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="kotlin" value="kotlin" name="Kotlin">Kotlin</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="open_data_hub" value="open_data_hub" name="Open Data Hub">Open Data Hub</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="performance" value="performance" name="Performance">Performance</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="programming_languages" value="programming_languages" name="Programming languages">Programming languages</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="rust" value="rust" name="Rust">Rust</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="stream_processing" value="stream_processing" name="Stream processing">Stream processing</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="ai/ml" value="ai/ml" name="AI/ML">AI/ML</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="data_science" value="data_science" name="Data Science">Data Science</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="api_management" value="api_management" name="API Management">API Management</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="automation" value="automation" name="Automation">Automation</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="c" value="c" name="C">C</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="c#" value="c#" name="C#">C#</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="c++" value="c++" name="C++">C++</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="ci/cd" value="ci/cd" name="CI/CD">CI/CD</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="containers" value="containers" name="Containers">Containers</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="developer_tools" value="developer_tools" name="Developer Tools">Developer Tools</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="devops" value="devops" name="DevOps">DevOps</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="devsecops" value="devsecops" name="DevSecOps">DevSecOps</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="edge" value="edge" name="Edge">Edge</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="event-driven" value="event-driven" name="Event-Driven">Event-Driven</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="gitops" value="gitops" name="GitOps">GitOps</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="go" value="go" name="Go">Go</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="helm" value="helm" name="Helm">Helm</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="ides" value="ides" name="IDEs">IDEs</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="java" value="java" name="Java">Java</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="javascript" value="javascript" name="Javascript">Javascript</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="linux" value="linux" name="Linux">Linux</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="kafka" value="kafka" name="Kafka">Kafka</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="kubernetes" value="kubernetes" name="Kubernetes">Kubernetes</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="microservices" value="microservices" name="Microservices">Microservices</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="node.js" value="node.js" name="Node.js">Node.js</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="operators" value="operators" name="Operators">Operators</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="openshift" value="openshift" name="OpenShift">OpenShift</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="open_source" value="open_source" name="Open Source">Open Source</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="php" value="php" name="PHP">PHP</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="python" value="python" name="Python">Python</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="quarkus" value="quarkus" name="Quarkus">Quarkus</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="ruby" value="ruby" name="Ruby">Ruby</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="spring_boot" value="spring_boot" name="Spring Boot">Spring Boot</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="service_mesh" value="service_mesh" name="Service Mesh">Service Mesh</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="serverless" value="serverless" name="Serverless">Serverless</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="security" value="security" name="Security">Security</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="secure_coding" value="secure_coding" name="Secure Coding">Secure Coding</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="topic" facet="rhd_taxonomy_topic" key="ui/ux" value="ui/ux" name="UI/UX">UI/UX</cpx-filter-item>
+            </cpx-filter-group>      
+            <cpx-filter-group name="Content Type" key="type">
+                <cpx-filter-item group="type" facet="type" key="article" value="article" name="Article">Article</cpx-filter-item>
+                <cpx-filter-item group="type" facet="type" key="web_page" value="web_page" name="Webpage">Webpage</cpx-filter-item>
+                <cpx-filter-item group="type" facet="type" key="product" value="product" name="Product">Product</cpx-filter-item>
+                <cpx-filter-item group="type" facet="type" key="videos" value="videos" name="Videos">Videos</cpx-filter-item>
+                <cpx-filter-item group="type" facet="type" key="books" value="books" name="E-books">E-books</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="type" facet="type" key="cheat_sheet" value="cheat_sheet" name="Cheat Sheet">Cheat Sheet</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="type" facet="type" key="interactive_tutorials" value="interactive_tutorials" name="Interactive Tutorials">Interactive Tutorials</cpx-filter-item>
+            </cpx-filter-group>      
+            <cpx-filter-group name="Products" key="rhd_taxonomy_product">
+                <cpx-filter-item group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="3scale_api_management" value="3scale_api_management" name="3scale API Management">3scale API Management</cpx-filter-item>
+                <cpx-filter-item group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="cloud_services_-_application_services" value="cloud_services_-_application_services" name="Cloud services - Application services">Cloud services - Application services</cpx-filter-item>
+                <cpx-filter-item group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="developer_sandbox_for_red_hat_openshift" value="developer_sandbox_for_red_hat_openshift" name="Developer Sandbox for Red Hat OpenShift">Developer Sandbox for Red Hat OpenShift</cpx-filter-item>
+                <cpx-filter-item group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="helm" value="helm" name="Helm">Helm</cpx-filter-item>
+                <cpx-filter-item group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="identity_management" value="identity_management" name="Identity Management">Identity Management</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="odo" value="odo" name="odo">odo</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift_connector" value="openshift_connector" name="OpenShift Connector">OpenShift Connector</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift_developer_console" value="openshift_developer_console" name="OpenShift Developer Console">OpenShift Developer Console</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_advanced_cluster_management_for_kubernetes" value="red_hat_advanced_cluster_management_for_kubernetes" name="Red Hat Advanced Cluster Management for Kubernetes">Red Hat Advanced Cluster Management for Kubernetes</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_advanced_cluster_security_for_kubernetes" value="red_hat_advanced_cluster_security_for_kubernetes" name="Red Hat Advanced Cluster Security for Kubernetes">Red Hat Advanced Cluster Security for Kubernetes</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_application_studio" value="red_hat_application_studio" name="Red Hat Application Studio">Red Hat Application Studio</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_build_of_eclipse_vert.x" value="red_hat_build_of_eclipse_vert.x" name="Red Hat Build of Eclipse Vert.x">Red Hat Build of Eclipse Vert.x</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_build_of_node.js" value="red_hat_build_of_node.js" name="Red Hat Build of Node.js">Red Hat Build of Node.js</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_build_of_openjdk" value="red_hat_build_of_openjdk" name="Red Hat Build of OpenJDK">Red Hat Build of OpenJDK</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_build_of_quarkus." value="red_hat_build_of_quarkus." name="Red Hat build of Quarkus.">Red Hat build of Quarkus.</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_ceph_storage" value="red_hat_ceph_storage" name="Red Hat Ceph Storage">Red Hat Ceph Storage</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_codeready_dependency_analytics" value="red_hat_codeready_dependency_analytics" name="Red Hat CodeReady Dependency Analytics">Red Hat CodeReady Dependency Analytics</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_directory_server" value="red_hat_directory_server" name="Red Hat Directory Server">Red Hat Directory Server</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_data_foundation" value="red_hat_openshift_data_foundation" name="Red Hat OpenShift Data Foundation">Red Hat OpenShift Data Foundation</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_data_science" value="red_hat_openshift_data_science" name="Red Hat OpenShift Data Science">Red Hat OpenShift Data Science</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_dev_spaces" value="red_hat_openshift_dev_spaces" name="Red Hat OpenShift Dev Spaces">Red Hat OpenShift Dev Spaces</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_gitops" value="red_hat_openshift_gitops" name="Red Hat OpenShift GitOps">Red Hat OpenShift GitOps</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_local" value="red_hat_openshift_local" name="Red Hat OpenShift Local">Red Hat OpenShift Local</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_serverless" value="red_hat_openshift_serverless" name="Red Hat OpenShift Serverless">Red Hat OpenShift Serverless</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_service_mesh" value="red_hat_openshift_service_mesh" name="Red Hat OpenShift Service Mesh">Red Hat OpenShift Service Mesh</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_quay" value="red_hat_quay" name="Red Hat Quay">Red Hat Quay</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_single_sign-on" value="red_hat_single_sign-on" name="Red Hat Single sign-on">Red Hat Single sign-on</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_support_for_spring_boot" value="red_hat_support_for_spring_boot" name="Red Hat Support for Spring Boot">Red Hat Support for Spring Boot</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="rhoam_(red_hat_openshift_api_management)" value="rhoam_(red_hat_openshift_api_management)" name="RHOAM (Red Hat OpenShift API Management)">RHOAM (Red Hat OpenShift API Management)</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="rhosak_(red_hat_openshift_streams_for_apache_kafka)" value="rhosak_(red_hat_openshift_streams_for_apache_kafka)" name="RHOSAK (Red Hat OpenShift Streams for Apache Kafka)">RHOSAK (Red Hat OpenShift Streams for Apache Kafka)</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="service_binding_operator" value="service_binding_operator" name="Service Binding Operator">Service Binding Operator</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="amq" value="amq" name="AMQ">AMQ</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="ansible_automation_platform" value="ansible_automation_platform" name="Ansible Automation Platform">Ansible Automation Platform</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_codeready_linux_builder" value="red_hat_codeready_linux_builder" name="Red Hat CodeReady Linux Builder">Red Hat CodeReady Linux Builder</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_codeready_containers" value="red_hat_codeready_containers" name="Red Hat CodeReady Containers">Red Hat CodeReady Containers</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_pipelines" value="red_hat_openshift_pipelines" name="Red Hat OpenShift Pipelines">Red Hat OpenShift Pipelines</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_codeready_studio" value="red_hat_codeready_studio" name="Red Hat CodeReady Studio">Red Hat CodeReady Studio</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="codeready_toolchain" value="codeready_toolchain" name="CodeReady Toolchain">CodeReady Toolchain</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_codeready_workspaces" value="red_hat_codeready_workspaces" name="Red Hat CodeReady Workspaces">Red Hat CodeReady Workspaces</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="container_development_kit" value="container_development_kit" name="Container Development Kit">Container Development Kit</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_data_grid" value="red_hat_data_grid" name="Red Hat Data Grid">Red Hat Data Grid</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="decision_manager" value="decision_manager" name="Decision Manager">Decision Manager</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="developer_toolset" value="developer_toolset" name="Developer Toolset">Developer Toolset</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="fuse" value="fuse" name="Fuse">Fuse</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="jboss_data_virtualization" value="jboss_data_virtualization" name="JBoss Data Virtualization">JBoss Data Virtualization</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_jboss_enterprise_application_platform" value="red_hat_jboss_enterprise_application_platform" name="Red Hat JBoss Enterprise Application Platform">Red Hat JBoss Enterprise Application Platform</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_jboss_web_server" value="red_hat_jboss_web_server" name="Red Hat JBoss Web Server">Red Hat JBoss Web Server</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="migration_toolkit_for_applications" value="migration_toolkit_for_applications" name="Migration Toolkit for Applications">Migration Toolkit for Applications</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="mobile_application_platform" value="mobile_application_platform" name="Mobile Application Platform">Mobile Application Platform</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift" value="red_hat_openshift" name="Red Hat OpenShift">Red Hat OpenShift</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift_runtimes" value="openshift_runtimes" name="OpenShift Runtimes">OpenShift Runtimes</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift_cloud_functions" value="openshift_cloud_functions" name="OpenShift Cloud Functions">OpenShift Cloud Functions</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_openshift_container_platform" value="red_hat_openshift_container_platform" name="Red Hat OpenShift Container Platform">Red Hat OpenShift Container Platform</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift_container_storage" value="openshift_container_storage" name="OpenShift Container Storage">OpenShift Container Storage</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="openshift.io" value="openshift.io" name="OpenShift.io">OpenShift.io</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="process_automation_manager" value="process_automation_manager" name="Process Automation Manager">Process Automation Manager</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="rhel" value="rhel" name="RHEL">RHEL</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="rhel_coreos" value="rhel_coreos" name="RHEL CoreOS">RHEL CoreOS</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="rhel_for_sap_solutions" value="rhel_for_sap_solutions" name="RHEL for SAP Solutions">RHEL for SAP Solutions</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="red_hat_software_collections" value="red_hat_software_collections" name="Red Hat Software Collections">Red Hat Software Collections</cpx-filter-item>
+                <cpx-filter-item slot="secondary" group="rhd_taxonomy_product" facet="rhd_taxonomy_product" key="vscode_plugins" value="vscode_plugins" name="VSCode Plugins">VSCode Plugins</cpx-filter-item>
+            </cpx-filter-group>      
+        </cpx-filters>
+        <cpx-active-filters title="Active Filters:">
+            <cpx-filter-active-item group="topic" key=".net" value=".net" name=".NET">.NET</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="compilers" value="compilers" name="Compilers">Compilers</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="data_encapsulation" value="data_encapsulation" name="Data Encapsulation">Data Encapsulation</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="integration" value="integration" name="Integration">Integration</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="internet_of_things" value="internet_of_things" name="Internet of Things">Internet of Things</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="kotlin" value="kotlin" name="Kotlin">Kotlin</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="open_data_hub" value="open_data_hub" name="Open Data Hub">Open Data Hub</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="performance" value="performance" name="Performance">Performance</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="programming_languages" value="programming_languages" name="Programming languages">Programming languages</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="rust" value="rust" name="Rust">Rust</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="stream_processing" value="stream_processing" name="Stream processing">Stream processing</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="data_science" value="data_science" name="Data Science">Data Science</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="ai/ml" value="ai/ml" name="AI/ML">AI/ML</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="api_management" value="api_management" name="API Management">API Management</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="automation" value="automation" name="Automation">Automation</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="c" value="c" name="C">C</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="c#" value="c#" name="C#">C#</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="c++" value="c++" name="C++">C++</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="ci/cd" value="ci/cd" name="CI/CD">CI/CD</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="containers" value="containers" name="Containers">Containers</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="developer_tools" value="developer_tools" name="Developer Tools">Developer Tools</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="devops" value="devops" name="DevOps">DevOps</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="devsecops" value="devsecops" name="DevSecOps">DevSecOps</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="edge" value="edge" name="Edge">Edge</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="event-driven" value="event-driven" name="Event-Driven">Event-Driven</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="gitops" value="gitops" name="GitOps">GitOps</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="go" value="go" name="Go">Go</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="helm" value="helm" name="Helm">Helm</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="ides" value="ides" name="IDEs">IDEs</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="java" value="java" name="Java">Java</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="javascript" value="javascript" name="Javascript">Javascript</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="linux" value="linux" name="Linux">Linux</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="kafka" value="kafka" name="Kafka">Kafka</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="kubernetes" value="kubernetes" name="Kubernetes">Kubernetes</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="microservices" value="microservices" name="Microservices">Microservices</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="node.js" value="node.js" name="Node.js">Node.js</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="operators" value="operators" name="Operators">Operators</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="openshift" value="openshift" name="OpenShift">OpenShift</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="open_source" value="open_source" name="Open Source">Open Source</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="php" value="php" name="PHP">PHP</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="python" value="python" name="Python">Python</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="quarkus" value="quarkus" name="Quarkus">Quarkus</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="ruby" value="ruby" name="Ruby">Ruby</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="spring_boot" value="spring_boot" name="Spring Boot">Spring Boot</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="service_mesh" value="service_mesh" name="Service Mesh">Service Mesh</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="serverless" value="serverless" name="Serverless">Serverless</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="security" value="security" name="Security">Security</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="secure_coding" value="secure_coding" name="Secure Coding">Secure Coding</cpx-filter-active-item>
+            <cpx-filter-active-item group="topic" key="ui/ux" value="ui/ux" name="UI/UX">UI/UX</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="article" value="article" name="Article">Article</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="books" value="books" name="E-books">E-books</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="cheat_sheet" value="cheat_sheet" name="Cheat Sheet">Cheat Sheet</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="interactive_tutorials" value="interactive_tutorials" name="Interactive Tutorials">Interactive Tutorials</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="web_page" value="web_page" name="Webpage">Webpage</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="product" value="product" name="Product">Product</cpx-filter-active-item>
+            <cpx-filter-active-item group="type" key="videos" value="videos" name="Videos">Videos</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="3scale_api_management" value="3scale_api_management" name="3scale API Management">3scale API Management</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="cloud_services_-_application_services" value="cloud_services_-_application_services" name="Cloud services - Application services">Cloud services - Application services</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="developer_sandbox_for_red_hat_openshift" value="developer_sandbox_for_red_hat_openshift" name="Developer Sandbox for Red Hat OpenShift">Developer Sandbox for Red Hat OpenShift</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="helm" value="helm" name="Helm">Helm</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="identity_management" value="identity_management" name="Identity Management">Identity Management</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="odo" value="odo" name="odo">odo</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift_connector" value="openshift_connector" name="OpenShift Connector">OpenShift Connector</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift_developer_console" value="openshift_developer_console" name="OpenShift Developer Console">OpenShift Developer Console</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_advanced_cluster_management_for_kubernetes" value="red_hat_advanced_cluster_management_for_kubernetes" name="Red Hat Advanced Cluster Management for Kubernetes">Red Hat Advanced Cluster Management for Kubernetes</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_advanced_cluster_security_for_kubernetes" value="red_hat_advanced_cluster_security_for_kubernetes" name="Red Hat Advanced Cluster Security for Kubernetes">Red Hat Advanced Cluster Security for Kubernetes</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_application_studio" value="red_hat_application_studio" name="Red Hat Application Studio">Red Hat Application Studio</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_build_of_eclipse_vert.x" value="red_hat_build_of_eclipse_vert.x" name="Red Hat Build of Eclipse Vert.x">Red Hat Build of Eclipse Vert.x</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_build_of_node.js" value="red_hat_build_of_node.js" name="Red Hat Build of Node.js">Red Hat Build of Node.js</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_build_of_openjdk" value="red_hat_build_of_openjdk" name="Red Hat Build of OpenJDK">Red Hat Build of OpenJDK</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_build_of_quarkus." value="red_hat_build_of_quarkus." name="Red Hat build of Quarkus.">Red Hat build of Quarkus.</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_ceph_storage" value="red_hat_ceph_storage" name="Red Hat Ceph Storage">Red Hat Ceph Storage</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_codeready_dependency_analytics" value="red_hat_codeready_dependency_analytics" name="Red Hat CodeReady Dependency Analytics">Red Hat CodeReady Dependency Analytics</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_directory_server" value="red_hat_directory_server" name="Red Hat Directory Server">Red Hat Directory Server</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_data_foundation" value="red_hat_openshift_data_foundation" name="Red Hat OpenShift Data Foundation">Red Hat OpenShift Data Foundation</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_data_science" value="red_hat_openshift_data_science" name="Red Hat OpenShift Data Science">Red Hat OpenShift Data Science</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_dev_spaces" value="red_hat_openshift_dev_spaces" name="Red Hat OpenShift Dev Spaces">Red Hat OpenShift Dev Spaces</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_gitops" value="red_hat_openshift_gitops" name="Red Hat OpenShift GitOps">Red Hat OpenShift GitOps</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_local" value="red_hat_openshift_local" name="Red Hat OpenShift Local">Red Hat OpenShift Local</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_serverless" value="red_hat_openshift_serverless" name="Red Hat OpenShift Serverless">Red Hat OpenShift Serverless</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_service_mesh" value="red_hat_openshift_service_mesh" name="Red Hat OpenShift Service Mesh">Red Hat OpenShift Service Mesh</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_quay" value="red_hat_quay" name="Red Hat Quay">Red Hat Quay</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_single_sign-on" value="red_hat_single_sign-on" name="Red Hat Single sign-on">Red Hat Single sign-on</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_support_for_spring_boot" value="red_hat_support_for_spring_boot" name="Red Hat Support for Spring Boot">Red Hat Support for Spring Boot</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="rhoam_(red_hat_openshift_api_management)" value="rhoam_(red_hat_openshift_api_management)" name="RHOAM (Red Hat OpenShift API Management)">RHOAM (Red Hat OpenShift API Management)</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="rhosak_(red_hat_openshift_streams_for_apache_kafka)" value="rhosak_(red_hat_openshift_streams_for_apache_kafka)" name="RHOSAK (Red Hat OpenShift Streams for Apache Kafka)">RHOSAK (Red Hat OpenShift Streams for Apache Kafka)</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="service_binding_operator" value="service_binding_operator" name="Service Binding Operator">Service Binding Operator</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="amq" value="amq" name="AMQ">AMQ</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="ansible_automation_platform" value="ansible_automation_platform" name="Ansible Automation Platform">Ansible Automation Platform</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_codeready_linux_builder" value="red_hat_codeready_linux_builder" name="Red Hat CodeReady Linux Builder">Red Hat CodeReady Linux Builder</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_codeready_containers" value="red_hat_codeready_containers" name="Red Hat CodeReady Containers">Red Hat CodeReady Containers</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_pipelines" value="red_hat_openshift_pipelines" name="Red Hat OpenShift Pipelines">Red Hat OpenShift Pipelines</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_codeready_studio" value="red_hat_codeready_studio" name="Red Hat CodeReady Studio">Red Hat CodeReady Studio</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="codeready_toolchain" value="codeready_toolchain" name="CodeReady Toolchain">CodeReady Toolchain</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_codeready_workspaces" value="red_hat_codeready_workspaces" name="Red Hat CodeReady Workspaces">Red Hat CodeReady Workspaces</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="container_development_kit" value="container_development_kit" name="Container Development Kit">Container Development Kit</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_data_grid" value="red_hat_data_grid" name="Red Hat Data Grid">Red Hat Data Grid</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="decision_manager" value="decision_manager" name="Decision Manager">Decision Manager</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="developer_toolset" value="developer_toolset" name="Developer Toolset">Developer Toolset</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="fuse" value="fuse" name="Fuse">Fuse</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="jboss_data_virtualization" value="jboss_data_virtualization" name="JBoss Data Virtualization">JBoss Data Virtualization</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_jboss_enterprise_application_platform" value="red_hat_jboss_enterprise_application_platform" name="Red Hat JBoss Enterprise Application Platform">Red Hat JBoss Enterprise Application Platform</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_jboss_web_server" value="red_hat_jboss_web_server" name="Red Hat JBoss Web Server">Red Hat JBoss Web Server</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="migration_toolkit_for_applications" value="migration_toolkit_for_applications" name="Migration Toolkit for Applications">Migration Toolkit for Applications</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="mobile_application_platform" value="mobile_application_platform" name="Mobile Application Platform">Mobile Application Platform</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift" value="red_hat_openshift" name="Red Hat OpenShift">Red Hat OpenShift</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift_runtimes" value="openshift_runtimes" name="OpenShift Runtimes">OpenShift Runtimes</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift_cloud_functions" value="openshift_cloud_functions" name="OpenShift Cloud Functions">OpenShift Cloud Functions</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_openshift_container_platform" value="red_hat_openshift_container_platform" name="Red Hat OpenShift Container Platform">Red Hat OpenShift Container Platform</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift_container_storage" value="openshift_container_storage" name="OpenShift Container Storage">OpenShift Container Storage</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="openshift.io" value="openshift.io" name="OpenShift.io">OpenShift.io</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="process_automation_manager" value="process_automation_manager" name="Process Automation Manager">Process Automation Manager</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="rhel" value="rhel" name="RHEL">RHEL</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="rhel_coreos" value="rhel_coreos" name="RHEL CoreOS">RHEL CoreOS</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="rhel_for_sap_solutions" value="rhel_for_sap_solutions" name="RHEL for SAP Solutions">RHEL for SAP Solutions</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="red_hat_software_collections" value="red_hat_software_collections" name="Red Hat Software Collections">Red Hat Software Collections</cpx-filter-active-item>
+            <cpx-filter-active-item group="rhd_taxonomy_product" key="vscode_plugins" value="vscode_plugins" name="VSCode Plugins">VSCode Plugins</cpx-filter-active-item>
+        </cpx-active-filters>
+        <cpx-sort-page></cpx-search-sort-page>
+        <cpx-result-count></cpx-result-count>
+        <cpx-onebox url="/data/onebox.json"></cpx-onebox>
+        <cpx-results id="cpx-search-results"></cpx-results>
+        <cpx-query url="/search"></cpx-query>
+        <cpx-url></cpx-url>
+    </cpx-search-app>
+</body>
+</html>

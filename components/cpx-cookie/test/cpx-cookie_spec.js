@@ -19,8 +19,10 @@ describe('CPX Cookie', () => {
 
         await elementUpdated(el);
         await elementUpdated(document.body);
-
-        expect(document.cookie).to.equal(`${test_key}=${test_val}`);
+        const cookie = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith(`${test_key}=`));
+        expect(`${cookie}`).to.equal(`${test_key}=${test_val}`);
     });
 
     it('Emits a requested event', async () => {
