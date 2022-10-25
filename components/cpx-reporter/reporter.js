@@ -8,6 +8,9 @@ const eventMap = new Map([
             payload: 'page',
             data: {
                 page: (tgt, data) => {
+                    const subsections = (new URL(location.href)).pathname.split('/').slice(2, -1);
+                    const pageNameData = [data['siteName'], data['pageCategory'], data['pageTitle']];
+                    pageNameData.splice.apply(pageNameData, ['2', '0'].concat(subsections));
                     return Object.assign({
                         "analyticsTitle": "",
                         "blogAuthor": "",
@@ -18,7 +21,7 @@ const eventMap = new Map([
                         "errorType": "",
                         "gated": "",
                         "pageCategory": "",
-                        pageName: data ? [data['siteName'], data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v => (typeof v !== 'undefined' && v !== null && v !== '')).join('|') : '',
+                        pageName: data ? pageNameData.filter(v => (typeof v !== 'undefined' && v !== null && v !== '')).join('|') : '',
                         "siteName": "",
                         "pageTitle": "",
                         "pageType": "",

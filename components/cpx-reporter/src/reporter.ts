@@ -2,12 +2,15 @@ function CombineEventData(payload, target, data) {
   let combination = Object.assign(payload(target), data ?? {});
   return combination;
 }
-
+//['siteName','pageCategory','pageTitle'].splice(1,0,(new URL(location.href)).pathname.split('/').slice(2,-1)).filter(v=>(typeof v !== 'undefined' && v !== null && v !== '')).join('|')
 const eventMap = new Map([
   ['Page Load Started', {
     payload:'page',
     data: {
       page: (tgt:EventTarget, data?) => {
+        const subsections = (new URL(location.href)).pathname.split('/').slice(2,-1);
+        const pageNameData = [data['siteName'],data['pageCategory'], data['pageTitle']];
+        pageNameData.splice.apply(pageNameData,['2','0'].concat(subsections));
         return Object.assign({
           "analyticsTitle": "", // Analytics Title field in Drupal
           "blogAuthor": "", // captures author of blog articles
@@ -20,7 +23,7 @@ const eventMap = new Map([
           "pageCategory": "", // technologies
           // Build pageName to match format:
           // [siteName]|[primary Category]|[subcategory1]|[subcategory2]|[subcategory3]|[subcategory4]|[page detail name]
-          pageName: data ? [data['siteName'],data['pageCategory'], data['subsection'], data['subsection2'], data['subsection3'], data['lastUrlItem']].filter(v=>(typeof v !== 'undefined' && v !== null && v !== '')).join('|'): '',
+          pageName: data ? pageNameData.filter(v=>(typeof v !== 'undefined' && v !== null && v !== '')).join('|'): '',
           "siteName": "",
           "pageTitle": "", //Red Hat Enterprise Linux operating system
           "pageType": "", // pattern_template
