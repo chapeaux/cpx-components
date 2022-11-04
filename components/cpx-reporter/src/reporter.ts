@@ -8,9 +8,8 @@ const eventMap = new Map([
     payload:'page',
     data: {
       page: (tgt:EventTarget, data?) => {
-        const subsections = (new URL(location.href)).pathname.split('/').slice(2,-1);
-        const pageNameData = [data['siteName'],data['pageCategory'], data['pageTitle']];
-        pageNameData.splice.apply(pageNameData,['2','0'].concat(subsections));
+        const subsections = (new URL(location.href)).pathname.split('/').slice(2);
+        const pageNameData = [data['siteName'],data['pageCategory']].concat(subsections);
         return Object.assign({
           "analyticsTitle": "", // Analytics Title field in Drupal
           "blogAuthor": "", // captures author of blog articles
