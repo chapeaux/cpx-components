@@ -6,9 +6,15 @@ export declare class CPXReporter extends HTMLElement {
     _beat: string;
     get beat(): string;
     set beat(val: string);
+    _scope: string;
+    get scope(): string;
+    set scope(val: string);
     _event: string;
     get event(): string;
     set event(val: string);
+    _evt: string;
+    get evt(): string;
+    set evt(val: string);
     _option: string;
     get option(): string;
     set option(val: string);
@@ -26,5 +32,5 @@ export declare class CPXReporter extends HTMLElement {
     connectedCallback(): void;
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldVal: string, newVal: string): void;
-    report(): void;
+    report(e: any): void;
 }

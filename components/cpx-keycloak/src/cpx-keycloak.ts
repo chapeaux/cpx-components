@@ -307,6 +307,7 @@ export class CPXKeycloak extends HTMLElement {
     return this.keycloak.login();
   }
   logout() {
+    // TODO: Add custom cookie handling to remove on logout
     return this.keycloak.logout();
   }
   register() {

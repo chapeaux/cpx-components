@@ -3,10 +3,12 @@ export class CPXReporter extends HTMLElement {
     constructor() {
         super();
         this._debug = null;
+        this._scope = 'global';
         this._data = {};
         this.tasks = new Set(['beat', 'event', 'data']);
         this._ready = false;
         this._emit = 'cpx-report';
+        this.report = this.report.bind(this);
     }
     static get tag() { return 'cpx-reporter'; }
     get debug() {
@@ -22,18 +24,20 @@ export class CPXReporter extends HTMLElement {
         if (this._beat === val)
             return;
         this._beat = val;
-        this.addEventListener(this._beat, e => {
-            var _a;
-            const detail = e['detail'];
-            if (this.option) {
-                this.data = Object.assign(this.data, (_a = detail[this.option]) !== null && _a !== void 0 ? _a : {});
-            }
-            else {
-                this.data = Object.assign(this.data, detail !== null && detail !== void 0 ? detail : {});
-            }
-            this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
-        });
+        if (this.scope === 'global') {
+            top.addEventListener(this.beat, this.report);
+        }
+        else {
+            this.addEventListener(this.beat, this.report);
+        }
         this.setAttribute('beat', this._beat);
+    }
+    get scope() { return this._scope; }
+    set scope(val) {
+        if (this._scope === val)
+            return;
+        this._scope = val;
+        this.setAttribute('scope', this._scope);
     }
     get event() { return this._event; }
     set event(val) {
@@ -41,6 +45,14 @@ export class CPXReporter extends HTMLElement {
             return;
         this._event = val;
         this.setAttribute('event', this._event);
+        this.evt = 'eddl-' + this._event.toLowerCase().split(' ').join('-');
+    }
+    get evt() { return this._evt; }
+    set evt(val) {
+        if (this._evt === val)
+            return;
+        this._evt = val;
+        this.setAttribute('evt', this._evt);
     }
     get option() { return this._option; }
     set option(val) {
@@ -61,7 +73,7 @@ export class CPXReporter extends HTMLElement {
             return;
         this._ready = !!val;
         if (this._ready) {
-            this.report();
+            this.report({});
         }
     }
     get emit() { return this._emit; }
@@ -87,10 +99,11 @@ export class CPXReporter extends HTMLElement {
     }
     static get observedAttributes() {
         return [
-            "beat",
+            "scope",
+            "data",
             "emit",
             "event",
-            "data",
+            "beat",
             "debug",
             "option"
         ];
@@ -104,7 +117,8 @@ export class CPXReporter extends HTMLElement {
             this.ready = true;
         }
     }
-    report() {
+    report(e) {
+        var _a, _b, _c;
         if (this.debug !== null) {
             if (this.debug !== 'verbose') {
                 console.log('DEBUG ON');
@@ -113,7 +127,15 @@ export class CPXReporter extends HTMLElement {
                 console.log('VERBOSE DEBUG ON');
             }
         }
+        const detail = e['detail'];
+        if (this.option) {
+            this.data = Object.assign((_a = this.data) !== null && _a !== void 0 ? _a : {}, (_b = detail[this.option]) !== null && _b !== void 0 ? _b : {});
+        }
+        else {
+            this.data = Object.assign((_c = this.data) !== null && _c !== void 0 ? _c : {}, detail !== null && detail !== void 0 ? detail : {});
+        }
         this.dispatchEvent(new ReporterEvent(this.event, this.data, this.emit));
+        this.dispatchEvent(new CustomEvent(this.evt, { bubbles: true, composed: true }));
     }
 }
 window.customElements.define(CPXReporter.tag, CPXReporter);
