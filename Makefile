@@ -37,7 +37,7 @@ build-components: ## Build components
 	podman exec -u 0 $(CONTAINER_NAME) deno task build
 
 fmt: ## Exec `deno fmt` in the container
-	podman exec $(CONTAINER_NAME) deno fmt
+	podman exec -u 0 $(CONTAINER_NAME) deno fmt
 
 test: ## Exec `deno task test` in the container
 	podman exec $(CONTAINER_NAME) deno task test
