@@ -13,7 +13,8 @@
 
 ## Building scripts
 
-- `deno task build:watch` watches for TS file changes in `/components/**/src` directories
+- `deno task build:watch` watches for TS file changes in `/components/**/src`
+  directories
 - When a change is made, the Bundler transpiles the file into the parent
   directory of `src`
 
@@ -32,9 +33,9 @@
 - Run the testing image: `make start`
 - Build the cpx components if necessary `make build-components`
 - Run one off test `make test`
-- Run and watch test `make test:watch`
-- Don't forget to stop the testing container when done `make stop`
-TODO: Remove node dependency and run from deno image.
+- Run and watch test `make test-watch`
+- Don't forget to stop the testing container when done `make stop` TODO: Remove
+  node dependency and run from deno image.
 
 ## Running the local server
 
@@ -42,7 +43,8 @@ TODO: Remove node dependency and run from deno image.
 
 - Make sure you've run `mkcert -install` to install the local CA
 - Run `mkcert localhost` in the root of the repo
-- Check to make sure `localhost-key.pem` and `localhost.pem` exist in the root of the repo
+- Check to make sure `localhost-key.pem` and `localhost.pem` exist in the root
+  of the repo
 - Update the `tasks/serve.js` file to use the SSL-enabled `app.listen`
 - Run `deno task serve`
 - Navigate to https://localhost:4430 (or
@@ -50,7 +52,8 @@ TODO: Remove node dependency and run from deno image.
 
 ### Remote
 
-- Same as above, but use the non-SSL-enabled `app.listen` if behind a SSL-forwarded URL
+- Same as above, but use the non-SSL-enabled `app.listen` if behind a
+  SSL-forwarded URL
 
 ## Random notes
 
