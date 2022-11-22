@@ -34,8 +34,8 @@
 - Build the cpx components if necessary `make build-components`
 - Run one off test `make test`
 - Run and watch test `make test-watch`
-- Don't forget to stop the testing container when done `make stop` TODO: Remove
-  node dependency and run from deno image.
+- Don't forget to stop the testing container when done `make stop`
+- TODO: Remove node dependency and run from deno image.
 
 ## Running the local server
 
