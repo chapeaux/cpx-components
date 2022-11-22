@@ -3,8 +3,7 @@
 ## PURPOSE
 
 The `cpx-url` component is meant to be a declarative interface for getting and
-setting browser cookies and parsing them in various ways. JSON and JWT parsing
-is built in.
+setting the window's URL.
 
 ## Installation
 
