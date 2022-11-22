@@ -15,7 +15,7 @@ is built in.
 ## Usage
 
 - `<script type="module" src="path/to/@chapeaux/cpx-url/cpx-url.js"></script>`
-- `import { CPXWebSocket } from "path/to/@chapeaux/cpx-url/cpx-url.js";`
+- `import { CPXUrl } from "path/to/@chapeaux/cpx-url/cpx-url.js";`
 - ```html
   <cpx-url></cpx-url>
   ```
