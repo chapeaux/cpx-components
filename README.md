@@ -52,7 +52,7 @@
 
 ### Remote
 
-- Same as above, but use the non-SSL-enabled `app.listen` if behind a
+- Same as above, use the non-SSL-enabled `deno task serve` if behind a
   SSL-forwarded URL
 
 ## Random notes
