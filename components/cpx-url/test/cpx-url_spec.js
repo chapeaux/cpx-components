@@ -3,12 +3,27 @@ import { elementUpdated, fixture, html } from "@open-wc/testing";
 import { CPXUrl } from "../cpx-url";
 
 describe("CPXUrl", () => {
+  var event_emitted = false;
+  var emitted_data = {};
+
+  beforeEach(function () {
+    window.history.replaceState(
+      null,
+      undefined,
+      new URL(`?reset`, location.href),
+    );
+
+    document.addEventListener("params-ready", (e) => {
+      emitted_data = e.detail;
+      event_emitted = true;
+    });
+  });
+
   it("is initialized with default values", () => {
     const ele = new CPXUrl();
-
     expect(ele.init).to.equal(true);
     expect(ele.uri.toString()).to.contain(
-      "http://localhost:8000/?wtr-session-id=",
+      "?reset",
     );
     expect(ele.term).to.be.null;
     expect(ele.filters).to.exist;
@@ -31,14 +46,6 @@ describe("CPXUrl", () => {
   });
 
   it("emits the params-ready event", async () => {
-    var event_emitted = false;
-    var emitted_data = {};
-
-    document.addEventListener("params-ready", (e) => {
-      emitted_data = e.detail;
-      event_emitted = true;
-    });
-
     const ele = await fixture(html`
         <cpx-url></cpx-url>
     `);
@@ -61,21 +68,18 @@ describe("CPXUrl", () => {
     expect(ele.filters).to.be.empty;
   });
 
-  it.skip("can parse attributes from the URL", async () => {
-    /**
-     * @todo: Find a way to mock window.location.href w/out causing a reload.
-     * We need to test a uri like
-     * http://localhost:8000?t=test&r=10&s=newest&f=foo~bar&f=hola~mundo
-     * creates an element {
-     *  term: test
-     *  qty: 10
-     *  sort: newest
-     *  filters: Map {
-     *    0: {key: foo, value: bar}
-     *    1: {key: hola, value: mundo}
-     *  }
-     * }
-     */
+  it("can parse filters from the URL", async () => {
+    window.history.replaceState(
+      null,
+      undefined,
+      new URL("?f=foo~bar&f=shadow~man", location.href),
+    );
+
+    const ele = new CPXUrl();
+    const iter = ele.filters.get("shadow").values();
+
+    expect(iter.next().value).to.equal("man");
+    expect(ele.filters).to.have.lengthOf(2);
   });
 
   it.skip("listens to search complete event", async () => {
