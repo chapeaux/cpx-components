@@ -75,13 +75,17 @@ const eventMap = new Map([
             payload: 'onsiteSearch',
             data: {
                 onsiteSearch: (tgt, data) => {
-                    return Object.assign({
-                        "keyword": {
-                            "searchType": "",
-                            "searchTerm": "",
-                            "searchMethod": ""
-                        }
-                    }, data);
+                    var _a;
+                    const kw = { searchType: '', searchTerm: '', searchMethod: '' };
+                    if (data['keyword']) {
+                        data['keyword'] = Object.assign(kw, (_a = data['keyword']) !== null && _a !== void 0 ? _a : {});
+                    }
+                    else {
+                        data = Object.assign({
+                            "keyword": kw
+                        }, data);
+                    }
+                    return data;
                 }
             }
         }],

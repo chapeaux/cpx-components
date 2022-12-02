@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDDL Auth Flow Test</title>
+    <script type="module" src="/cpx-newsdesk/newsdesk.js"></script>
+    <script type="module" src="/cpx-reporter/reporter.js" data-event="Page Load Started">
+        {
+        "analyticsTitle": "Extracting information from Python source code",
+        "blogAuthor": "Fridolin Pokorny",
+        "breadCrumbs": "xxx",
+        "pageCategory": "articles",
+        "cms": "RHD CMS 8",
+        "contentId": "269391",
+        "contentType": "article",
+        "dataObject": "digitalData",
+        "destinationUrl": "https://dxp-developer.docksal/articles/2022/01/05/extracting-information-python-source-code",
+        "errorType": "1234",
+        "gated": "False",
+        "queryParameters": "xxxx",
+        "severityLevel": "xxx",
+        "siteLanguage": "xx",
+        "pageStatus": "xxx",
+        "pageSubType": "xxx",
+        "pageTitle": "Extracting information from Python source code | Red Hat Developer",
+        "pageType": "xxx",
+        "productCategory": "xxx",
+        "productCertifiedVendor": "xx",
+        "productComponents": "xxx",
+        "productPublicationStatus": "xxx",
+        "productSBR": "xxx",
+        "productTags": "xxx",
+        "products": "OpenShift, RHEL"
+       }
+    </script>
+    <style>
+        fieldset {
+            margin-bottom: 1em;
+        }
+        ol {
+            /* list-style: none; */
+        }
+        pre { overflow:hidden; }
+    </style>
+    <script src="load.js" type="module"></script>
+</head>
+<body>
+    <h1>Chapeaux Newsdesk Auth Demo</h1>
+    <ol id="results"></ol>
+
+    <script>
+        const results = document.getElementById('results');
+        top.addEventListener('newsflash', e => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${e.detail.event}</strong>
+<pre>${JSON.stringify(e.detail,null,2)}</pre>`;
+            results.appendChild(li);
+            console.log('NEWSFLASH:', e.detail)
+        });
+    </script>
+</body>
+</html>

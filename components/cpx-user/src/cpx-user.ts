@@ -20,6 +20,7 @@ user object
  * @element cpx-user
  */
 export class CPXUser extends HTMLElement {
+  static get tag() { return 'cpx-user'; }
   _authenticated = false;
   
   _userId = "";
@@ -215,4 +216,4 @@ export class CPXUser extends HTMLElement {
   }
 }
 
-window.customElements.define("cpx-user", CPXUser);
+window.customElements.define(CPXUser.tag, CPXUser);
