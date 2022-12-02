@@ -140,6 +140,26 @@ const eventMap = new Map([
                     }, data);
                 }
             }
+        }],
+    ['Download Started', {
+            payload: 'linkInfo',
+            data: {
+                linkInfo: (tgt, data) => {
+                    return Object.assign({
+                        "fileName": "",
+                        "fileType": "",
+                        "product": []
+                    }, data);
+                }
+            }
+        }],
+    ['default', {
+            payload: 'default',
+            data: {
+                default: (tgt, data) => {
+                    return Object.assign({}, data);
+                }
+            }
         }]
 ]);
 export class ReporterEvent extends Event {
@@ -147,7 +167,7 @@ export class ReporterEvent extends Event {
         super(emitName, { bubbles: true, composed: true });
         this.toJSON = () => Object.assign({ event: this.name }, this.data);
         this.name = name;
-        this.obj = eventMap.get(name);
+        this.obj = eventMap.has(name) ? eventMap.get(name) : eventMap.get('default');
         if (this.obj && this.obj.payload && this.obj.data) {
             const objEntries = new Map([[
                     this.obj.payload,

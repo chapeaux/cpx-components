@@ -306,6 +306,26 @@
         </ul>
         </fieldset>
         <fieldset>
+            <legend>Download Events</legend>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Download Started</summary>
+                        <pre data-event="Download Started"></pre>
+                    </details>
+                    <cpx-reporter auto event="Download Started">
+                        <script type="data">
+                            {
+                                "fileName": "thefilename.ext",
+                                "fileType": "Extension Type",
+                                "product": [{ "productInfo": { "name": "Cool Product", "productID": "cool-product-id", "sku": "beep-boop" }}]
+                            }
+                        </script>
+                    </cpx-reporter>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
             <legend>Search Events</legend>
             <ul>
                 <li>
@@ -327,7 +347,26 @@
                 </li>
             </ul>
         </fieldset>
-
+        <fieldset>
+            <legend>Unknown Events</legend>
+            <ul>
+                <li>
+                    <details>
+                        <summary>Unknown Event Tracked</summary>
+                        <pre data-event="Unknown Event Tracked"></pre>
+                    </details>
+                    <cpx-reporter auto event="Unknown Event Tracked">
+                        <script type="data">
+                            {
+                                "arbitrary": "value",
+                                "truthy": false,
+                                "deep": [{ "unknownInfo": { "unknownname": "Nothing Important", "unknownID": "unknown-id", "misc": "beep-boop" }}]
+                            }
+                        </script>
+                    </cpx-reporter>
+                </li>
+            </ul>
+        </fieldset>
     <!-- <cpx-reporter beat="click" event="Content Listing Item Clicked">
         <ul>
             <li>
