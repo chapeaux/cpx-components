@@ -10,36 +10,43 @@ github:
 scripts:
   - tasks/**
 
+docs:
+  - docs/**
+  - '**/*.md'
+
+test:
+  - components/**/test/**
+
 # CPX Components Labels
 cpx-auth:
-  - cpx-auth/**
+  - components/cpx-auth/**
 cpx-cookie:
-  - cpx-cookie/**
+  - components/cpx-cookie/**
 cpx-filter:
-  - cpx-filter/**
+  - components/cpx-filter/**
 cpx-keycloak:
-  - cpx-keycloak/**
+  - components/cpx-keycloak/**
 cpx-newsdesk:
-  - cpx-newsdesk/**
+  - components/cpx-newsdesk/**
 cpx-operator-graph:
-  - cpx-operator-graph/**
+  - components/cpx-operator-graph/**
 cpx-query:
-  - cpx-query/**
+  - components/cpx-query/**
 cpx-reporter:
-  - cpx-reporter/**
+  - components/cpx-reporter/**
 cpx-result:
-  - cpx-result/**
+  - components/cpx-result/**
 cpx-search:
-  - cpx-search/**
+  - components/cpx-search/**
 cpx-state:
-  - cpx-state/**
+  - components/cpx-state/**
 cpx-tab-stream:
-  - cpx-tab-stream/**
+  - components/cpx-tab-stream/**
 cpx-target:
-  - cpx-target/**
+  - components/cpx-target/**
 cpx-url:
-  - cpx-url/**
+  - components/cpx-url/**
 cpx-user:
-  - cpx-user/**
+  - components/cpx-user/**
 cpx-websocket:
-  - cpx-websocket/**
+  - components/cpx-websocket/**
