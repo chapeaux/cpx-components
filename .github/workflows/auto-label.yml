@@ -1,0 +1,12 @@
+name: auto-label
+on: [pull_request]
+
+jobs:
+  components:
+    runs_on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@v3
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        configuration-path: '.github/config/auto-label.yml'
+        sync-labels: true

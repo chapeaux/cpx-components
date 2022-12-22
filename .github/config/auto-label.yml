@@ -1,0 +1,45 @@
+container:
+  - container/**
+  - .dockerignore
+  - Containerfile
+  - Containerfile.test
+
+github:
+  - .github/**
+
+scripts:
+  - tasks/**
+
+# CPX Components Labels
+cpx-auth:
+  - cpx-auth/**
+cpx-cookie:
+  - cpx-cookie/**
+cpx-filter:
+  - cpx-filter/**
+cpx-keycloak:
+  - cpx-keycloak/**
+cpx-newsdesk:
+  - cpx-newsdesk/**
+cpx-operator-graph:
+  - cpx-operator-graph/**
+cpx-query:
+  - cpx-query/**
+cpx-reporter:
+  - cpx-reporter/**
+cpx-result:
+  - cpx-result/**
+cpx-search:
+  - cpx-search/**
+cpx-state:
+  - cpx-state/**
+cpx-tab-stream:
+  - cpx-tab-stream/**
+cpx-target:
+  - cpx-target/**
+cpx-url:
+  - cpx-url/**
+cpx-user:
+  - cpx-user/**
+cpx-websocket:
+  - cpx-websocket/**
