@@ -3,7 +3,7 @@ on: [pull_request]
 
 jobs:
   components:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v4
       with:
