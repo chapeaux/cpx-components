@@ -76,6 +76,27 @@ export class CPXUser extends HTMLElement {
     }
   }
 
+//   eddl-cust-key (default: 'rh_common_id')
+  _eddlCustKey = 'rh_common_id';
+  get eddlCustKey() { return this._eddlCustKey; }
+  set eddlCustKey(val) {
+    if (this.eddlCustKey == val) return;
+    this.eddlCustKey = val;
+  }
+// eddl-user-id (default: 'rh_user_id')
+  _eddlUserId = 'rh_user_id';
+  get eddlUserId() { return this._eddlUserId; }
+  set eddlUserId(val) {
+    if (this.eddlCustKey == val) return;
+    this.eddlCustKey = val;
+  }
+// eddl-logged-in (default: 'rh_sso_session')
+  _eddlLoggedIn = 'rh_sso_session';
+  get eddlLoggedIn() { return this._eddlLoggedIn; }
+  set eddlLoggedIn(val) {
+
+  }
+
   _ready = false;
   get ready() {
     return this._ready;

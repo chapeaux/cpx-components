@@ -57,15 +57,13 @@ const eventMap = new Map([
     ['User Detected', { payload: 'user', data: {
                 user: (tgt, data) => {
                     return Object.assign({
-                        "custKey": "",
                         "ebsAccountNumber": "",
-                        "accountIDType": "",
+                        "organizationID": "",
+                        "ssoClientID": "",
                         "userID": "",
                         "lastLoginDate": "",
                         "loggedIn": "false",
                         "socialAccountsLinked": "",
-                        "subscriptionFrequency": "",
-                        "subscriptionLevel": "",
                         "hashedEmail": ""
                     }, data);
                 }

@@ -303,6 +303,15 @@
                 </details>
                 <cpx-reporter event="Content Listing Displayed"></cpx-reporter>
             </li>
+            <li>
+                <details>
+                    <summary>Content Listing Item Clicked</summary>
+                    <pre data-event="Content Listing Item Clicked"></pre>
+                </details>
+                <div class="button" onclick="this.dispatchEvent(new ReporterEvent('Content Listing Item Clicked',{displayPosition: '5',linkType: 'link', contentTitle: 'Red Hat Products'}));"><a href="https://developers.redhat.com/product">Red Hat Products</a></div>
+                <label>Open Hybrid Cloud <input type="checkbox" onclick="this.dispatchEvent(new ReporterEvent('Content Listing Item Clicked',{displayPosition: '5',linkType: 'button', contentTitle: 'Open hybrid cloud'}));"></label>
+                
+            </li>
         </ul>
         </fieldset>
         <fieldset>
