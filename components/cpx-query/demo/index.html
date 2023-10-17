@@ -23,6 +23,16 @@
             </section>
         </template>
     </cpx-query>
+    <cpx-query auto url="https://access.redhat.com/api/v2/dxp-content/mkt-app/1">
+        <template>
+            <style>
+
+            </style>
+            <section data-repeat="data.placements">
+                <h2>${placement_key}</h2>
+            </section>
+        </template>
+    </cpx-query>
     <script type="module" src="/cpx-query/cpx-query.js"></script>
 </body>
 </html>

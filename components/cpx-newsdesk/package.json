@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "",
-    "build": "tsc"
+    "build": "tsc",
+    "cypress:open": "cypress open"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-newsdesk"
+  "homepage": "https://github.com/chapeaux/cpx-components/components/cpx-newsdesk",
+  "devDependencies": {
+    "cypress": "^12.17.3"
+  }
 }
